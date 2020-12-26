@@ -269,4 +269,6 @@ bar {
 
 # Lock with dynamics monitor resizing.
 bindsym $mod+Shift+x exec /home/ajpkim/scripts/i3lock-multimonitor.sh
-# bindsym $mod+Shift+x exec i3lock -i "/home/ajpkim/Pictures/lockscreens/i3lock.png"
+
+bindsym $mod+F2 exec firefox
+bindsym $mod+F1 exec emacs
