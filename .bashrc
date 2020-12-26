@@ -128,5 +128,3 @@ setxkbmap -layout us -option ctrl:nocaps
 # Scripts
 . ~/scripts/weather.sh
 . ~/scripts/pomo-timer.sh
-
-# 
