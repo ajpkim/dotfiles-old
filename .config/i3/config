@@ -272,3 +272,5 @@ bindsym $mod+Shift+x exec /home/ajpkim/scripts/i3lock-multimonitor.sh
 
 bindsym $mod+F2 exec firefox
 bindsym $mod+F1 exec emacs
+
+focus_follows_mouse no
