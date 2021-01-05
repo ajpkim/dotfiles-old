@@ -286,7 +286,7 @@ bindsym $mod+Tab workspace back_and_forth
 # Disable window titlebars (necessary for gaps and can be nonzero)
 for_window [class=".*"] border pixel 2
 
-# Only enable outer gaps when there is exactly one container
+# Only enable outer gaps when there is exactly one container.
 smart_gaps inverse_outer
 # Smart borders will draw borders on windows only if there is more than one window in a workspace
 smart_borders on
