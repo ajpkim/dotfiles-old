@@ -134,6 +134,7 @@ set $ws9 "9: "
 # etc
 set $ws10 "10: etc"
 
+
 # switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
@@ -171,10 +172,10 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 ### AK additions:
 
 # Key bindings for resizing (no resize mode)
-bindsym $mod+y resize shrink width 10 px or 10 ppt
-bindsym $mod+u resize grow height 10 px or 10 ppt
-bindsym $mod+i resize shrink height 10 px or 10 ppt
-bindsym $mod+o resize grow width 10 px or 10 ppt
+bindsym $mod+y resize shrink width 5 px or 5 ppt
+bindsym $mod+u resize grow height 5 px or 5 ppt
+bindsym $mod+i resize shrink height 5 px or 5 ppt
+bindsym $mod+o resize grow width 5 px or 5 ppt
 
 
 
@@ -259,11 +260,11 @@ bar {
 		inactive_workspace	$inactive-bg-color	$inactive-bg-color	$inactive-text-color
 		urgent_workspace	$urgent-bg-color	$urgent-bg-color	$text-color
 		}			
-	# modifer
-	mode hide
-    	hidden_state hide
-    	modifier $mod
-	
+	## modifer
+	# mode hide
+    	# hidden_state hide
+    	# modifier $mod
+	strip_workspace_numbers yes	
 	position top
 }
 
@@ -279,3 +280,35 @@ bindsym $mod+F6 exec firefox youtube.com
 focus_follows_mouse no
 
 bindsym $mod+Tab workspace back_and_forth
+
+### i3-gaps configs
+
+# Disable window titlebars (necessary for gaps and can be nonzero)
+for_window [class=".*"] border pixel 2
+
+# Only enable outer gaps when there is exactly one container
+smart_gaps inverse_outer
+# Smart borders will draw borders on windows only if there is more than one window in a workspace
+smart_borders on
+# Hide edge borders only if there is one window with no gaps
+# hide_edge_borders smart_no_gaps
+
+set $innergap 8
+set $outergap 2
+set $gapincr 5
+
+gaps inner $innergap
+gaps outer $outergap 
+
+bindsym $mod+n		gaps inner current plus $gapincr
+bindsym $mod+Shift+n	gaps inner current minus $gapincr
+
+# Mode for toggling gaps on/off
+set $mode_gaps Toggle gaps: (1) on (2) off
+bindsym $mod+Shift+g mode "$mode_gaps"
+mode "$mode_gaps" {
+    bindsym 1 mode "default", gaps inner all set $innergap, gaps outer all set $outergap
+    bindsym 2 mode "default", gaps inner all set 1, gaps outer all set 1
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
