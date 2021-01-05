@@ -21,8 +21,8 @@ color info					yellow	black
 color article 				        white	black
 color listnormal 				color42	black # foreground for feeds. 14 is nice aqua alt.
 color listnormal_unread 		color123 black  # 85 is nice seagreen alternative
-color listfocus_unread 		white 	blue	bold
-color listfocus				white 	blue	bold
+color listfocus_unread 		black 	white	bold
+color listfocus				black 	white	bold
 # Customize the article metadata appearance.
 highlight article				"^Feed:.	*"	color123	black
 highlight article  				"^Title:.*"	color42		black
