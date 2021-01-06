@@ -223,7 +223,7 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightne
 
 
 # Wallpaper
-exec_always feh --bg-scale /home/ajpkim/Pictures/wallpapers/wallpaper
+exec_always feh --bg-scale $HOME/Pictures/bg-img/wallpaper.jpg
 
 
 # Color variables
@@ -271,7 +271,7 @@ bar {
 # Lock with dynamics monitor resizing.
 bindsym $mod+Shift+x exec /home/ajpkim/scripts/i3lock-multimonitor.sh
 
-bindsym $mod+F1 exec emacs
+bindsym $mod+Control+e exec emacs
 bindsym $mod+F2 exec firefox
 bindsym $mod+F5 exec virtualbox
 bindsym $mod+F6 exec firefox youtube.com
@@ -312,3 +312,15 @@ mode "$mode_gaps" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+
+###############
+# WIP : scratchpad
+# for_window [class="emacs" instance="scratch"] floating enable, resize set 1292 694, move scratchpad, move position center
+
+#for_window [title="Emacs_scratch"] border pixel 50
+#for_window [class="Emacs" instance="scratch"] floating enable, resize set 64 480
+#for_window [class="Emacs_scratchpad"] floating enable, resize set 64 480
+
+# for_window [instance="Emacs_scratchpad"] floating enable,  move scratchpad; scratchpad show; move position 0px 0px; resize set 3200 300; move scratchpad
+
+# for_window [title="Alacritty_scratchpad"] floating enable, resize set 800 800, move absolute position center
