@@ -113,26 +113,54 @@ bindsym $mod+a focus parent
 # We use variables to avoid repeating the names in multiple places.
 # font aweseom cheatsheat: https://fontawesome.com/cheatsheet
 
+
+
+### Pre-Polybar settings
+# # terminal
+# set $ws1 "1: "
+# # firefox
+# set $ws2 "2: "
+# # org-mode
+# set $ws3 "3: "
+# # coding
+# set $ws4 "4: "
+# # projects
+# set $ws5 "5: "
+# # youtube
+# set $ws6 "6: "
+# # configurations
+# set $ws7 "7: "
+# # entertainment/communication
+# set $ws8 "8: "
+# # study
+# set $ws9 "9: "
+# # etc
+# set $ws10 "10: etc"
+
+### Settings for polybar
 # terminal
-set $ws1 "1: "
+set $ws1 "1"
 # firefox
-set $ws2 "2: "
+set $ws2 "2"
 # org-mode
-set $ws3 "3: "
+set $ws3 "3"
 # coding
-set $ws4 "4: "
+set $ws4 "4"
 # projects
-set $ws5 "5: "
+set $ws5 "5"
 # youtube
-set $ws6 "6: "
+set $ws6 "6"
 # configurations
-set $ws7 "7: "
+set $ws7 "7"
 # entertainment/communication
-set $ws8 "8: "
+set $ws8 "8"
 # study
-set $ws9 "9: "
+set $ws9 "9"
 # etc
-set $ws10 "10: etc"
+set $ws10 "10"
+
+
+
 
 
 # switch to workspace
@@ -248,29 +276,33 @@ client.urgent		$urgent-bg-color	$urgent-bg-color	$text-color		#00ff00
 
 hide_edge_borders both
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-bar {
-        status_command i3status
-	colors {
-	        background $bar-bg-color
-		separator #757575		
-		#			border			background		text
-		focused_workspace	$bar-bg-color		$bar-bg-color		$text-color
-		inactive_workspace	$inactive-bg-color	$inactive-bg-color	$inactive-text-color
-		urgent_workspace	$urgent-bg-color	$urgent-bg-color	$text-color
-		}			
-	## modifer
-	# mode hide
-    	# hidden_state hide
-    	# modifier $mod
-	strip_workspace_numbers yes	
-	position top
-}
+#Start i3bar to display a workspace bar (plus the system information i3status
+#finds out, if available)
+# bar {
+#         status_command i3blocks
+# 	colors {
+# 	        background $bar-bg-color
+# 		separator #757575		
+# 		#			border			background		text
+# 		focused_workspace	$bar-bg-color		$bar-bg-color		$text-color
+# 		inactive_workspace	$inactive-bg-color	$inactive-bg-color	$inactive-text-color
+# 		urgent_workspace	$urgent-bg-color	$urgent-bg-color	$text-color
+# 		}			
+# 	# modifer
+# 	mode hide
+#     	hidden_state hide
+#     	modifier $mod+Shift
+# 	strip_workspace_numbers yes	
+# 	position top
+# }
+
+# Polybar
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 # Lock with dynamics monitor resizing.
 bindsym $mod+Shift+x exec /home/ajpkim/scripts/i3lock-multimonitor.sh
 
+# Key-bindings
 bindsym $mod+Control+e exec emacs
 bindsym $mod+Control+f exec firefox
 bindsym $mod+F5 exec virtualbox
@@ -278,7 +310,6 @@ bindsym $mod+F6 exec firefox youtube.com
 
 
 focus_follows_mouse no
-
 bindsym $mod+Tab workspace back_and_forth
 
 ### i3-gaps configs
