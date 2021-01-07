@@ -123,10 +123,12 @@ label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
 label-focused = %icon%
-; label-focused-background = ${colors.background-alt}
+;label-focused-background = ${colors.background}
+label-focused-background = #00ff00
+
 
 label-focused-underline= ${colors.primary}
-label-focused-padding = 2
+label-focused-padding = 3
 
 ; unfocused = Inactive workspace on any monitor
 label-unfocused = %icon%
@@ -134,7 +136,8 @@ label-unfocused-padding = 2
 
 ; visible = Active workspace on unfocused monitor
 label-visible = %icon%
-label-visible-background = ${self.label-focused-background}
+;label-visible-background = ${self.label-focused-background}
+label-visible-background = ${colors.background}
 label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
@@ -147,40 +150,40 @@ label-urgent-padding = 2
 ; label-separator = |
 
 
-[module/mpd]
-type = internal/mpd
-format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
+; [module/mpd]
+; type = internal/mpd
+; format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
 
-icon-prev = 
-icon-stop = 
-icon-play = 
-icon-pause = 
-icon-next = 
+; icon-prev = 
+; icon-stop = 
+; icon-play = 
+; icon-pause = 
+; icon-next = 
 
-label-song-maxlen = 25
-label-song-ellipsis = true
+; label-song-maxlen = 25
+; label-song-ellipsis = true
 
-[module/xbacklight]
-type = internal/xbacklight
+; [module/xbacklight]
+; type = internal/xbacklight
 
-format = <label> <bar>
-label = BL
+; format = <label> <bar>
+; label = BL
 
-bar-width = 10
-bar-indicator = |
-bar-indicator-foreground = #fff
-bar-indicator-font = 2
-bar-fill = ─
-bar-fill-font = 2
-bar-fill-foreground = #9f78e1
-bar-empty = ─
-bar-empty-font = 2
-bar-empty-foreground = ${colors.foreground-alt}
+; bar-width = 10
+; bar-indicator = |
+; bar-indicator-foreground = #fff
+; bar-indicator-font = 2
+; bar-fill = ─
+; bar-fill-font = 2
+; bar-fill-foreground = #9f78e1
+; bar-empty = ─
+; bar-empty-font = 2
+; bar-empty-foreground = ${colors.foreground-alt}
 
-[module/backlight-acpi]
-inherit = module/xbacklight
-type = internal/backlight
-card = intel_backlight
+; [module/backlight-acpi]
+; inherit = module/xbacklight
+; type = internal/backlight
+; card = intel_backlight
 
 [module/cpu]
 type = internal/cpu
@@ -196,37 +199,39 @@ label = %percentage_used%%
 
 [module/wlan]
 type = internal/network
-interface = wlp2s0
+interface = wlp3s0
 interval = 3.0
 
-format-connected = <ramp-signal> <label-connected>
-format-connected-underline = #9f78e1
-label-connected = %essid%
+;format-connected = <ramp-signal> <label-connected>
+;format-connected = <label-connected>
+;format-connect = %essid%
+;format-connected-underline = #9f78e1
+label-connected = %essid% %upspeed% %downspeed%
 
-format-disconnected =
+format-disconnected = "wifi = :("
 ;format-disconnected = <label-disconnected>
 ;format-disconnected-underline = ${self.format-connected-underline}
 ;label-disconnected = %ifname% disconnected
 ;label-disconnected-foreground = ${colors.foreground-alt}
 
-ramp-signal-0 = 
-ramp-signal-1 = 
-ramp-signal-2 = 
-ramp-signal-3 = 
-ramp-signal-4 = 
-ramp-signal-foreground = ${colors.foreground-alt}
+; ramp-signal-0 = 
+; ramp-signal-1 = 
+; ramp-signal-2 = 
+; ramp-signal-3 = 
+; ramp-signal-4 = 
+; ramp-signal-foreground = ${colors.foreground-alt}
 
-[module/eth]
-type = internal/network
-interface = net0
-interval = 3.0
+; [module/eth]
+; type = internal/network
+; interface = net0
+; interval = 3.0
 
-format-connected-underline = #55aa55
-format-connected-prefix = " "
-format-connected-prefix-foreground = ${colors.foreground-alt}
-label-connected = %local_ip%
+; format-connected-underline = #55aa55
+; format-connected-prefix = " "
+; format-connected-prefix-foreground = ${colors.foreground-alt}
+; label-connected = %local_ip%
 
-format-disconnected =
+; format-disconnected =
 ;format-disconnected = <label-disconnected>
 ;format-disconnected-underline = ${self.format-connected-underline}
 ;label-disconnected = %ifname% disconnected
@@ -236,8 +241,9 @@ format-disconnected =
 type = internal/date
 interval = 5
 
-date =
-date-alt = " %Y-%m-%d"
+; Date formats at: https://en.cppreference.com/w/cpp/io/manip/put_time
+date = "%b %d, %Y "
+date-alt = "%Y-%m-%d "
 
 time = %H:%M
 time-alt = %H:%M:%S
@@ -251,57 +257,58 @@ label = %date% %time%
 [module/pulseaudio]
 type = internal/pulseaudio
 
-format-volume = <label-volume> <bar-volume>
+;format-volume = <label-volume> <bar-volume>
+;format-volume = <label-volume>
 label-volume = Vol %percentage%%
-label-volume-foreground = ${root.foreground}
+;label-volume-foreground = ${root.foreground}
 
 label-muted = muted
 label-muted-foreground = #666
 
-bar-volume-width = 10
-bar-volume-foreground-0 = #55aa55
-bar-volume-foreground-1 = #55aa55
-bar-volume-foreground-2 = #55aa55
-bar-volume-foreground-3 = #55aa55
-bar-volume-foreground-4 = #55aa55
-bar-volume-foreground-5 = #f5a70a
-bar-volume-foreground-6 = #ff5555
-bar-volume-gradient = false
-bar-volume-indicator = |
-bar-volume-indicator-font = 2
-bar-volume-fill = ─
-bar-volume-fill-font = 2
-bar-volume-empty = ─
-bar-volume-empty-font = 2
-bar-volume-empty-foreground = ${colors.foreground-alt}
+; bar-volume-width = 10
+; bar-volume-foreground-0 = #55aa55
+; bar-volume-foreground-1 = #55aa55
+; bar-volume-foreground-2 = #55aa55
+; bar-volume-foreground-3 = #55aa55
+; bar-volume-foreground-4 = #55aa55
+; bar-volume-foreground-5 = #f5a70a
+; bar-volume-foreground-6 = #ff5555
+; bar-volume-gradient = false
+; bar-volume-indicator = |
+; bar-volume-indicator-font = 2
+; bar-volume-fill = ─
+; bar-volume-fill-font = 2
+; bar-volume-empty = ─
+; bar-volume-empty-font = 2
+; bar-volume-empty-foreground = ${colors.foreground-alt}
 
-[module/alsa]
-type = internal/alsa
+; [module/alsa]
+; type = internal/alsa
 
-format-volume = <label-volume> <bar-volume>
-label-volume = VOL
-label-volume-foreground = ${root.foreground}
+; format-volume = <label-volume> <bar-volume>
+; label-volume = VOL
+; label-volume-foreground = ${root.foreground}
 
-format-muted-prefix = " "
-format-muted-foreground = ${colors.foreground-alt}
-label-muted = sound muted
+; format-muted-prefix = " "
+; format-muted-foreground = ${colors.foreground-alt}
+; label-muted = sound muted
 
-bar-volume-width = 10
-bar-volume-foreground-0 = #55aa55
-bar-volume-foreground-1 = #55aa55
-bar-volume-foreground-2 = #55aa55
-bar-volume-foreground-3 = #55aa55
-bar-volume-foreground-4 = #55aa55
-bar-volume-foreground-5 = #f5a70a
-bar-volume-foreground-6 = #ff5555
-bar-volume-gradient = false
-bar-volume-indicator = |
-bar-volume-indicator-font = 2
-bar-volume-fill = ─
-bar-volume-fill-font = 2
-bar-volume-empty = ─
-bar-volume-empty-font = 2
-bar-volume-empty-foreground = ${colors.foreground-alt}
+; bar-volume-width = 10
+; bar-volume-foreground-0 = #55aa55
+; bar-volume-foreground-1 = #55aa55
+; bar-volume-foreground-2 = #55aa55
+; bar-volume-foreground-3 = #55aa55
+; bar-volume-foreground-4 = #55aa55
+; bar-volume-foreground-5 = #f5a70a
+; bar-volume-foreground-6 = #ff5555
+; bar-volume-gradient = false
+; bar-volume-indicator = |
+; bar-volume-indicator-font = 2
+; bar-volume-fill = ─
+; bar-volume-fill-font = 2
+; bar-volume-empty = ─
+; bar-volume-empty-font = 2
+; bar-volume-empty-foreground = ${colors.foreground-alt}
 
 [module/battery]
 type = internal/battery
@@ -309,32 +316,42 @@ battery = BAT0
 adapter = AC0
 full-at = 98
 
-format-charging = <animation-charging> <label-charging>
-format-charging-underline = #ffb52a
 
-format-discharging = <animation-discharging> <label-discharging>
-format-discharging-underline = ${self.format-charging-underline}
+;format-charging = <animation-charging> <label-charging>
+format-charging = Bat <label-charging>
+;format-charging-underline = #ffb52a
 
-format-full-prefix = " "
-format-full-prefix-foreground = ${colors.foreground-alt}
-format-full-underline = ${self.format-charging-underline}
+;format-discharging = <animation-discharging> <label-discharging>
+format-discharging = Bat  <label-discharging>
+;
+;
+;
+;
 
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
-ramp-capacity-foreground = ${colors.foreground-alt}
+;format-discharging =  %percentage%%
+;format-discharging-underline = ${self.format-charging-underline}
 
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
-animation-charging-foreground = ${colors.foreground-alt}
-animation-charging-framerate = 750
 
-animation-discharging-0 = 
-animation-discharging-1 = 
-animation-discharging-2 = 
-animation-discharging-foreground = ${colors.foreground-alt}
-animation-discharging-framerate = 750
+;format-full-prefix = " "
+;format-full-prefix-foreground = ${colors.foreground-alt}
+;format-full-underline = ${self.format-charging-underline}
+
+; ramp-capacity-0 = 
+; ramp-capacity-1 = 
+; ramp-capacity-2 = 
+; ramp-capacity-foreground = ${colors.foreground-alt}
+
+; animation-charging-0 = 
+; animation-charging-1 = 
+; animation-charging-2 = 
+; animation-charging-foreground = ${colors.foreground-alt}
+; animation-charging-framerate = 750
+
+; animation-discharging-0 = 
+; animation-discharging-1 = 
+; animation-discharging-2 = 
+; animation-discharging-foreground = ${colors.foreground-alt}
+; animation-discharging-framerate = 750
 
 [module/temperature]
 type = internal/temperature
@@ -350,39 +367,39 @@ label = %temperature-c%
 label-warn = %temperature-c%
 label-warn-foreground = ${colors.secondary}
 
-ramp-0 = 
-ramp-1 = 
-ramp-2 = 
-ramp-foreground = ${colors.foreground-alt}
+; ramp-0 = 
+; ramp-1 = 
+; ramp-2 = 
+; ramp-foreground = ${colors.foreground-alt}
 
-[module/powermenu]
-type = custom/menu
+; [module/powermenu]
+; type = custom/menu
 
-expand-right = true
+; expand-right = true
 
-format-spacing = 1
+; format-spacing = 1
 
-label-open = 
-label-open-foreground = ${colors.secondary}
-label-close =  cancel
-label-close-foreground = ${colors.secondary}
-label-separator = |
-label-separator-foreground = ${colors.foreground-alt}
+; label-open = 
+; label-open-foreground = ${colors.secondary}
+; label-close =  cancel
+; label-close-foreground = ${colors.secondary}
+; label-separator = |
+; label-separator-foreground = ${colors.foreground-alt}
 
-menu-0-0 = reboot
-menu-0-0-exec = menu-open-1
-menu-0-1 = power off
-menu-0-1-exec = menu-open-2
+; menu-0-0 = reboot
+; menu-0-0-exec = menu-open-1
+; menu-0-1 = power off
+; menu-0-1-exec = menu-open-2
 
-menu-1-0 = cancel
-menu-1-0-exec = menu-open-0
-menu-1-1 = reboot
-menu-1-1-exec = sudo reboot
+; menu-1-0 = cancel
+; menu-1-0-exec = menu-open-0
+; menu-1-1 = reboot
+; menu-1-1-exec = sudo reboot
 
-menu-2-0 = power off
-menu-2-0-exec = sudo poweroff
-menu-2-1 = cancel
-menu-2-1-exec = menu-open-0
+; menu-2-0 = power off
+; menu-2-0-exec = sudo poweroff
+; menu-2-1 = cancel
+; menu-2-1-exec = menu-open-0
 
 [settings]
 screenchange-reload = true
