@@ -15,7 +15,9 @@ if [ $HOSTNAME == "arch-swift3" ] || [ $HOSTNAME == "arch-macair15"]; then
     ## Background color
     #PS1="\`if [ \$? = 0 ]; then echo '\e[44m\](\A)'; else echo '\e[41m\](\A)'; fi\`\e[45m\]\e[30m\] \w \e[00m\]\$ "
     ## No background color
-    PS1="\`if [ \$? = 0 ]; then echo '\e[35m\](\A)'; else echo '\e[31m\](\A)'; fi\`\e[34m\] \w \e[00m\]\$ "
+    # PS1="\`if [ \$? = 0 ]; then echo '\e[35m\](\A)'; else echo '\e[31m\](\A)'; fi\`\e[34m\] \w \e[00m\]\$ "
+    PS1="\`if [ \$? = 0 ]; then echo '\e[35m\]\w \e[34m\]\$ '; else echo '\e[31m\]\w \$ '; fi\`\e[00m\]"
+    #PS1="\`if [ \$? = 0 ]; then echo '\e[35m\] \w'; else echo ' \e[31m\]\w; fi\` \e[00m\]\$ "
 else
     PS1='(\A) \u@\h: \w \$ '
 fi
