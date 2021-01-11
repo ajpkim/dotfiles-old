@@ -11,7 +11,7 @@
 ## White text.
 #PS1='\[\033[45m\]\[\033[37m\](\A)\033[00m\]\[\033[46m\]\[\033[37m\] \w \[\033[45m\]\[\033[37m\] \$ \033[00m\] '
 
-if [ $HOSTNAME == "arch-swift3" ] || [ $HOSTNAME == "arch-macair15"]; then
+if [ $HOSTNAME == "arch-swift3" ] || [ $HOSTNAME == "arch-macair15" ]; then
     ## Background color
     #PS1="\`if [ \$? = 0 ]; then echo '\e[44m\](\A)'; else echo '\e[41m\](\A)'; fi\`\e[45m\]\e[30m\] \w \e[00m\]\$ "
     ## No background color
