@@ -199,7 +199,8 @@ label = %percentage_used%%
 
 [module/wlan]
 type = internal/network
-interface = wlp3s0
+; interface = wlp3s0  ; macbook air 2015
+interface= wlp2s0  ; Acer Swift3
 interval = 3.0
 
 ;format-connected = <ramp-signal> <label-connected>
