@@ -19,6 +19,7 @@ alias e='emacs'
 alias ef='emacs -fs'
 alias et='emacs -nw'
 alias lynx='lynx -accept_all_cookies'
+alias py='python3'
 
 ### Scripts
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
