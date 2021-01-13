@@ -36,10 +36,21 @@ HISTFILESIZE=2000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+### Vars
+export CHIME='/usr/share/sounds/freedesktop/stereo/complete.oga'
+
+### Env vars
+TERMINAL=alacritty
+
+
 ### Aliases
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
+
+### Scripts
+. ~/scripts/timing.sh
+. ~/scripts/chimes.sh
 
 # Remap Caps Lock to Control
 setxkbmap -layout us -option ctrl:nocaps
