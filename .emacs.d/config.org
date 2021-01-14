@@ -34,20 +34,19 @@
         (message "%s" file)
         (delete-file file))))
 #+END_SRC
-* Editing
-** drag-stuff
+* drag-stuff TMP DISABLE
 #+begin_src emacs-lisp
-  (use-package drag-stuff
-    :ensure t
-    :config
-    (progn
-      (drag-stuff-global-mode t)
-      (drag-stuff-define-keys))
-    :bind
-    (("M-p" . drag-stuff-up)
-     ("M-n" . drag-stuff-down)))
+  ;; (use-package drag-stuff
+  ;;   :ensure t
+  ;;   :config
+  ;;   (progn
+  ;;     (drag-stuff-global-mode t)
+  ;;     (drag-stuff-define-keys))
+  ;;   :bind
+  ;;   (("M-p" . drag-stuff-up)
+  ;;    ("M-n" . drag-stuff-down)))
 #+end_src
-** TODO multiple-cursors
+* TODO multiple-cursors
 * Org
 - [[https://orgmode.org/org.html][Org Manual]]
 ** Setup (ellispsis, emphasis, indent, etc)
@@ -62,7 +61,7 @@
 ** ToDo keywords
 #+begin_src emacs-lisp
   (setq org-todo-keywords
-        '((sequence "NEXT" "TODO" "MP" "WAITING" "|" "DONE" "MISSED" "CANCELLED")))
+        '((sequence "NEXT" "TODO" "WAITING" "|" "DONE" "NAH")))
 #+end_src
 
 ** Global commands
@@ -157,7 +156,20 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     :init
     (beacon-mode 1))
 #+END_SRC
-* window splitting func
+* Config edit/reload
+#+begin_src emacs-lisp
+  (defun config-visit ()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c e") 'config-visit)
+#+end_src
+#+begin_src emacs-lisp
+  (defun config-reload ()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+end_src
+* window splitting functions
 - Move cursor to newly created windows.
 #+BEGIN_SRC emacs-lisp
   (defun split-and-follow-horizontally ()
@@ -174,3 +186,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     (other-window 1))
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
+
+
+
+
+** example
+
