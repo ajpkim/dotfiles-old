@@ -39,9 +39,10 @@ shopt -s checkwinsize
 ### Vars
 export CHIME='/usr/share/sounds/freedesktop/stereo/complete.oga'
 
-### Env vars
+### Shell vars
 TERMINAL=alacritty
-
+# Brightness max on Acer Swift3 is 187
+BRIGHTNESS_FILE_SWIFT=/sys/class/backlight/intel_backlight/brightness
 
 ### Aliases
 if [ -f ~/.bash_aliases ]; then
@@ -56,3 +57,4 @@ fi
 setxkbmap -layout us -option ctrl:nocaps
 
 echo "Yo0o0o :)"
+
