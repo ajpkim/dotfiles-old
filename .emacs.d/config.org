@@ -34,19 +34,6 @@
         (message "%s" file)
         (delete-file file))))
 #+END_SRC
-* drag-stuff TMP DISABLE
-#+begin_src emacs-lisp
-  ;; (use-package drag-stuff
-  ;;   :ensure t
-  ;;   :config
-  ;;   (progn
-  ;;     (drag-stuff-global-mode t)
-  ;;     (drag-stuff-define-keys))
-  ;;   :bind
-  ;;   (("M-p" . drag-stuff-up)
-  ;;    ("M-n" . drag-stuff-down)))
-#+end_src
-* TODO multiple-cursors
 * Org
 - [[https://orgmode.org/org.html][Org Manual]]
 ** Setup (ellispsis, emphasis, indent, etc)
@@ -113,6 +100,7 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
 		  (org-level-8 . 1.1 )))
 	(set-face-attribute (car face) nil :font "courier" :weight `regular :height (cdr face)))
 * which-key
+- Provide popup info on commands given input current sequence.
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :ensure t
@@ -128,6 +116,7 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     ("M-s" . avy-goto-char))
 #+END_SRC
 * Ido
+- Smart file completion.
 ** Enable Ido-mode
 #+BEGIN_SRC emacs-lisp
   (ido-mode 1)
@@ -136,6 +125,7 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   (setq ido-create-new-buffer `always)
 #+END_SRC
 * ace-window
+- Navigate buffers efficently.
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :ensure t
@@ -143,13 +133,14 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     :bind ("C-x o" . ace-window))
 #+END_SRC
 * rainbow
-- Add coloring to hex color tags (e.g. #22ff22) 
+- Add coloring to hex color tags (e.g. #22ff22).
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-mode
     :ensure t
     :init (rainbow-mode 1))
 #+END_SRC
 * beacon
+- Highlight cursor line.
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
     :ensure t
@@ -170,7 +161,7 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c r") 'config-reload)
 #+end_src
 * window splitting functions
-- Move cursor to newly created windows.
+- Move cursor to newly created windows (default is stagnant cursor).
 #+BEGIN_SRC emacs-lisp
   (defun split-and-follow-horizontally ()
     (interactive)
@@ -186,9 +177,16 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     (other-window 1))
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
-
-
-
-
-** example
-
+* drag-stuff CONFLICT WITH ORG
+#+begin_src emacs-lisp
+  ;; (use-package drag-stuff
+  ;;   :ensure t
+  ;;   :config
+  ;;   (progn
+  ;;     (drag-stuff-global-mode t)
+  ;;     (drag-stuff-define-keys))
+  ;;   :bind
+  ;;   (("M-p" . drag-stuff-up)
+  ;;    ("M-n" . drag-stuff-down)))
+#+end_src
+* TODO multiple-cursors
