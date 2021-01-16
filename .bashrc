@@ -41,8 +41,10 @@ export CHIME='/usr/share/sounds/freedesktop/stereo/complete.oga'
 
 ### Shell vars
 TERMINAL=alacritty
-# Brightness max on Acer Swift3 is 187
+# Brightness on Acer Swift3 is 0-187
 BRIGHTNESS_FILE_SWIFT=/sys/class/backlight/intel_backlight/brightness
+# Brightness on macair is 0-100
+BRIGHTNESS_FILE_MACAIR15=/sys/class/backlight/acpi_video0/brightness
 
 ### Aliases
 if [ -f ~/.bash_aliases ]; then
