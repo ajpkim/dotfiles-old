@@ -51,9 +51,11 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-### Scripts
+### Scripts (exported functions)
+SCRIPTS="~/scripts"
 . ~/scripts/timing.sh
 . ~/scripts/chimes.sh
+. ~/scripts/weather.sh
 
 # Remap Caps Lock to Control
 setxkbmap -layout us -option ctrl:nocaps
