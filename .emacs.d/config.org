@@ -78,6 +78,10 @@
 			  `(("^ *\\([-]\\) "
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·")))))) 
 #+END_SRC
+** org-format-latex
+#+begin_src emacs-lisp
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+#+end_src
 ** FIX (I think bc elpa package) Visual fill column
 NOT WORKING #+BEGIN_SRC emacs-lisp
   (defun org-mode-visual-fill ()

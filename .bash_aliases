@@ -12,7 +12,7 @@ alias bat='cat /sys/class/power_supply/BAT0/capacity'
 
 ### Utilities
 alias chime='paplay $CHIME'  # defined in .bashrc
-
+alias logout='pkill -KILL -u ajpkim'
 
 ### Tools
 alias xcc='xclip -selection clipboard'
