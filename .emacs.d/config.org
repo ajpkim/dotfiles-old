@@ -45,10 +45,22 @@
           org-hide-emphasis-markers t)
     (add-hook 'org-mode-hook #'visual-line-mode))
 #+END_SRC
-** ToDo keywords
+** Org TODOs
+- Can add styling for =org-tag-faces= similar to TODOs.
 #+begin_src emacs-lisp
   (setq org-todo-keywords
-        '((sequence "NEXT" "TODO" "WAITING" "|" "DONE" "NAH")))
+        '((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w!)" "|" "DONE(d!)" "PASS(p!)")))
+
+  (setq org-todo-keyword-faces
+        '(
+          ("TODO" . (:foreground "#ffff66" :weight bold))
+          ("WAITING" . (:foreground "#ffff66" :weight bold))
+          ("STARTED" . (:foreground "#44ddff" :weight bold))
+          ("DONE" . (:foreground "#19ffaf" :weight bold))
+          ("PASS" . (:foreground "#ff3d40" :weight bold))))
+
+  ;; (setq org-log-done 'time)  ;; Don't need with all other logging in LOGBOOK
+  (setq org-log-into-drawer "LOGBOOK")
 #+end_src
 
 ** Global commands
