@@ -34,6 +34,11 @@
         (message "%s" file)
         (delete-file file))))
 #+END_SRC
+* Common file shortcuts
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c w")
+                  (lambda () (interactive) (find-file "~/org-brain/week-2021-01-25.org")))
+#+end_src
 * Org
 - [[https://orgmode.org/org.html][Org Manual]]
 ** Setup (ellispsis, emphasis, indent, etc)
@@ -47,22 +52,43 @@
 #+END_SRC
 ** Org TODOs
 - Can add styling for =org-tag-faces= similar to TODOs.
+- The 
+- The "!" triggers autologging (into the LOGBOOK).
 #+begin_src emacs-lisp
   (setq org-todo-keywords
-        '((sequence "TODO(t!)" "STARTED(s!)" "WAITING(w!)" "|" "DONE(d!)" "PASS(p!)")))
+        '((sequence "TODO(t!)" "NEXT(n!)" "STARTED(s!)" "WAITING(w!)" "|" "DONE(d!)" "PASS(p!)")))
 
   (setq org-todo-keyword-faces
         '(
           ("TODO" . (:foreground "#ffff66" :weight bold))
-          ("WAITING" . (:foreground "#ffff66" :weight bold))
+          ("NEXT" . (:foreground "#44ddff" :weight bold))
           ("STARTED" . (:foreground "#44ddff" :weight bold))
+          ("WAITING" . (:foreground "#df784e" :weight bold))
           ("DONE" . (:foreground "#19ffaf" :weight bold))
           ("PASS" . (:foreground "#ff3d40" :weight bold))))
 
   ;; (setq org-log-done 'time)  ;; Don't need with all other logging in LOGBOOK
   (setq org-log-into-drawer "LOGBOOK")
 #+end_src
-
+** Org-capture
+- May want to use =org-directory= variable here.
+#+begin_src emacs-lisp
+  (setq org-capture-templates
+             '(("t" "Todo" entry (file+headline "~/org-brain/tasks.org" "Tasks")
+                "* TODO %?\nAt: %U From: %a  \n %i\n")
+               ("j" "Journal" entry (file+datetree "~/org-brain/journal.org")
+                "* %?\nAt: %U From: %a \n")
+               ("c" "Clocked In Task" plain
+                (clock)
+                "%i%?" :empty-lines 1)
+               ))
+#+end_src
+** Org refile
+#+begin_src emacs-lisp
+  (setq org-refile-targets
+        '((nil :maxlevel . 9)
+          (org-agenda-files . (:maxlevel . 6))))
+#+end_src
 ** Global commands
 - Recommended global commands (org manual)
 #+begin_src emacs-lisp
