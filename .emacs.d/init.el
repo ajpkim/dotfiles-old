@@ -39,7 +39,7 @@
    '("2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" default))
  '(global-display-line-numbers-mode t)
  '(org-agenda-files
-   '("~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/habits.org" "~/org/orgbox.org" "~/org/week-2021-01-25.org"))
+   '("~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org"))
  '(package-selected-packages
    '(drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package)))
 (custom-set-faces

@@ -160,9 +160,6 @@ set $ws9 "9"
 set $ws10 "10"
 
 
-
-
-
 # switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
@@ -194,8 +191,6 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
-
-
 ##################################################
 ### AK additions:
 
@@ -205,12 +200,9 @@ bindsym $mod+u resize grow height 5 px or 5 ppt
 bindsym $mod+i resize shrink height 5 px or 5 ppt
 bindsym $mod+o resize grow width 5 px or 5 ppt
 
-
-
 # Move the current workspace to the next output
 # (effectively toggles when you only have two outputs)
 bindsym $mod+x move workspace to output right
-
 
 # Scratchpad
 # Make the currently focused window a scratchpad
@@ -221,7 +213,6 @@ bindsym $mod+minus scratchpad show
 # toggle split v split h with single key binding
 bindsym $mod+t split toggle
 
-
 # Audio and screen controls:
 # https://www.youtube.com/watch?v=SrNn_G5tiWQ
 # Media volume controls
@@ -231,28 +222,12 @@ bindsym XF86AudioRaiseVolumne exec --no-startup-id pactl set-sink-volume $(pactl
 bindsym XF86AudioLowerVolumne exec --no-startup-id pactl set-sink-volume $(pactl list short sinks | grep RUNNING | cut -f1) -5%
 bindsym XF86AudioMuteVolumne exec --no-startup-id pactl set-sink-mute $(pactl list short sinks | grep RUNNING | cut -f1) toggle
 
-# Sript solutions casuses ERROR.
-# bindsym XF86AudioRaiseVolume exec --no-startup-id ~/.scripts/set-vol.sh +5%
-# bindsym XF86AudioLowerVolume exec --no-startup-id ~/.scripts/set-vol.sh -5%
-# bindsym XF86AudioMute exec --no-startup-id ~/.scripts/set-vol.sh mute
-
-
-
-# bindsym XF86AudioLowerVolumne exec --no-startup-id pactl set-sink-volume $(pactl list short sinks | grep RUNNING | cut -f1) -5%
-# bindsym XF86AudioMuteVolumne exec --no-startup-id pactl set-sink-mute $(pactl list short sinks | grep RUNNING | cut -f1) toggle
-
-
-
-### DONT WORK.
 # Sreen brightness controls
 bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
-# ###
-
 
 # Wallpaper
 exec_always feh --bg-scale $HOME/Pictures/bg-img/wallpaper.jpg
-
 
 # Color variables
 # https://www.youtube.com/watch?v=ARKIwOlazKI&list=PL5ze0DjYv5DbCv9vNEzFmP6sU7ZmkGzcf&index=3
@@ -304,11 +279,12 @@ bindsym $mod+Shift+x exec /home/ajpkim/scripts/i3lock-multimonitor.sh
 
 # Key-bindings
 bindsym $mod+Control+e exec emacs
+bindsym $mod+Control+n exec emacs ~/org/now.org 
 bindsym $mod+Control+f exec firefox
 bindsym $mod+F5 exec virtualbox
 bindsym $mod+F6 exec firefox youtube.com
 
-
+# General
 focus_follows_mouse no
 bindsym $mod+Tab workspace back_and_forth
 
@@ -343,9 +319,6 @@ mode "$mode_gaps" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-
-
-
 
 ###############
 # WIP : scratchpad

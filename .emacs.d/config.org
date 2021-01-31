@@ -34,16 +34,31 @@
         (message "%s" file)
         (delete-file file))))
 #+END_SRC
-* Common file shortcuts
+* Font and faces
+#+begin_src emacs-lisp
+  (set-face-attribute 'default nil :height 150)
+#+end_src
+* Modeline
+#+begin_src emacs-lisp
+  (setq column-number-mode t)
+#+end_src
+* File shortcuts & bookmarks
+- Shortcuts to open common files in new frames to enable control with i3.
+** Files
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c n")
-                  (lambda () (interactive) (find-file "~/org/now.org")))
+                  (lambda () (interactive) (find-file-other-frame "~/org/now.org")))
   (global-set-key (kbd "C-c o")
-                  (lambda () (interactive) (find-file "~/org/orgbox.org")))
+                  (lambda () (interactive) (find-file-other-frame "~/org/orgbox.org")))
   (global-set-key (kbd "C-c t")
-                  (lambda () (interactive) (find-file "~/org/tasks.org")))
+                  (lambda () (interactive) (find-file-other-frame "~/org/tasks.org")))
   (global-set-key (kbd "C-c j")
-                  (lambda () (interactive) (find-file "~/org/journal.org")))
+                  (lambda () (interactive) (find-file-other-frame "~/org/journal.org")))
+#+end_src
+** Bookmarks
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<f1>") '(lambda () (interactive) (bookmark-set "SAVED")))
+  (global-set-key (kbd "<f2>") '(lambda () (interactive) (bookmark-jump "SAVED")))
 #+end_src
 * Org
 - [[https://orgmode.org/org.html][Org Manual]]
@@ -53,7 +68,8 @@
     :config
     (setq org-startup-indented t
           org-ellipsis " »"
-          org-hide-emphasis-markers t)
+          org-hide-emphasis-markers t
+          )
     (add-hook 'org-mode-hook #'visual-line-mode))
 #+END_SRC
 ** Global Org keys
@@ -63,48 +79,49 @@
   (global-set-key (kbd "C-c a") `org-agenda)
   (global-set-key (kbd "C-c c") `org-capture)
 #+end_src
-** Modules
+** Agenda
+*** Agenda files
+- Doing manually now with =C-c [= and =C-c ]=.
+- Another solution with recursive file search:
+  - =(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))=
+- Can also create a file with a /list/ of files to read and then can append and remove from this list easily (I believe).
 #+begin_src emacs-lisp
-  (setq org-modules '(org-habit
-                      ;; Defaults are below:
-                      ol-w3m
-                      ol-bbdb
-                      ol-bibtex
-                      ol-docview
-                      ol-gnus
-                      ol-info
-                      ol-irc
-                      ol-mhe
-                      ol-rmail
-                      ol-eww))
+  ;; (setq org-agenda-files '("~/org/"))
 #+end_src
-** Hyphens to dots
-- Customize the leading list element char.
-#+BEGIN_SRC emacs-lisp
-  (font-lock-add-keywords `org-mode
-			  `(("^ *\\([-]\\) "
-			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
-#+END_SRC
-** Never add new lines after headlines
+*** TODO Base settings
+:LOGBOOK:
+- State "TODO"       from              [2021-01-29 Fri 22:59]
+:END:
 #+begin_src emacs-lisp
-  (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (setq org-agenda-span 5 ;; Number of days to show in agenda
+        org-agenda-start-on-weekday nil  ;; Start from current day
+        org-agenda-skip-deadline-if-done t  ;; Declutter the agenda
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-window-setup 'current-window
+        )
 #+end_src
-** Org-tempo
-- [[https://orgmode.org/manual/Structure-Templates.html][Org Manual page]]
-- For shortcuts like "<s TAB" for inserting code block
-#+BEGIN_SRC emacs-lisp
-  (require 'org-tempo)
-#+END_SRC
-** Org-bullets
-#+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :ensure t
-    :after org
-    :hook (org-mode . org-bullets-mode))
-#+END_SRC
-** org-format-latex
+*** Agenda global TODO list decluttering
+- Turned off.
 #+begin_src emacs-lisp
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
+  (setq org-agenda-todo-ignore-deadlines nil
+        org-agenda-todo-ignore-scheduled nil)
+#+end_src
+*** TODO Custom agenda views
+- [ ] Create view for top level completed tasks.
+#+begin_src emacs-lisp
+  (setq org-agenda-custom-commands
+        '(("n" "Simple agenda/tasks view"
+           ((agenda "")
+            (alltodo "")))
+          ("x" "NEXT and STARTED tasks"
+           ((todo "STARTED")
+            (todo "NEXT")))
+          ;; ("d" "Archiving" todo "DONE|PASS")  
+          ("w" "Writing inbox"
+           ((tags "seed")))
+          ("r" "Review items"
+           ((tags "review")))
+          ))
 #+end_src
 ** TODOs
 - The "!" triggers autologging (into the LOGBOOK).
@@ -127,32 +144,33 @@
   ;; Don't set timestamp or note when shifting through TODO states.
   ;; (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 #+end_src
-** TODO Tags
-- These aren't working as I'd expect, there is no hotkey option for selecting tag on completion.
-#+begin_src emacs-lisp
-  (setq org-tag-alist
-        '(("study" . ?s)
-          ("10m" . ?t)
-          ))
-  ;; (setq org-fast-tag-selection-single-key (quote expert))
-#+end_src
 ** Capture (templates)
 - May want to use =org-directory= variable here.
 - Can use headlines within files to file different types of data within single file.
 #+begin_src emacs-lisp
   (setq org-capture-templates
-             '(("t" "Todo" entry (file"~/org/tasks.org")
-                "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
-               ("y" "Today" entry (file"~/org/tasks.org")
-                "* NEXT %^\nDEADLINE: %t \n%?")
-               ("j" "Journal" item (file+datetree "~/org/journal.org")
-                "%U\n%?")
-               ("o" "Orgbox" entry (file "~/org/orgbox.org")
-                "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
-               ("c" "Clocked In Task" plain
-                (clock)
-                "%i%?" :empty-lines 1)
-               ))
+        '(("b" "Blank (immediate refile)" entry (file "~/org/orgbox.org")
+           "* %?")
+          ("c" "Clocked In Task" plain (clock)
+           "- %?")
+          ("f" "Free Write" item (file+datetree "~/org/journal.org")
+           "Free Write @ %U\n- %?")
+          ("j" "Journal" entry (file+datetree "~/org/journal.org")
+           "* %^ %U\n- %?")
+          ("n" "Notes" entry (file "~/org/orgbox.org")
+           "* %^ %^g:notes:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+           :clock-in t
+           :clock-resume t
+           :prepend t)
+          ("o" "Orgbox" entry (file "~/org/orgbox.org")
+           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
+           :prepend t)
+          ("t" "Todo" entry (file"~/org/tasks.org")
+           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
+           :prepend t)
+          ("y" "Today" entry (file"~/org/tasks.org")
+           "* NEXT %^\nSCHEDULED: %t \n%?")
+          ))
 #+end_src
 ** Refile
 - Look in current file and all agenda files for refile menu.
@@ -165,40 +183,59 @@
   (setq org-outline-path-complete-in-steps nil)  ;; Have org get all targets at once and allow IDO to narrow
   (setq org-refile-allow-creating-parent-nodes  (quote confirm))
 #+end_src
-** Agenda
-*** Agenda files
-- Doing manually now with =C-c [= and =C-c ]=.
-- Another solution with recursive file search:
-  - =(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))=
-- Can also create a file with a /list/ of files to read and then can append and remove from this list easily (I believe).
+** Tags
+- Can use =C-c C-c= and single key selection (in expert mode) to add tags quickly.
 #+begin_src emacs-lisp
-  ;; (setq org-agenda-files '("~/org/"))
-#+end_src
-*** Agenda decluttering
-#+begin_src emacs-lisp
-  (setq org-agenda-skip-deadline-if-done t
-        org-agenda-skip-scheduled-if-done t)
-#+end_src
-*** Agenda global TODO list decluttering
-- Turned off.
-#+begin_src emacs-lisp
-  (setq org-agenda-todo-ignore-deadlines nil
-        org-agenda-todo-ignore-scheduled nil)
-#+end_src
-*** TODO Custom agenda views
-#+begin_src emacs-lisp
-  (setq org-agenda-custom-commands
-        '(("n" "Simple agenda/tasks view"
-           ((agenda "")
-            (alltodo "")))
-          ("x" "NEXT and STARTED tasks"
-           ((todo "STARTED")
-            (todo "NEXT")))
-          ("w" "Writing inbox"
-           ((tags "seed")))
-          ("r" "Review items"
-           ((tags "review")))
+  (setq org-tag-alist
+        '(
+          ("notes" . ?n)
+          ("study" . ?s)
+          ("10m" . ?t)
           ))
+  (setq org-fast-tag-selection-single-key (quote expert))
+#+end_src
+** Modules
+#+begin_src emacs-lisp
+  (setq org-modules '(org-habit
+                      ;; Defaults below:
+                      ol-w3m
+                      ol-bbdb
+                      ol-bibtex
+                      ol-docview
+                      ol-gnus
+                      ol-info
+                      ol-irc
+                      ol-mhe
+                      ol-rmail
+                      ol-eww))
+#+end_src
+** Hyphens to dots
+- Customize the leading list element char.
+#+BEGIN_SRC emacs-lisp
+  (font-lock-add-keywords `org-mode
+			  `(("^ *\\([-]\\) "
+			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
+#+END_SRC
+** Org-tempo
+- [[https://orgmode.org/manual/Structure-Templates.html][Org Manual page]]
+- For shortcuts like "<s TAB" for inserting code block
+#+BEGIN_SRC emacs-lisp
+  (require 'org-tempo)
+#+END_SRC
+** Org-bullets
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :after org
+    :hook (org-mode . org-bullets-mode))
+#+END_SRC
+** org-format-latex
+#+begin_src emacs-lisp
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
+#+end_src
+** Never add new lines after headlines
+#+begin_src emacs-lisp
+  (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 #+end_src
 ** TODO (I think bc elpa package) Visual fill column
 :LOGBOOK:
@@ -224,8 +261,6 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
 		  (org-level-7 . 1.1 )
 		  (org-level-8 . 1.1 )))
 	(set-face-attribute (car face) nil :font "courier" :weight `regular :height (cdr face)))
-** TBD Archive
-- Can set =org-archive-location=.
 * which-key
 - Provide popup info on commands given input current sequence.
 #+BEGIN_SRC emacs-lisp
@@ -317,5 +352,3 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
 * TODO multiple-cursors
-
-
