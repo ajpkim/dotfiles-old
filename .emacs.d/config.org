@@ -153,23 +153,36 @@
            "* %?")
           ("c" "Clocked In Task" plain (clock)
            "- %?")
-          ("f" "Free Write" item (file+datetree "~/org/journal.org")
-           "Free Write @ %U\n- %?")
-          ("j" "Journal" entry (file+datetree "~/org/journal.org")
-           "* %^ %U\n- %?")
+          ("d" "Org-drill Note" entry (file "~/org/drill/drill-notes.org")
+           "* %^ :drill:\n- %?")
+          ("D" "Dream Journal" entry (file+olp+datetree "~/org/journal.org")
+           "* Dream :dream:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+           :clock-in t
+           :clock-resume t)
+          ("f" "Free Write" entry (file+olp+datetree "~/org/journal.org")
+           "*  %^ :freewrite:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+           :clock-in t
+           :clock-resume t)
+          ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?")
           ("n" "Notes" entry (file "~/org/orgbox.org")
            "* %^ %^g:notes:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
            :clock-in t
            :clock-resume t
            :prepend t)
           ("o" "Orgbox" entry (file "~/org/orgbox.org")
-           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
+           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+           :clock-in t
+           :clock-resume t
            :prepend t)
+          ("r" "Recommendation" entry (file+headline "~/org/orgbox.org" "Recs")
+           ;; "* %^ \n%^{RECOMMENDER}p%^{TYPE}p:CREATED:%U\n- %?")
+           "* %^\n:PROPERTIES:\n:CREATED: %U\n:RECOMMENDER: %^\n:TYPE: %^\n:END:%?")
           ("t" "Todo" entry (file"~/org/tasks.org")
-           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
+           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
            :prepend t)
           ("y" "Today" entry (file"~/org/tasks.org")
-           "* NEXT %^\nSCHEDULED: %t \n%?")
+           "* NEXT %^\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:%?")
           ))
 #+end_src
 ** Refile
@@ -188,11 +201,18 @@
 #+begin_src emacs-lisp
   (setq org-tag-alist
         '(
+          ("drill" . ?d)
           ("notes" . ?n)
           ("study" . ?s)
+          ("week" . ?w)
           ("10m" . ?t)
           ))
   (setq org-fast-tag-selection-single-key (quote expert))
+#+end_src
+** Org-drill
+#+begin_src emacs-lisp
+  (use-package org-drill
+    :ensure t)
 #+end_src
 ** Modules
 #+begin_src emacs-lisp
@@ -231,7 +251,7 @@
 #+END_SRC
 ** org-format-latex
 #+begin_src emacs-lisp
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
 #+end_src
 ** Never add new lines after headlines
 #+begin_src emacs-lisp
@@ -352,3 +372,4 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
 * TODO multiple-cursors
+
