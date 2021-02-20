@@ -79,6 +79,48 @@
   (global-set-key (kbd "C-c a") `org-agenda)
   (global-set-key (kbd "C-c c") `org-capture)
 #+end_src
+** STARTED Export & Publishing WIP
+:LOGBOOK:
+- State "STARTED"    from              [2021-02-17 Wed 15:34]
+:END:
+*** Export
+#+begin_src emacs-lisp
+  (require 'ox-html)
+  (use-package htmlize
+    :ensure t
+    :config
+    (setq org-html-htmlize-output-type 'css))
+  (setq org-export-with-section-numbers nil
+        org-export-with-toc nil
+        org-export-with-tags nil
+        )
+#+end_src
+*** Publish
+#+begin_src emacs-lisp
+  (require 'ox-publish)
+  ;; (require 'ox-html)
+  (setq org-publish-project-alist
+        '(
+          ("ajpkim-posts"
+           :base-directory "~/test-site/org/"
+           :base-extension "org"
+           :publishing-directory "~/test-site/jekyll/"
+           :recursive t
+           :publishing-function org-html-publish-to-html
+           :html-extension "html"
+           :body-only t ;; Only export section between <body> </body>
+           ;; :with-toc nil
+           )
+          ("ajpkim-assets"
+           :base-directory "~/test-site/assets/"
+           :base-extension "css\\|scss\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3"
+           :publishing-directory "~/test-site/jekyll/assets/"
+           :recursive t
+           :publishing-function org-publish-attachment
+           )
+          ("ajpkim" :components ("ajpkim-posts" "ajpkim-assets"))
+          ))
+#+end_src
 ** Agenda
 *** Agenda files
 - Doing manually now with =C-c [= and =C-c ]=.
@@ -116,7 +158,7 @@
           ("x" "NEXT and STARTED tasks"
            ((todo "STARTED")
             (todo "NEXT")))
-          ;; ("d" "Archiving" todo "DONE|PASS")  
+          ;; ("d" "Archiving" todo "DONE|PASS")
           ("w" "Writing inbox"
            ((tags "seed")))
           ("r" "Review items"
@@ -175,6 +217,9 @@
            :clock-in t
            :clock-resume t
            :prepend t)
+          ("q" "Read/Watch/Listen" entry (file "~/org/media-lists.org")
+           "** %?"
+           :prepend t)
           ("r" "Recommendation" entry (file+headline "~/org/orgbox.org" "Recs")
            ;; "* %^ \n%^{RECOMMENDER}p%^{TYPE}p:CREATED:%U\n- %?")
            "* %^\n:PROPERTIES:\n:CREATED: %U\n:RECOMMENDER: %^\n:TYPE: %^\n:END:%?")
@@ -203,9 +248,10 @@
         '(
           ("drill" . ?d)
           ("notes" . ?n)
-          ("study" . ?s)
+          ("seed" . ?s)
+          ("study" . ?y)
           ("week" . ?w)
-          ("10m" . ?t)
+          ("5m" . ?f)
           ))
   (setq org-fast-tag-selection-single-key (quote expert))
 #+end_src
@@ -213,6 +259,70 @@
 #+begin_src emacs-lisp
   (use-package org-drill
     :ensure t)
+#+end_src
+** toc-org
+#+begin_src emacs-lisp
+  (use-package toc-org
+    :ensure t
+    :config
+    (setq toc-org-max-depth 3
+          toc-org-hrefify-default "org"  ;; Options are org or gh (github)
+          )
+    )
+
+#+end_src
+** Org-id
+- Can add a before save hook for org-mode file if want to.
+- Testing : [[https://writequit.org/articles/emacs-org-mode-generate-ids.html#automating-id-creation][SO]]
+#+begin_src emacs-lisp
+  (defun ak/org-uuid-custom-id-get (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+     If POM is nil, refer to the entry at point. If the entry does
+     not have an CUSTOM_ID, the function returns nil. However, when
+     CREATE is non nil, create a CUSTOM_ID if none is present
+     already. PREFIX will be passed through to `org-id-new'. In any
+     case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          ;; (setq id (org-id-new (concat prefix "h")))
+          (setq id (org-id-new))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
+
+  (defun ak/org-add-uudid-custom-ids-to-headlines-in-file ()
+    "Add CUSTOM_ID properties to all headlines in the
+     current file which do not already have one."
+    (interactive)
+    (org-map-entries (lambda () (ak/org-uuid-custom-id-get (point) 'create))))
+
+#+end_src
+- Another option with CUSTOM_IDs that are based on headers (want this for blog exports)
+- IMPROVE THE regexp replace to make better urls
+#+begin_src emacs-lisp
+  (defun ak/org-publish-add-header-text-custom-ids ()
+    "Add CUSTOM_ID property to each header in current buffer that is based on header text."
+    (interactive)
+    (let (id-list)
+      (cl-labels ((get-id ()
+                          (let ((id (url-encode-url
+                                     (replace-regexp-in-string
+                                      " " "-"
+                                      (org-get-heading t t t t))))
+                                (dup-counter 1))
+                            (while (member id id-list)
+                              (setq id (format "%s-%d" id dup-counter))
+                              (cl-incf dup-counter))
+                            (push id id-list)
+                            id)))
+        (org-map-entries
+         (lambda ()
+           (org-entry-put (point) "CUSTOM_ID" (get-id)))))))
 #+end_src
 ** Modules
 #+begin_src emacs-lisp
@@ -372,4 +482,3 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
 * TODO multiple-cursors
-
