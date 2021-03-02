@@ -39,9 +39,9 @@
    '("2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" default))
  '(global-display-line-numbers-mode t)
  '(org-agenda-files
-   '("~/org/lists.org" "~/org/drill/vocab.org" "~/org/drill/DSA.org" "~/org/drill/RL.org" "~/org/drill/drill-notes.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org"))
+   '("~/org/job-hunt.org" "~/org/drill/RL.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org" "/home/ajpkim/org/journal/2021-03-02.org"))
  '(package-selected-packages
-   '(toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package)))
+   '(org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

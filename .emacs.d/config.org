@@ -1,5 +1,8 @@
 * Basic Adjustments
 ** Basic UI
+:PROPERTIES:
+:ID:       0224cbdd-9cf9-47a6-ba6e-bcfecbc9a234
+:END:
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-message t)
   (setq visible-bell t)
@@ -15,6 +18,9 @@
 #+END_SRC
 ** Autosave and backups
 *** Custom dir
+:PROPERTIES:
+:ID:       391cefa3-e4c2-407b-bcc3-33883a52d664
+:END:
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist
         `((".*" . "~/emacs-backups/")))
@@ -22,6 +28,9 @@
         `((".*" "~/emacs-backups/" t)))
 #+END_SRC
 *** Delete old files
+:PROPERTIES:
+:ID:       300373a1-0b3b-4e08-be8b-4c2d8de64411
+:END:
 - Delete old backups not accessed for a week (from emacs wiki: https://www.emacswiki.org/emacs/BackupDirectory#toc2)
 #+BEGIN_SRC emacs-lisp
   (message "Deleting old backup files...")
@@ -35,27 +44,37 @@
         (delete-file file))))
 #+END_SRC
 * Font and faces
+:PROPERTIES:
+:ID:       f476a89d-1cc0-48c0-b911-d195a3220914
+:END:
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil :height 150)
 #+end_src
 * Modeline
+:PROPERTIES:
+:ID:       5099a7e6-066f-41ac-a992-60fe2eb0ccea
+:END:
 #+begin_src emacs-lisp
   (setq column-number-mode t)
 #+end_src
 * File shortcuts & bookmarks
 - Shortcuts to open common files in new frames to enable control with i3.
 ** Files
+:PROPERTIES:
+:ID:       1d3b5412-b5e0-4230-bbb8-c454d1a3bf79
+:END:
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-c n")
+  (global-set-key (kbd "C-c f n")
                   (lambda () (interactive) (find-file-other-frame "~/org/now.org")))
-  (global-set-key (kbd "C-c o")
+  (global-set-key (kbd "C-c f o")
                   (lambda () (interactive) (find-file-other-frame "~/org/orgbox.org")))
-  (global-set-key (kbd "C-c t")
+  (global-set-key (kbd "C-c f t")
                   (lambda () (interactive) (find-file-other-frame "~/org/tasks.org")))
-  (global-set-key (kbd "C-c j")
-                  (lambda () (interactive) (find-file-other-frame "~/org/journal.org")))
 #+end_src
 ** Bookmarks
+:PROPERTIES:
+:ID:       ce34b1bf-6208-4aab-83e3-3834e9d9e757
+:END:
 #+begin_src emacs-lisp
   (global-set-key (kbd "<f1>") '(lambda () (interactive) (bookmark-set "SAVED")))
   (global-set-key (kbd "<f2>") '(lambda () (interactive) (bookmark-jump "SAVED")))
@@ -63,6 +82,9 @@
 * Org
 - [[https://orgmode.org/org.html][Org Manual]]
 ** Setup (ellispsis, emphasis, indent, etc)
+:PROPERTIES:
+:ID:       351d9037-f52d-4954-82b7-e7ad4c8ae8fd
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :config
@@ -73,14 +95,27 @@
     (add-hook 'org-mode-hook #'visual-line-mode))
 #+END_SRC
 ** Global Org keys
+:PROPERTIES:
+:ID:       1b7b7d27-43c8-44e2-8679-67e8af4e153f
+:END:
 - Recommended global commands (org manual)
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c l") `org-store-link)
   (global-set-key (kbd "C-c a") `org-agenda)
   (global-set-key (kbd "C-c c") `org-capture)
 #+end_src
-** Export & Publishing WIP
+** Extend day untill 2am
+:PROPERTIES:
+:ID:       9ba5c3d5-9af9-4c12-a481-0ee51158c634
+:END:
+#+begin_src emacs-lisp
+  (setq org-extend-today-until 2)
+#+end_src
+** Export & Publishing
 *** Export
+:PROPERTIES:
+:ID:       1b270d93-fc3b-4026-88b5-c33d979f9cfa
+:END:
 #+begin_src emacs-lisp
   (require 'ox-html)
   (use-package htmlize
@@ -93,6 +128,9 @@
         )
 #+end_src
 *** Publish
+:PROPERTIES:
+:ID:       a9b43374-75bd-41fd-bce0-4a7978c4ec6d
+:END:
 #+begin_src emacs-lisp
   (require 'ox-publish)
   ;; (require 'ox-html)
@@ -118,7 +156,7 @@
           ("ajpkim-assets"
            :base-directory "~/org/ajpkim-site/org/"
            :base-extension "css\\|scss\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3"
-           :publishing-directory "~/ajpkim/assets/"
+           :publishing-directory "~/ajpkim.github.io/assets/"
            :recursive t
            :publishing-function org-publish-attachment
            )
@@ -127,6 +165,9 @@
 #+end_src
 ** Agenda
 *** Agenda files
+:PROPERTIES:
+:ID:       b7a25464-eb55-49e0-bbbb-242adaba58ef
+:END:
 - Doing manually now with =C-c [= and =C-c ]=.
 - Another solution with recursive file search:
   - =(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))=
@@ -135,6 +176,9 @@
   ;; (setq org-agenda-files '("~/org/"))
 #+end_src
 *** TODO Base settings
+:PROPERTIES:
+:ID:       8b484d69-0fdc-46ee-a7dc-bd8b14e01e29
+:END:
 :LOGBOOK:
 - State "TODO"       from              [2021-01-29 Fri 22:59]
 :END:
@@ -147,12 +191,18 @@
         )
 #+end_src
 *** Agenda global TODO list decluttering
+:PROPERTIES:
+:ID:       b66d5f7f-1316-4d29-ac4a-410b78634969
+:END:
 - Turned off.
 #+begin_src emacs-lisp
   (setq org-agenda-todo-ignore-deadlines nil
         org-agenda-todo-ignore-scheduled nil)
 #+end_src
 *** TODO Custom agenda views
+:PROPERTIES:
+:ID:       927cbd70-34fa-4c81-9a32-bf8a72a9af5e
+:END:
 - [ ] Create view for top level completed tasks.
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands
@@ -170,10 +220,13 @@
           ))
 #+end_src
 ** TODOs
+:PROPERTIES:
+:ID:       b97b0215-7ab5-4d7e-ae0a-330b9ad3730e
+:END:
 - The "!" triggers autologging (into the LOGBOOK).
 #+begin_src emacs-lisp
   (setq org-todo-keywords
-        '((sequence "TODO(t!)" "NEXT(n!)" "STARTED(s!)" "HOLD(h!)" "|" "DONE(d!)" "PASS(p!)")))
+        '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "HOLD(h!)" "|" "DONE(d!)" "PASS(p!)")))
 
   (setq org-todo-keyword-faces
         '(
@@ -191,50 +244,53 @@
   ;; (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 #+end_src
 ** Capture (templates)
+:PROPERTIES:
+:ID:       3d4c732d-b5aa-466c-b68e-a832f85d27a5
+:END:
 - May want to use =org-directory= variable here.
 - Can use headlines within files to file different types of data within single file.
+- Using in combo with org-journal for different journal entrie templates.
 #+begin_src emacs-lisp
   (setq org-capture-templates
-        '(("b" "Blank (immediate refile)" entry (file "~/org/orgbox.org")
-           "* %?")
-          ("c" "Clocked In Task" plain (clock)
-           "- %?")
-          ("d" "Org-drill Note" entry (file "~/org/drill/drill-notes.org")
-           "* %^ :drill:\n- %?")
-          ("D" "Dream Journal" entry (file+olp+datetree "~/org/journal.org")
-           "* Dream :dream:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-           :clock-in t
-           :clock-resume t)
-          ("f" "Free Write" entry (file+olp+datetree "~/org/journal.org")
-           "*  %^ :freewrite:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-           :clock-in t
-           :clock-resume t)
-          ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
-           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?")
-          ("n" "Notes" entry (file "~/org/orgbox.org")
-           "* %^ %^g:notes:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-           :clock-in t
-           :clock-resume t
-           :prepend t)
-          ("o" "Orgbox" entry (file "~/org/orgbox.org")
-           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-           :clock-in t
-           :clock-resume t
-           :prepend t)
-          ("q" "Read/Watch/Listen" entry (file "~/org/media-lists.org")
-           "** %?"
-           :prepend t)
-          ("r" "Recommendation" entry (file+headline "~/org/orgbox.org" "Recs")
-           ;; "* %^ \n%^{RECOMMENDER}p%^{TYPE}p:CREATED:%U\n- %?")
-           "* %^\n:PROPERTIES:\n:CREATED: %U\n:RECOMMENDER: %^\n:TYPE: %^\n:END:%?")
-          ("t" "Todo" entry (file"~/org/tasks.org")
-           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-           :prepend t)
-          ("y" "Today" entry (file"~/org/tasks.org")
-           "* NEXT %^\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:%?")
-          ))
+          '(
+            ("c" "Clocked In Task" plain (clock)
+             "- %?")
+            ("d" "Org-drill Note" entry (file "~/org/drill/drill-notes.org")
+             "* %^ :drill:\n- %?")
+            ;; ("D" "Dream journal entry" plain (function org-journal-find-location)
+            ;;  "* %(format-time-string org-journal-time-format)%^{Title} :dream:\n%i%?"
+            ;;  :jump-to-captured t
+            ;;  :immediate-finish t)
+            ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
+             "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:LOCATION: %^\n:END:\n%?")
+            ("j" "Journal entry" plain (function org-journal-find-location)
+             "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
+             :jump-to-captured t
+             :immediate-finish t)
+            ;; ("n" "Notes" entry (file "~/org/orgbox.org")
+            ;;  "* %^ %^g:notes:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+            ;;  :clock-in t
+            ;;  :clock-resume t
+            ;;  :prepend t)
+            ("o" "Orgbox" entry (file "~/org/orgbox.org")
+             "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+             :clock-in t
+             :clock-resume t
+             :prepend t)
+            ;; ("q" "Read/Watch/Listen" entry (file "~/org/media-lists.org")
+            ;;  "** %?"
+            ;;  :prepend t)
+            ("t" "Todo" entry (file"~/org/tasks.org")
+             "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+             :prepend t)
+            ;; ("y" "Today" entry (file"~/org/tasks.org")
+            ;;  "* NEXT %^\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:%?")
+            ))
 #+end_src
 ** Refile
+:PROPERTIES:
+:ID:       745d204e-d319-46c4-b67f-d63996bc9044
+:END:
 - Look in current file and all agenda files for refile menu.
 #+begin_src emacs-lisp
   (setq org-refile-targets
@@ -246,6 +302,9 @@
   (setq org-refile-allow-creating-parent-nodes  (quote confirm))
 #+end_src
 ** Tags
+:PROPERTIES:
+:ID:       9b259c2f-ff29-49b6-9af1-1bdc801a7c3b
+:END:
 - Can use =C-c C-c= and single key selection (in expert mode) to add tags quickly.
 #+begin_src emacs-lisp
   (setq org-tag-alist
@@ -259,12 +318,123 @@
           ))
   (setq org-fast-tag-selection-single-key (quote expert))
 #+end_src
+** Org-roam
+:PROPERTIES:
+:ID:       9e24b8ee-1291-4c3c-a09e-b3870bf8dd9e
+:END:
+#+begin_src emacs-lisp
+    (use-package org-roam
+      :ensure t
+      :config
+      (setq org-roam-directory "~/org/notes/"
+            ;; Capture tags via #+roam_tags and normal org tags ("vanilla")
+            org-roam-tag-sources '(prop vanilla)
+            org-roam-prefer-id-links t
+            org-roam-completion-system 'ido
+            )
+      (set-face-attribute 'org-roam-link nil
+                          :foreground "light green"
+                          :weight 'bold)
+      :hook
+      (after-init . org-roam-mode)
+      :bind (:map org-roam-mode-map
+                  (("C-c n l" . org-roam)
+                   ("C-c n f" . org-roam-find-file)
+                   ("C-c n g" . org-roam-show-graph)
+                   ("C-c n b" . org-roam-switch-to-buffer))
+                  ;; :map org-mode-map
+                  ("C-c n i" . org-roam-insert)
+                  ))
+
+    (setq org-roam-capture-templates
+          '(("r" "default" plain (function org-roam--capture-get-point)
+             "%?"
+             :file-name "%<%Y%m%d%H%M%S>-${slug}"
+             :head "#+TITLE: ${title}\n#+ROAM_TAGS:\n\n"
+             :unnarrowed t
+             :immediate_finish t)
+            ))
+
+    (defun ak/org-roam--title-to-slug (title)
+       ;; Change to dashes instead of default underscores. Taken from org-roam source code.
+      "Convert TITLE to a filename-suitable slug."
+      (cl-flet* ((nonspacing-mark-p (char)
+                                    (eq 'Mn (get-char-code-property char 'general-category)))
+                 (strip-nonspacing-marks (s)
+                                         (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                     (ucs-normalize-NFD-string s))))
+                 (cl-replace (title pair)
+                             (replace-regexp-in-string (car pair) (cdr pair) title)))
+        (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
+                        ("__*" . "-")  ;; remove sequential underscores
+                        ("^_" . "")  ;; remove starting underscore
+                        ("_$" . "")))  ;; remove ending underscore
+               (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+          (downcase slug))))
+
+    (setq org-roam-title-to-slug-function 'ak/org-roam--title-to-slug)
+#+end_src
+** Org-journal
+:PROPERTIES:
+:ID:       2ea65a55-a166-4676-abe1-0479341dc138
+:END:
+#+begin_src emacs-lisp
+  (use-package org-journal
+    :ensure t
+    :defer t
+    :init
+    ;; ;; Change default prefix key; needs to be set before loading org-journal
+    (setq org-journal-prefix-key "")  ;; disable default key-bindings: https://github.com/bastibe/org-journal/pull/278#issuecomment-664986601
+    :config
+    (setq org-journal-dir "~/org/journal/"
+          org-journal-date-format "%a, %Y-%m-%d"
+          org-journal-date-prefix "#+TITLE: "  ;; this string prefixes the data at the top of journal file
+          org-journal-time-prefix "* "  ;; Entries are 1st level headers
+          org-journal-file-format "%Y-%m-%d.org"
+          org-journal-file-type 'daily
+          org-journal-carryover-items ""  ;; Default behavior is to carryover TODOs.
+          org-journal-enable-agenda-integration t  ;; Add current and future journal entries to agenda
+          )
+    :bind (("C-c j" . org-journal-new-entry)
+           ))
+
+  ;; DOESN'T WORK...
+  (defcustom org-journal-find-file 'find-file
+    "The function to use when opening an entry.
+
+  Set this to `find-file' if you don't want org-journal to split your window."
+    :type 'function)
+
+  (defun org-journal-find-location ()
+    ;; Open today's journal, but specify a non-nil prefix argument in order to
+    ;; inhibit inserting the heading; org-capture will insert the heading.
+    ;; Used for org-capture templates.
+    (org-journal-new-entry t)
+    (unless (eq org-journal-file-type 'daily)
+      (org-narrow-to-subtree))
+    (goto-char (point-max)))
+
+  ;; (defun ak/org-journal-save-entry-and-exit()
+  ;;   "Simple convenience function.
+  ;;   Saves the buffer of the current day's entry and kills the window
+  ;;   Similar to org-capture like behavior"
+  ;;   (interactive)
+  ;;   (save-buffer)
+  ;;   (kill-buffer-and-window))
+  ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'ak/org-journal-save-entry-and-exit)
+#+end_src
 ** Org-drill
+:PROPERTIES:
+:ID:       95cfeb90-0814-489d-9dad-14e86eb9760f
+:END:
 #+begin_src emacs-lisp
   (use-package org-drill
     :ensure t)
 #+end_src
 ** toc-org
+:PROPERTIES:
+:ID:       f66f207e-fabe-46de-8584-c1d6294641b3
+:END:
 #+begin_src emacs-lisp
   (use-package toc-org
     :ensure t
@@ -276,7 +446,14 @@
 
 #+end_src
 ** Org-id
-- Can add a before save hook for org-mode file if want to.
+:PROPERTIES:
+:ID:       5b3d9ed6-ea18-4746-8477-7f1fbb6f33b5
+:END:
+- Generate IDs for linking purposes when execute 'C-c l'
+#+begin_src emacs-lisp
+  (setq org-id-link-to-org-use-id t  ;; May want to set to "if-interactive"
+        )
+#+end_src
 - Testing : [[https://writequit.org/articles/emacs-org-mode-generate-ids.html#automating-id-creation][SO]]
 #+begin_src emacs-lisp
   (defun ak/org-uuid-custom-id-get (&optional pom create prefix)
@@ -299,11 +476,11 @@
           (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
           id)))))
 
-  (defun ak/org-add-uudid-custom-ids-to-headlines-in-file ()
+  (defun ak/org-add-uuid-custom-ids-to-headlines-in-file ()
     "Add CUSTOM_ID properties to all headlines in the
      current file which do not already have one."
     (interactive)
-    (org-map-entries (lambda () (ak/org-uuid-custom-id-get (point) 'create))))
+    (org-map-entries (lambda () (ak/org-uuid-cstom-id-get (point) 'create))))
 
 #+end_src
 - Another option with CUSTOM_IDs that are based on headers (want this for blog exports)
@@ -330,7 +507,7 @@
 #+end_src
 - Another one that does more parsing of non-alphanumerics
 #+begin_src emacs-lisp
-  (defun ak/ensure-headline-ids (&rest _) 
+  (defun ak/org-get-headline-based-ids (&rest _) 
     "Source: https://alhassy.github.io/AlBasmala.html#Ensuring-Useful-HTML-Anchors 
     All non-alphanumeric characters are cleverly replaced with ‘-’.
     If multiple trees end-up with the same id property, issue a
@@ -359,6 +536,9 @@
                (org-entry-put nil "CUSTOM_ID" id))))))))
 #+end_src
 ** Modules
+:PROPERTIES:
+:ID:       0cbbed90-4cb3-4af7-b9b4-11d177328017
+:END:
 #+begin_src emacs-lisp
   (setq org-modules '(org-habit
                       ;; Defaults below:
@@ -374,10 +554,16 @@
                       ol-eww))
 #+end_src
 ** Images (allow for resizing with imagemagick)
+:PROPERTIES:
+:ID:       3f9556d3-7a43-4c16-8aa6-62b97fc2454e
+:END:
 #+begin_src emacs-lisp
   (setq org-image-actual-width nil)
 #+end_src
 ** Hyphens to dots
+:PROPERTIES:
+:ID:       24e526f3-eaa4-4d82-836a-ef3ac76312cb
+:END:
 - Customize the leading list element char.
 #+BEGIN_SRC emacs-lisp
   (font-lock-add-keywords `org-mode
@@ -385,12 +571,18 @@
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
 #+END_SRC
 ** Org-tempo
+:PROPERTIES:
+:ID:       b6bdd19d-6fea-4625-b69d-6a30e7184816
+:END:
 - [[https://orgmode.org/manual/Structure-Templates.html][Org Manual page]]
 - For shortcuts like "<s TAB" for inserting code block
 #+BEGIN_SRC emacs-lisp
   (require 'org-tempo)
 #+END_SRC
 ** Org-bullets
+:PROPERTIES:
+:ID:       ba2490f2-7e3c-4351-be9f-8643e7edeac0
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
     :ensure t
@@ -398,12 +590,42 @@
     :hook (org-mode . org-bullets-mode))
 #+END_SRC
 ** org-format-latex
+:PROPERTIES:
+:ID:       cccbaae3-f942-4c93-98c5-a490a3e1edcc
+:END:
 #+begin_src emacs-lisp
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
 #+end_src
-** Never add new lines after headlines
+** Fold non-current headers
+:PROPERTIES:
+:ID:       4c1c5bb0-ddda-48f8-95a1-ab171d4b51dd
+:END:
+- [[https://sainathadapa.github.io/emacs-spacemacs-config/org-config#org497a041][Source]]
 #+begin_src emacs-lisp
-  (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (defun ak/org-show-current-heading-tidily ()
+    (interactive)
+    "Show next entry, keeping other entries closed."
+    (if (save-excursion (end-of-line) (outline-invisible-p))
+        (progn (org-show-entry) (show-children))
+      (outline-back-to-heading)
+      (unless (and (bolp) (org-on-heading-p))
+        (org-up-heading-safe)
+        (hide-subtree)
+        (error "Boundary reached"))
+      (org-overview)
+      (org-reveal t)
+      (org-show-entry)
+      (show-children)))
+#+end_src
+** Never add new lines after headlines
+:PROPERTIES:
+:ID:       d2ae51b2-7f74-4bc9-88f5-2a1fdfc4540c
+:END:
+- Changed mind. I want the blank lines now (esp. for journal).
+#+begin_src emacs-lisp
+  ;; (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (setf org-blank-before-new-entry '((heading . auto)
+                                    (plain-list-item . auto)))
 #+end_src
 ** TODO (I think bc elpa package) Visual fill column
 :LOGBOOK:
@@ -430,6 +652,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
 		  (org-level-8 . 1.1 )))
 	(set-face-attribute (car face) nil :font "courier" :weight `regular :height (cdr face)))
 * which-key
+:PROPERTIES:
+:ID:       a67ef17a-f150-4aea-bf58-69d89b3f7572
+:END:
 - Provide popup info on commands given input current sequence.
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -438,6 +663,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     (which-key-mode))
 #+END_SRC
 * Avy
+:PROPERTIES:
+:ID:       fd37c3e1-7b47-4a7a-a83b-1aa4d0926078
+:END:
 - Fast navigation to any char on screen.
 #+BEGIN_SRC emacs-lisp
   (use-package avy
@@ -448,6 +676,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
 * Ido
 - Smart file completion.
 ** Enable Ido-mode
+:PROPERTIES:
+:ID:       9b4388fb-f79e-41b8-88b8-cf799cbd8317
+:END:
 #+BEGIN_SRC emacs-lisp
   (ido-mode 1)
   (setq ido-everywhere t)
@@ -455,6 +686,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   (setq ido-create-new-buffer `always)
 #+END_SRC
 * ace-window
+:PROPERTIES:
+:ID:       22367bdc-0fe5-4fb7-8638-f36c4880b0d4
+:END:
 - Navigate buffers efficently.
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
@@ -463,6 +697,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     :bind ("C-x o" . ace-window))
 #+END_SRC
 * rainbow
+:PROPERTIES:
+:ID:       a6397383-0a81-4c23-99ac-fa469bc10941
+:END:
 - Add coloring to hex color tags (e.g. #22ff22).
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-mode
@@ -470,6 +707,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     :init (rainbow-mode 1))
 #+END_SRC
 * beacon
+:PROPERTIES:
+:ID:       c61b5de4-d377-4976-8c50-5dc1607f1408
+:END:
 - Highlight cursor line.
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
@@ -478,6 +718,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     (beacon-mode 1))
 #+END_SRC
 * Config edit/reload
+:PROPERTIES:
+:ID:       ff6369e1-7ca6-443b-a21c-48faef33bf2a
+:END:
 #+begin_src emacs-lisp
   (defun config-visit ()
     (interactive)
@@ -491,6 +734,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c r") 'config-reload)
 #+end_src
 * window splitting functions
+:PROPERTIES:
+:ID:       d264734a-f207-4fef-a38e-8bdbc87d3b67
+:END:
 - Move cursor to newly created windows (default is stagnant cursor).
 #+BEGIN_SRC emacs-lisp
   (defun split-and-follow-horizontally ()
@@ -508,6 +754,9 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
 * drag-stuff CONFLICT WITH ORG
+:PROPERTIES:
+:ID:       5682e5b8-e7b5-42b4-ad47-34afb94ae55c
+:END:
 #+begin_src emacs-lisp
   ;; (use-package drag-stuff
   ;;   :ensure t
@@ -520,3 +769,5 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
 * TODO multiple-cursors
+
+* Testing
