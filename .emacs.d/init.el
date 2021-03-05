@@ -39,7 +39,7 @@
    '("2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" default))
  '(global-display-line-numbers-mode t)
  '(org-agenda-files
-   '("~/org/job-hunt.org" "~/org/drill/RL.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org" "/home/ajpkim/org/journal/2021-03-02.org"))
+   '("~/org/job-hunt.org" "~/org/drill/RL.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org" "/home/ajpkim/org/journal/2021-03-04.org"))
  '(package-selected-packages
    '(org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package)))
 (custom-set-faces

@@ -5,21 +5,28 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-## Purple background, black foreground, and purple commands.
-#PS1='\[\033[45m\]\[\033[30m\](\A)\033[00m\]\[\033[46m\]\[\033[30m\] \w \[\033[45m\]\[\033[30m\] \$ \033[00m\] '
+CLEAR="\[\033[0m\]"
 
-## White text.
-#PS1='\[\033[45m\]\[\033[37m\](\A)\033[00m\]\[\033[46m\]\[\033[37m\] \w \[\033[45m\]\[\033[37m\] \$ \033[00m\] '
+RED='\[\033[00;31m\]'
+GREEN='\[\033[00;32m\]'
+YELLOW='\[\033[00;33m\]'
+BLUE='\[\033[00;34m\]'
+PURPLE='\[\033[00;35m\]'
+CYAN='\[\033[00;36m\]'
+LIGHTGRAY='\[\033[00;37m\]'
+
+LRED='\[\033[01;31m\]'
+LGREEN='\[\033[01;32m\]'
+LYELLOW='\[\033[01;33m\]'
+LBLUE='\[\033[01;34m\]'
+LPURPLE='\[\033[01;35m\]'
+LCYAN='\[\033[01;36m\]'
+WHITE='\[\033[01;37m\]'
 
 if [ $HOSTNAME == "arch-swift3" ] || [ $HOSTNAME == "arch-macair15" ]; then
-    ## Background color
-    #PS1="\`if [ \$? = 0 ]; then echo '\e[44m\](\A)'; else echo '\e[41m\](\A)'; fi\`\e[45m\]\e[30m\] \w \e[00m\]\$ "
-    ## No background color
-    # PS1="\`if [ \$? = 0 ]; then echo '\e[35m\](\A)'; else echo '\e[31m\](\A)'; fi\`\e[34m\] \w \e[00m\]\$ "
-    PS1="\`if [ \$? = 0 ]; then echo '\e[35m\]\w \e[34m\]\$ '; else echo '\e[31m\]\w \$ '; fi\`\e[00m\]"
-    #PS1="\`if [ \$? = 0 ]; then echo '\e[35m\] \w'; else echo ' \e[31m\]\w; fi\` \e[00m\]\$ "
+    export PS1="\`if [ \$? = 0 ]; then echo '$PURPLE\w $BLUE\$ '; else echo '$RED\w \$ '; fi\`$CLEAR"
 else
-    PS1='(\A) \u@\h: \w \$ '
+    export PS1='(\A) \u@\h: \w \$ '
 fi
 
 # Don't put duplicate lines or lines starting with space in the history.
@@ -61,4 +68,3 @@ SCRIPTS="~/scripts"
 setxkbmap -layout us -option ctrl:nocaps
 
 echo "Yo0o0o :)"
-

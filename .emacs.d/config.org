@@ -262,7 +262,7 @@
             ;;  :jump-to-captured t
             ;;  :immediate-finish t)
             ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
-             "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:LOCATION: %^\n:END:\n%?")
+             "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?")
             ("j" "Journal entry" plain (function org-journal-find-location)
              "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
              :jump-to-captured t
