@@ -43,7 +43,7 @@
         (message "%s" file)
         (delete-file file))))
 #+END_SRC
-* Font and faces
+* Base Font and faces
 :PROPERTIES:
 :ID:       f476a89d-1cc0-48c0-b911-d195a3220914
 :END:
@@ -66,8 +66,8 @@
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c f n")
                   (lambda () (interactive) (find-file-other-frame "~/org/now.org")))
-  (global-set-key (kbd "C-c f o")
-                  (lambda () (interactive) (find-file-other-frame "~/org/orgbox.org")))
+  (global-set-key (kbd "C-c f m")
+                  (lambda () (interactive) (find-file-other-frame "~/org/notes/media-lists.org")))
   (global-set-key (kbd "C-c f t")
                   (lambda () (interactive) (find-file-other-frame "~/org/tasks.org")))
 #+end_src
@@ -769,5 +769,3 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
 * TODO multiple-cursors
-
-* Testing
