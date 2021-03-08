@@ -1,4 +1,7 @@
 * Basic Adjustments
+:PROPERTIES:
+:ID:       893fa650-5c1d-4b03-b3b0-5220bae56043
+:END:
 ** Basic UI
 :PROPERTIES:
 :ID:       0224cbdd-9cf9-47a6-ba6e-bcfecbc9a234
@@ -64,6 +67,8 @@
 :ID:       1d3b5412-b5e0-4230-bbb8-c454d1a3bf79
 :END:
 #+begin_src emacs-lisp
+  (global-set-key (kbd "C-c f c")
+                  (lambda () (interactive) (find-file-other-frame "~/.emacs.d/config.org")))
   (global-set-key (kbd "C-c f n")
                   (lambda () (interactive) (find-file-other-frame "~/org/now.org")))
   (global-set-key (kbd "C-c f m")
@@ -91,8 +96,11 @@
     (setq org-startup-indented t
           org-ellipsis " »"
           org-hide-emphasis-markers t
+          org-startup-with-inline-images t
+          org-startup-with-latex-preview t
           )
-    (add-hook 'org-mode-hook #'visual-line-mode))
+    :hook
+    (org-mode-hook . visual-line-mode))
 #+END_SRC
 ** Global Org keys
 :PROPERTIES:
@@ -252,40 +260,45 @@
 - Using in combo with org-journal for different journal entrie templates.
 #+begin_src emacs-lisp
   (setq org-capture-templates
-          '(
-            ("c" "Clocked In Task" plain (clock)
-             "- %?")
-            ("d" "Org-drill Note" entry (file "~/org/drill/drill-notes.org")
-             "* %^ :drill:\n- %?")
-            ;; ("D" "Dream journal entry" plain (function org-journal-find-location)
-            ;;  "* %(format-time-string org-journal-time-format)%^{Title} :dream:\n%i%?"
-            ;;  :jump-to-captured t
-            ;;  :immediate-finish t)
-            ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
-             "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?")
-            ("j" "Journal entry" plain (function org-journal-find-location)
-             "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
-             :jump-to-captured t
-             :immediate-finish t)
-            ;; ("n" "Notes" entry (file "~/org/orgbox.org")
-            ;;  "* %^ %^g:notes:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-            ;;  :clock-in t
-            ;;  :clock-resume t
-            ;;  :prepend t)
-            ("o" "Orgbox" entry (file "~/org/orgbox.org")
-             "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-             :clock-in t
-             :clock-resume t
-             :prepend t)
-            ;; ("q" "Read/Watch/Listen" entry (file "~/org/media-lists.org")
-            ;;  "** %?"
-            ;;  :prepend t)
-            ("t" "Todo" entry (file"~/org/tasks.org")
-             "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-             :prepend t)
-            ;; ("y" "Today" entry (file"~/org/tasks.org")
-            ;;  "* NEXT %^\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:%?")
-            ))
+        '(
+          ("c" "Clocked In Task" plain (clock)
+           "- %?")
+          ("d" "Org-drill Note" entry (file "~/org/drill/drill-notes.org")
+           "* %^ :drill:\n- %?")
+          ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
+           "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?")
+          ;; ("j" "Journal entry" plain (function org-journal-find-location)
+          ;;  "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
+          ;;  :jump-to-captured t
+          ;;  :immediate-finish t)"
+           ;; :tree-type week)
+          ;; ("n" "Notes" entry (file "~/org/orgbox.org")
+          ;;  "* %^ %^g:notes:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+          ;;  :clock-in t
+          ;;  :clock-resume t
+          ;;  :prepend t)
+          ("o" "Orgbox" entry (file "~/org/orgbox.org")
+           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+           :clock-in t
+           :clock-resume t
+           :prepend t)
+          ;; ("q" "Read/Watch/Listen" entry (file "~/org/media-lists.org")
+          ;;  "** %?"
+          ;;  :prepend t)
+          ("q" "Quoute" plain (file"~/org/quoutes.org")
+           "\n- %^")
+          ("t" "Todo" entry (file"~/org/tasks.org")
+           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+           :prepend t)
+          ("w" "Weekly Review" entry (file+olp+datetree "~/org/weeks.org")
+           "* Review\n %?"
+           :tree-type week)
+          ("W" "Weekly Preview" entry (file+olp+datetree "~/org/weeks.org")
+           "* Preview%?\n** Areas\n** Goals\n** Schedule\n"
+           :tree-type week)
+          ))
+
+
 #+end_src
 ** Refile
 :PROPERTIES:
@@ -323,56 +336,69 @@
 :ID:       9e24b8ee-1291-4c3c-a09e-b3870bf8dd9e
 :END:
 #+begin_src emacs-lisp
-    (use-package org-roam
-      :ensure t
-      :config
-      (setq org-roam-directory "~/org/notes/"
-            ;; Capture tags via #+roam_tags and normal org tags ("vanilla")
-            org-roam-tag-sources '(prop vanilla)
-            org-roam-prefer-id-links t
-            org-roam-completion-system 'ido
-            )
-      (set-face-attribute 'org-roam-link nil
-                          :foreground "light green"
-                          :weight 'bold)
-      :hook
-      (after-init . org-roam-mode)
-      :bind (:map org-roam-mode-map
-                  (("C-c n l" . org-roam)
-                   ("C-c n f" . org-roam-find-file)
-                   ("C-c n g" . org-roam-show-graph)
-                   ("C-c n b" . org-roam-switch-to-buffer))
-                  ;; :map org-mode-map
-                  ("C-c n i" . org-roam-insert)
-                  ))
+  (use-package org-roam
+    :ensure t
+    :config
+    (setq org-roam-directory "~/org/notes/"
+          ;; Capture tags via #+roam_tags and normal org tags ("vanilla")
+          org-roam-tag-sources '(prop vanilla)
+          org-roam-prefer-id-links t
+          org-roam-completion-system 'ido
+          )
+    (set-face-attribute 'org-roam-link nil
+                        :foreground "light green"
+                        :weight 'bold)
+    :hook
+    (after-init . org-roam-mode)
+    :bind (:map org-roam-mode-map
+                (("C-c n l" . org-roam)
+                 ("C-c n f" . org-roam-find-file)
+                 ("C-c n c" . org-roam-capture)
+                 ("C-c n g" . org-roam-show-graph)
+                 ("C-c n b" . org-roam-switch-to-buffer))
+                ;; :map org-mode-map
+                ("C-c n i" . org-roam-insert)
+                ))
 
-    (setq org-roam-capture-templates
-          '(("r" "default" plain (function org-roam--capture-get-point)
-             "%?"
-             :file-name "%<%Y%m%d%H%M%S>-${slug}"
-             :head "#+TITLE: ${title}\n#+ROAM_TAGS:\n\n"
-             :unnarrowed t
-             :immediate_finish t)
-            ))
+  (setq org-roam-capture-templates
+        '(("r" "default" plain (function org-roam--capture-get-point)
+           "%?"
+           :file-name "%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+TITLE: ${title}\n#+ROAM_TAGS:\n\n"
+           :unnarrowed t
+           :immediate_finish t)
+          ;; ("s" "source" plain (function org-roam--capture-get-point)
+          ;;  "%?"
+          ;;  :file-name "source/%<%Y%m%d%H%M%S>-${slug}"
+          ;;  :head "#+TITLE: ${title}\n#+ROAM_TAGS: source %?"
+          ;;  :unnarrowed t
+          ;;  :immediate_finish t)
+          ;; ("l" "learning" plain (function org-roam--capture-get-point)
+          ;;  "%?"
+          ;;  :file-name "source/%<%Y%m%d%H%M%S>-${slug}"
+          ;;  :head "#+TITLE: ${title}\n#+ROAM_TAGS: learning %?"
+          ;;  :unnarrowed t
+          ;;  :immediate_finish t)
+          ))
 
-    (defun ak/org-roam--title-to-slug (title)
-       ;; Change to dashes instead of default underscores. Taken from org-roam source code.
-      "Convert TITLE to a filename-suitable slug."
-      (cl-flet* ((nonspacing-mark-p (char)
-                                    (eq 'Mn (get-char-code-property char 'general-category)))
-                 (strip-nonspacing-marks (s)
-                                         (apply #'string (seq-remove #'nonspacing-mark-p
-                                                                     (ucs-normalize-NFD-string s))))
-                 (cl-replace (title pair)
-                             (replace-regexp-in-string (car pair) (cdr pair) title)))
-        (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
-                        ("__*" . "-")  ;; remove sequential underscores
-                        ("^_" . "")  ;; remove starting underscore
-                        ("_$" . "")))  ;; remove ending underscore
-               (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
-          (downcase slug))))
+  (defun ak/org-roam--title-to-slug (title)
+     ;; Change to dashes instead of default underscores. Taken from org-roam source code.
+    "Convert TITLE to a filename-suitable slug."
+    (cl-flet* ((nonspacing-mark-p (char)
+                                  (eq 'Mn (get-char-code-property char 'general-category)))
+               (strip-nonspacing-marks (s)
+                                       (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                   (ucs-normalize-NFD-string s))))
+               (cl-replace (title pair)
+                           (replace-regexp-in-string (car pair) (cdr pair) title)))
+      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
+                      ("__*" . "-")  ;; remove sequential underscores
+                      ("^_" . "")  ;; remove starting underscore
+                      ("_$" . "")))  ;; remove ending underscore
+             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+        (downcase slug))))
 
-    (setq org-roam-title-to-slug-function 'ak/org-roam--title-to-slug)
+  (setq org-roam-title-to-slug-function 'ak/org-roam--title-to-slug)
 #+end_src
 ** Org-journal
 :PROPERTIES:
@@ -651,6 +677,66 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
 		  (org-level-7 . 1.1 )
 		  (org-level-8 . 1.1 )))
 	(set-face-attribute (car face) nil :font "courier" :weight `regular :height (cdr face)))
+* Ivy, counsel, swiper
+:PROPERTIES:
+:ID:       9e6e4ef7-5aa9-4301-826f-2ec5a49b4f4c
+:END:
+#+begin_src emacs-lisp
+  (use-package counsel  ;; Brings in ivy and swiper as dependencies
+    :ensure t
+    :config
+    (setq ivy-use-virtual-buffers t
+          ivy-count-format "%d/%d ")
+    )
+
+  (ivy-mode 1)
+#+end_src
+* Multiple cursors
+:PROPERTIES:
+:ID:       7932b3d1-59fc-4075-9d72-efa1b0cce146
+:END:
+- Doesn't work well with =M-x=, needs key-bindings.
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :config
+    (global-set-key (kbd "C-c m e") 'mc/edit-lines)
+    (global-set-key (kbd "C-c m f") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-c m b") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
+    (define-key mc/keymap (kbd "<return>") nil)  ;; Allows us to insert new-line with <RET> and still disable multiple-cursor mode with C-g
+    )
+#+end_src
+* Olivetti
+:PROPERTIES:
+:ID:       8f172f3f-2017-483d-bbda-d492467620d3
+:END:
+- Centers text by widening the margins.
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :ensure t
+    :config
+    (setq olivetti-body-width 80)
+    ;; (setq olivetti-minimum-body-width 50)
+    :bind
+    ("C-c o" . olivetti-mode))
+#+end_src
+* Smartparens
+:PROPERTIES:
+:ID:       ff9cbb86-b3b8-480c-b2b8-1c3d62a10c7b
+:END:
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :ensure t
+    :config
+    (progn
+      (smartparens-global-mode t)))
+    ;; :diminish smartparens-mode
+    ;; :hook (prog-mode . smartparens-strict-mode)
+    ;; :config
+    ;; (require 'smartparens-config)
+    ;; (show-smartparens-global-mode 1))
+#+end_src
 * which-key
 :PROPERTIES:
 :ID:       a67ef17a-f150-4aea-bf58-69d89b3f7572
@@ -675,15 +761,16 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
 #+END_SRC
 * Ido
 - Smart file completion.
+- [2021-03-07 Sun 23:51] Switching to Ivy.
 ** Enable Ido-mode
 :PROPERTIES:
 :ID:       9b4388fb-f79e-41b8-88b8-cf799cbd8317
 :END:
 #+BEGIN_SRC emacs-lisp
-  (ido-mode 1)
-  (setq ido-everywhere t)
-  (setq ido-enable-flex-matching t)
-  (setq ido-create-new-buffer `always)
+  ;; (ido-mode 1)
+  ;; (setq ido-everywhere t)
+  ;; (setq ido-enable-flex-matching t)
+  ;; (setq ido-create-new-buffer `always)
 #+END_SRC
 * ace-window
 :PROPERTIES:
@@ -704,7 +791,8 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-mode
     :ensure t
-    :init (rainbow-mode 1))
+    :hook
+    (prog-mode-hook . rainbow-mode))
 #+END_SRC
 * beacon
 :PROPERTIES:
@@ -768,4 +856,3 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   ;;   (("M-p" . drag-stuff-up)
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
-* TODO multiple-cursors
