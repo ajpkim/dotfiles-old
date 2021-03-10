@@ -98,6 +98,7 @@
           org-hide-emphasis-markers t
           org-startup-with-inline-images t
           org-startup-with-latex-preview t
+          org-pretty-entities t
           )
     :hook
     (org-mode-hook . visual-line-mode))
@@ -282,23 +283,20 @@
            :clock-in t
            :clock-resume t
            :prepend t)
-          ;; ("q" "Read/Watch/Listen" entry (file "~/org/media-lists.org")
-          ;;  "** %?"
-          ;;  :prepend t)
+          ("q" "Read/Watch/Listen" plain (file+headline "~/org/notes/media-lists.org" "Process")
+           "%?")
           ("q" "Quoute" plain (file"~/org/quoutes.org")
            "\n- %^")
           ("t" "Todo" entry (file"~/org/tasks.org")
-           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
+           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
            :prepend t)
           ("w" "Weekly Review" entry (file+olp+datetree "~/org/weeks.org")
            "* Review\n %?"
            :tree-type week)
           ("W" "Weekly Preview" entry (file+olp+datetree "~/org/weeks.org")
-           "* Preview%?\n** Areas\n** Goals\n** Schedule\n"
+           "* Preview%?\n** Areas\n** Goals\n** Schedule\n** Thoughts\n"
            :tree-type week)
           ))
-
-
 #+end_src
 ** Refile
 :PROPERTIES:
