@@ -163,7 +163,7 @@
            :publishing-function org-publish-attachment
            )
           ("ajpkim-assets"
-           :base-directory "~/org/ajpkim-site/org/"
+           :base-directory "~/org/ajpkim-site/assets/"
            :base-extension "css\\|scss\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3"
            :publishing-directory "~/ajpkim.github.io/assets/"
            :recursive t
@@ -221,9 +221,11 @@
           ("x" "NEXT and STARTED tasks"
            ((todo "STARTED")
             (todo "NEXT")))
-          ;; ("d" "Archiving" todo "DONE|PASS")
+          ("d" "Archiving" todo "DONE|PASS")
           ("w" "Writing inbox"
-           ((tags "seed")))
+           ((tags "wi")))
+          ("W" "Weekend"
+           ((tags "weekend")))
           ("r" "Review items"
            ((tags "review")))
           ))
@@ -268,34 +270,16 @@
            "* %^ :drill:\n- %?")
           ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
            "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?")
-          ;; ("j" "Journal entry" plain (function org-journal-find-location)
-          ;;  "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
-          ;;  :jump-to-captured t
-          ;;  :immediate-finish t)"
-           ;; :tree-type week)
-          ;; ("n" "Notes" entry (file "~/org/orgbox.org")
-          ;;  "* %^ %^g:notes:\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-          ;;  :clock-in t
-          ;;  :clock-resume t
-          ;;  :prepend t)
-          ("o" "Orgbox" entry (file "~/org/orgbox.org")
-           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n- %?"
-           :clock-in t
-           :clock-resume t
-           :prepend t)
-          ("q" "Read/Watch/Listen" plain (file+headline "~/org/notes/media-lists.org" "Process")
+          ("m" "Read/Watch/Listen" plain (file+headline "~/org/notes/media-lists.org" "Process")
            "%?")
           ("q" "Quoute" plain (file"~/org/quoutes.org")
            "\n- %^")
           ("t" "Todo" entry (file"~/org/tasks.org")
            "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
            :prepend t)
-          ("w" "Weekly Review" entry (file+olp+datetree "~/org/weeks.org")
-           "* Review\n %?"
-           :tree-type week)
-          ("W" "Weekly Preview" entry (file+olp+datetree "~/org/weeks.org")
-           "* Preview%?\n** Areas\n** Goals\n** Schedule\n** Thoughts\n"
-           :tree-type week)
+          ("w" "Weekend Task" entry (file"~/org/tasks.org")
+           "* TODO %^ :weekend:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
+           :prepend t)
           ))
 #+end_src
 ** Refile
@@ -341,7 +325,7 @@
           ;; Capture tags via #+roam_tags and normal org tags ("vanilla")
           org-roam-tag-sources '(prop vanilla)
           org-roam-prefer-id-links t
-          org-roam-completion-system 'ido
+          org-roam-completion-system 'ivy
           )
     (set-face-attribute 'org-roam-link nil
                         :foreground "light green"
