@@ -1,0 +1,1 @@
+This subdir "chrome" defines user styles for Firefox and must be placed in the userprofile within Firefox configuation directory (~/.mozilla/firefox/). From: https://github.com/mut-ex/minimal-functional-fox (see instructions).
