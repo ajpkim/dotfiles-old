@@ -51,7 +51,7 @@
 :ID:       f476a89d-1cc0-48c0-b911-d195a3220914
 :END:
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :height 150)
+  (set-face-attribute 'default nil :height 160)  ;; Magnify text here
 #+end_src
 * Modeline
 :PROPERTIES:
@@ -268,6 +268,9 @@
            "- %?")
           ("d" "Org-drill Note" entry (file "~/org/drill/drill-notes.org")
            "* %^ :drill:\n- %?")
+          ("D" "Dream journal" plain (file+datetree "~/org/dreams.org")
+           "%?"
+           :tree-type 'daily)
           ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
            "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?")
           ("m" "Read/Watch/Listen" plain (file+headline "~/org/notes/media-lists.org" "Process")
