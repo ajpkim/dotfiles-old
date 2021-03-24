@@ -347,23 +347,10 @@
 
   (setq org-roam-capture-templates
         '(("r" "default" plain (function org-roam--capture-get-point)
-           "%?"
            :file-name "%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+TITLE: ${title}\n#+ROAM_TAGS:\n\n"
+           :head "#+TITLE: ${title}\n#+ROAM_TAGS: %?\n"
            :unnarrowed t
            :immediate_finish t)
-          ;; ("s" "source" plain (function org-roam--capture-get-point)
-          ;;  "%?"
-          ;;  :file-name "source/%<%Y%m%d%H%M%S>-${slug}"
-          ;;  :head "#+TITLE: ${title}\n#+ROAM_TAGS: source %?"
-          ;;  :unnarrowed t
-          ;;  :immediate_finish t)
-          ;; ("l" "learning" plain (function org-roam--capture-get-point)
-          ;;  "%?"
-          ;;  :file-name "source/%<%Y%m%d%H%M%S>-${slug}"
-          ;;  :head "#+TITLE: ${title}\n#+ROAM_TAGS: learning %?"
-          ;;  :unnarrowed t
-          ;;  :immediate_finish t)
           ))
 
   (defun ak/org-roam--title-to-slug (title)
@@ -675,6 +662,13 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     )
 
   (ivy-mode 1)
+#+end_src
+* Eww
+:PROPERTIES:
+:ID:       eae6f0ac-5480-4ea3-8389-5889c487858f
+:END:
+#+begin_src emacs-lisp
+
 #+end_src
 * Multiple cursors
 :PROPERTIES:

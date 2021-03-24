@@ -74,7 +74,7 @@
  '(ibuffer-marked-face 'modus-theme-mark-sel)
  '(ibuffer-title-face 'modus-theme-pseudo-header)
  '(org-agenda-files
-   '("~/org/job-hunt.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org" "/home/ajpkim/org/journal/2021-03-16.org"))
+   '("~/org/job-hunt.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org" "/home/ajpkim/org/journal/2021-03-23.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
    '(multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
@@ -116,4 +116,5 @@
  '(bold ((t (:foreground "Plum1" :weight bold))))
  '(org-level-1 ((t (:inherit bold :foreground "LightSkyBlue1" :height 1.3))))
  '(org-link ((t (:foreground "light sky blue" :underline t))))
+ '(org-roam-link ((t (:inherit org-link :foreground "medium spring green" :weight bold))))
  '(variable-pitch ((t (:family "Ubuntu")))))

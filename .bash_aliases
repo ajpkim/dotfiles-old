@@ -28,7 +28,8 @@ alias et='emacs -nw'
 alias lynx='lynx -accept_all_cookies'
 alias py='python3'
 
-
+alias acer-right='xrandr --output DP-1 --mode 1920x1080 --right-of eDP-1'
+alias acer-left='xrandr --output DP-1 --mode 1920x1080 --left-of eDP-1'
 
 ### Scripts
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
