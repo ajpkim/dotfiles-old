@@ -84,6 +84,14 @@
   (global-set-key (kbd "<f1>") '(lambda () (interactive) (bookmark-set "SAVED")))
   (global-set-key (kbd "<f2>") '(lambda () (interactive) (bookmark-jump "SAVED")))
 #+end_src
+* Magit
+:PROPERTIES:
+:ID:       8e7a10d2-8304-45eb-97bf-aaee40c46c2d
+:END:
+#+begin_src emacs-lisp
+  ;; (use-package magit
+  ;;   :ensure t)
+#+end_src
 * Org
 - [[https://orgmode.org/org.html][Org Manual]]
 ** Setup (ellispsis, emphasis, indent, etc)
@@ -91,17 +99,18 @@
 :ID:       351d9037-f52d-4954-82b7-e7ad4c8ae8fd
 :END:
 #+BEGIN_SRC emacs-lisp
-  (use-package org
-    :config
-    (setq org-startup-indented t
-          org-ellipsis " »"
-          org-hide-emphasis-markers t
-          org-startup-with-inline-images t
-          org-startup-with-latex-preview t
-          org-pretty-entities t
-          )
-    :hook
-    (org-mode-hook . visual-line-mode))
+    (use-package org
+      :config
+      (setq org-startup-indented t
+            org-ellipsis " »"
+            org-hide-emphasis-markers t
+            org-startup-with-inline-images t
+            org-startup-with-latex-preview t
+            org-pretty-entities t
+            )
+      :hook
+      (org-mode-hook . visual-line-mode)
+      (org-mode-hook . olivetti-mode))
 #+END_SRC
 ** Global Org keys
 :PROPERTIES:
@@ -268,7 +277,7 @@
            "- %?")
           ("d" "Org-drill Note" entry (file "~/org/drill/drill-notes.org")
            "* %^ :drill:\n- %?")
-          ("D" "Dream journal" plain (file+datetree "~/org/dreams.org")
+          ("D" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
            "%?"
            :tree-type 'daily)
           ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
@@ -354,7 +363,7 @@
           ))
 
   (defun ak/org-roam--title-to-slug (title)
-     ;; Change to dashes instead of default underscores. Taken from org-roam source code.
+    ;; Change to dashes instead of default underscores. Taken from org-roam source code.
     "Convert TITLE to a filename-suitable slug."
     (cl-flet* ((nonspacing-mark-p (char)
                                   (eq 'Mn (get-char-code-property char 'general-category)))

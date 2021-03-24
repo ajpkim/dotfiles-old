@@ -283,6 +283,7 @@ bindsym $mod+Control+n exec emacs ~/org/now.org
 bindsym $mod+Control+f exec firefox
 bindsym $mod+F5 exec virtualbox
 bindsym $mod+F6 exec firefox youtube.com
+bindsym $mod+Print exec flameshot gui
 
 # General
 focus_follows_mouse no

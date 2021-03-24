@@ -19,6 +19,7 @@ alias logout='pkill -KILL -u ajpkim'
 
 ### Tools
 alias xcc='xclip -selection clipboard'
+alias ss='flameshot gui'
 
 ### Applications
 alias ff='firefox'
