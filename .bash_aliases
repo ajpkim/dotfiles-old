@@ -20,6 +20,7 @@ alias logout='pkill -KILL -u ajpkim'
 ### Tools
 alias xcc='xclip -selection clipboard'
 alias ss='flameshot gui'
+alias ve='source venv/bin/activate'
 
 ### Applications
 alias ff='firefox'
@@ -35,3 +36,4 @@ alias acer-left='xrandr --output DP-1 --mode 1920x1080 --left-of eDP-1'
 ### Scripts
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
 alias on-monitors='. ~/scripts/turn-on-monitors.sh'
+alias mwifi='nmcli device wifi connect BHNTG1682G3702 password a8e3efed'

@@ -74,7 +74,7 @@
  '(ibuffer-marked-face 'modus-theme-mark-sel)
  '(ibuffer-title-face 'modus-theme-pseudo-header)
  '(org-agenda-files
-   '("~/org/job-hunt.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org" "/home/ajpkim/org/journal/2021-03-24.org"))
+   '("~/org/job-hunt.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org" "/home/ajpkim/org/journal/2021-03-31.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
    '(multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))

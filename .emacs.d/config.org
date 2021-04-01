@@ -99,18 +99,18 @@
 :ID:       351d9037-f52d-4954-82b7-e7ad4c8ae8fd
 :END:
 #+BEGIN_SRC emacs-lisp
-    (use-package org
-      :config
-      (setq org-startup-indented t
-            org-ellipsis " »"
-            org-hide-emphasis-markers t
-            org-startup-with-inline-images t
-            org-startup-with-latex-preview t
-            org-pretty-entities t
-            )
-      :hook
-      (org-mode-hook . visual-line-mode)
-      (org-mode-hook . olivetti-mode))
+  (use-package org
+    :config
+    (setq org-startup-indented t
+          org-ellipsis " »"
+          org-hide-emphasis-markers t
+          org-startup-with-inline-images t
+          org-startup-with-latex-preview t
+          org-pretty-entities t
+          )
+    :hook
+    (org-mode-hook  . visual-line-mode)
+    (org-mode . olivetti-mode))
 #+END_SRC
 ** Global Org keys
 :PROPERTIES:
@@ -282,8 +282,10 @@
            :tree-type 'daily)
           ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
            "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?")
+          ("i" "Ideas" entry (file "~/org/ideas.org")
+           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^")
           ("m" "Read/Watch/Listen" plain (file+headline "~/org/notes/media-lists.org" "Process")
-           "%?")
+           "%^")
           ("q" "Quoute" plain (file"~/org/quoutes.org")
            "\n- %^")
           ("t" "Todo" entry (file"~/org/tasks.org")
@@ -317,6 +319,7 @@
   (setq org-tag-alist
         '(
           ("drill" . ?d)
+          ("journal" . ?j)
           ("notes" . ?n)
           ("seed" . ?s)
           ("study" . ?y)
@@ -718,7 +721,7 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
     :ensure t
     :config
     (progn
-      (smartparens-global-mode t)))
+      (smartparens-global-mode -1)))
     ;; :diminish smartparens-mode
     ;; :hook (prog-mode . smartparens-strict-mode)
     ;; :config
