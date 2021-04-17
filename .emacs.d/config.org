@@ -1,3 +1,9 @@
+#+TITLE: Emacs Config
+#+STARTUP: overview
+:PROPERTIES:
+:ID:       2b04f9c4-056e-4885-8bbf-18890db97b87
+:END:
+
 * Basic Adjustments
 :PROPERTIES:
 :ID:       893fa650-5c1d-4b03-b3b0-5220bae56043
@@ -7,6 +13,7 @@
 :ID:       0224cbdd-9cf9-47a6-ba6e-bcfecbc9a234
 :END:
 #+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'default nil :height 140)  ;; Magnify text here
   (setq inhibit-startup-message t)
   (setq visible-bell t)
   (setq scroll-conservatively 100)
@@ -18,6 +25,10 @@
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
+
+  ;; Allow Emacs to access content from clipboard.
+  (setq x-select-enable-clipboard t
+        x-select-enable-primary t)
 #+END_SRC
 ** Autosave and backups
 *** Custom dir
@@ -47,11 +58,58 @@
         (delete-file file))))
 #+END_SRC
 * Base Font and faces
+* Themes
 :PROPERTIES:
-:ID:       f476a89d-1cc0-48c0-b911-d195a3220914
+:ID:       0f66277e-5f9f-48b6-b90d-0c02805b8446
+:END:
+
+Cyberpunk
+#+begin_src emacs-lisp
+   (with-eval-after-load "cyberpunk-theme"
+     (custom-theme-set-faces
+      'cyberpunk
+      '(org-level-2 ((t (:inherit bold :foreground "SeaGreen2"))))))
+#+end_src
+
+Modus-Vivendi
+#+begin_src emacs-lisp
+  (use-package modus-themes
+    :ensure
+    :init
+    ;; Add all your customizations prior to loading the themes
+    (setq modus-themes-slanted-constructs t
+          modus-themes-bold-constructs nil
+          modus-themes-region 'no-extend)
+
+    ;; Load the theme files before enabling a theme
+    (modus-themes-load-themes)
+    :config
+    ;; Load the theme of your choice:
+    (modus-themes-load-vivendi) ;; OR (modus-themes-load-operandi)
+    :bind ("<f5>" . modus-themes-toggle))
+#+end_src
+
+#+begin_src emacs-lisp
+  ;; (with-eval-after-load "modus-vivendi-theme"
+  ;;   (custom-theme-set-faces
+  ;;    'modus-vivendi
+  ;;    '(bold ((t (:foreground Plum1 :weight bold))))
+  ;;    '(org-level-1 ((t (:inherit bold :foreground LightSkyBlue1 :height 1.3))))
+  ;;    '(org-level-2 ((t nil)))
+  ;;    ))		
+                                          ;
+#+end_src
+
+* Tasks
+:PROPERTIES:
+:ID:       a52d68e1-3446-4169-8f76-3dcbc79d30a7
 :END:
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :height 160)  ;; Magnify text here
+  (with-eval-after-load ""
+    (custom-theme-set-faces
+     'cyberpunk
+     '(org-level-2 ((t (:extend nil :foreground "SeaGreen1"))))))
+
 #+end_src
 * Modeline
 :PROPERTIES:
@@ -69,12 +127,17 @@
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c f c")
                   (lambda () (interactive) (find-file-other-frame "~/.emacs.d/config.org")))
-  (global-set-key (kbd "C-c f n")
-                  (lambda () (interactive) (find-file-other-frame "~/org/now.org")))
+  (global-set-key (kbd "C-c f i")
+                  (lambda () (interactive) (find-file-other-frame "~/org/inbox.org")))
   (global-set-key (kbd "C-c f m")
-                  (lambda () (interactive) (find-file-other-frame "~/org/notes/media-lists.org")))
-  (global-set-key (kbd "C-c f t")
-                  (lambda () (interactive) (find-file-other-frame "~/org/tasks.org")))
+                  (lambda () (interactive) (find-file-other-frame "~/org/media-lists.org")))
+  (global-set-key (kbd "C-c f p")
+                  (lambda () (interactive) (find-file-other-frame "~/org/personal.org")))
+  (global-set-key (kbd "C-c f l")
+                  (lambda () (interactive) (find-file-other-frame "~/org/learn.org")))
+  (global-set-key (kbd "C-c f w")
+                  (lambda () (interactive) (find-file-other-frame "~/org/work.org")))
+
 #+end_src
 ** Bookmarks
 :PROPERTIES:
@@ -107,10 +170,13 @@
           org-startup-with-inline-images t
           org-startup-with-latex-preview t
           org-pretty-entities t
+          org-startup-folded t
+          org-archive-location "~/org/archives/%s_archive::"
+
           )
     :hook
-    (org-mode-hook  . visual-line-mode)
-    (org-mode . olivetti-mode))
+    (org-mode-hook  . visual-line-mode))
+    ;; (org-mode . olivetti-mode))
 #+END_SRC
 ** Global Org keys
 :PROPERTIES:
@@ -193,7 +259,7 @@
 #+begin_src emacs-lisp
   ;; (setq org-agenda-files '("~/org/"))
 #+end_src
-*** TODO Base settings
+*** Base settings
 :PROPERTIES:
 :ID:       8b484d69-0fdc-46ee-a7dc-bd8b14e01e29
 :END:
@@ -221,39 +287,41 @@
 :PROPERTIES:
 :ID:       927cbd70-34fa-4c81-9a32-bf8a72a9af5e
 :END:
-- [ ] Create view for top level completed tasks.
+
+First attempt at custom commands...
 #+begin_src emacs-lisp
-  (setq org-agenda-custom-commands
-        '(("n" "Simple agenda/tasks view"
-           ((agenda "")
-            (alltodo "")))
-          ("x" "NEXT and STARTED tasks"
-           ((todo "STARTED")
-            (todo "NEXT")))
-          ("d" "Archiving" todo "DONE|PASS")
-          ("w" "Writing inbox"
-           ((tags "wi")))
-          ("W" "Weekend"
-           ((tags "weekend")))
-          ("r" "Review items"
-           ((tags "review")))
-          ))
+  ;; (setq org-agenda-custom-commands
+  ;;       '(("n" "Simple agenda/tasks view"
+  ;;          ((agenda "")
+  ;;           (alltodo "")))
+  ;;         ("x" "NEXT and STARTED tasks"
+  ;;          ((todo "STARTED")
+  ;;           (todo "NEXT")))
+  ;;         ("d" "Archiving" todo "DONE|PASS")
+  ;;         ("w" "Writing inbox"
+  ;;          ((tags "wi")))
+  ;;         ("W" "Weekend"
+  ;;          ((tags "weekend")))
+  ;;         ("r" "Review items"
+  ;;          ((tags "review")))
+  ;;         ))
 #+end_src
 ** TODOs
 :PROPERTIES:
 :ID:       b97b0215-7ab5-4d7e-ae0a-330b9ad3730e
 :END:
-- The "!" triggers autologging (into the LOGBOOK).
+- The "!" triggers autologging (into the LOGBOOK). Not using anymore because of new archive workflow.
 #+begin_src emacs-lisp
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "HOLD(h!)" "|" "DONE(d!)" "PASS(p!)")))
+        '((sequence "TODO(t)" "ACTIVE(a)" "HOLD(h)" "SOMEDAY(s)" "PROJECT(P)" "|" "DONE(d)" "PASS(p)")))
 
   (setq org-todo-keyword-faces
         '(
           ("TODO" . (:foreground "#ffff66" :weight bold))
-          ("NEXT" . (:foreground "#44ddff" :weight bold))
-          ("STARTED" . (:foreground "#44ddff" :weight bold))
-          ("WAITING" . (:foreground "#df784e" :weight bold))
+          ("ACTIVE" . (:foreground "#44ddff" :weight bold))
+          ("HOLD" . (:foreground "#dfaa8e" :weight bold))
+          ("SOMEDAY" . (:foreground "#00ffff" :weight bold))
+          ("PROJECT" . (:foreground "#ffbbff" :weight bold))
           ("DONE" . (:foreground "#19ffaf" :weight bold))
           ("PASS" . (:foreground "#ff3d40" :weight bold))))
 
@@ -263,52 +331,34 @@
   ;; Don't set timestamp or note when shifting through TODO states.
   ;; (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 #+end_src
-** Capture (templates)
+** Capture
 :PROPERTIES:
 :ID:       3d4c732d-b5aa-466c-b68e-a832f85d27a5
 :END:
-- May want to use =org-directory= variable here.
-- Can use headlines within files to file different types of data within single file.
-- Using in combo with org-journal for different journal entrie templates.
+
 #+begin_src emacs-lisp
   (setq org-capture-templates
-        '(
-          ("c" "Clocked In Task" plain (clock)
-           "- %?")
-          ("d" "Org-drill Note" entry (file "~/org/drill/drill-notes.org")
-           "* %^ :drill:\n- %?")
-          ("D" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
+        '(("t" "Add a task" entry (file "~/org/inbox.org")
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
+           :prepend t
+           )
+          ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
            "%?"
            :tree-type 'daily)
-          ("J" "Job Hunt" entry (file+headline "~/org/job-hunt.org" "Jobs")
-           "* %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?")
-          ("i" "Ideas" entry (file "~/org/ideas.org")
-           "* %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%^")
-          ("m" "Read/Watch/Listen" plain (file+headline "~/org/notes/media-lists.org" "Process")
-           "%^")
-          ("q" "Quoute" plain (file"~/org/quoutes.org")
-           "\n- %^")
-          ("t" "Todo" entry (file"~/org/tasks.org")
-           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
-           :prepend t)
-          ("w" "Weekend Task" entry (file"~/org/tasks.org")
-           "* TODO %^ :weekend:\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
+          ("f" ">5m" entry (file "~/org/inbox.org")
+           "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
            :prepend t)
           ))
 #+end_src
+
+
 ** Refile
 :PROPERTIES:
 :ID:       745d204e-d319-46c4-b67f-d63996bc9044
 :END:
 - Look in current file and all agenda files for refile menu.
 #+begin_src emacs-lisp
-  (setq org-refile-targets
-        '((nil :maxlevel . 6)
-          (org-agenda-files . (:maxlevel . 6))))
-  ;; Complete refile with IDO
-  (setq org-refile-use-outline-path 'file)  ;; Allows for refiling as top level node
-  (setq org-outline-path-complete-in-steps nil)  ;; Have org get all targets at once and allow IDO to narrow
-  (setq org-refile-allow-creating-parent-nodes  (quote confirm))
+  (setq org-refile-targets '((org-agenda-files :todo . "PROJECT")))
 #+end_src
 ** Tags
 :PROPERTIES:
@@ -318,15 +368,29 @@
 #+begin_src emacs-lisp
   (setq org-tag-alist
         '(
-          ("drill" . ?d)
-          ("journal" . ?j)
-          ("notes" . ?n)
-          ("seed" . ?s)
-          ("study" . ?y)
-          ("week" . ?w)
+          ("anki" . ?a)
+          ("note" . ?n)
+          ("read" . ?r)
+          ("recur" . ?R)
           ("5m" . ?f)
           ))
   (setq org-fast-tag-selection-single-key (quote expert))
+#+end_src
+** Babel
+:PROPERTIES:
+:ID:       a16c5ff0-8587-4356-9443-857710394623
+:END:
+#+begin_src emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (haskell    . t)
+     (python     .t)
+     (sql        .t)
+     (latex      . t)
+     (js         . t)
+     (shell      . t)
+     ))
 #+end_src
 ** Org-roam
 :PROPERTIES:
@@ -637,19 +701,6 @@
   (setf org-blank-before-new-entry '((heading . auto)
                                     (plain-list-item . auto)))
 #+end_src
-** TODO (I think bc elpa package) Visual fill column
-:LOGBOOK:
-- State "TODO"       from              [2021-01-29 Fri 15:20]
-:END:
-NOT WORKING #+BEGIN_SRC emacs-lisp
-  (defun org-mode-visual-fill ()
-    (setq visual-fill-column-width 100
-          visual-fill-column-center-text t)
-    (visual-fill-column-mode 1))
-
-  (use-package visual-fill-column
-    :hook (org-mode . org-mode-visual-fill))
-#+END_SRC
 ** Possible additions...
 *** Setting fonts, etc.
   (dolist (face `((org-level-1 . 1.2 )
@@ -660,7 +711,64 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
 		  (org-level-6 . 1.1 )
 		  (org-level-7 . 1.1 )
 		  (org-level-8 . 1.1 )))
-	(set-face-attribute (car face) nil :font "courier" :weight `regular :height (cdr face)))
+		  (set-face-attribute (car face) nil :font "courier" :weight `regular :height (cdr face)))
+* anki-editor
+:PROPERTIES:
+:ID:       27e07ae9-a8ec-4b08-b0d1-ccbf85a930f7
+:END:
+Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/dot-emacs/blob/master/init.el][yiufung init.el]]
+#+begin_src emacs-lisp
+  (use-package anki-editor
+    :ensure t
+    :bind (:map org-mode-map
+                ("<f12>" . anki-editor-cloze-region-dont-incr)
+                ("<f11>" . anki-editor-cloze-region-auto-incr)
+                ("<f10>" . anki-editor-reset-cloze-number)
+                ("<f9>"  . anki-editor-push-tree))
+    :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
+    :config
+    (setq anki-editor-create-decks t
+          anki-editor-org-tags-as-anki-tags t)
+
+    (defun anki-editor-cloze-region-auto-incr (&optional arg)
+      "Cloze region without hint and increase card number."
+      (interactive)
+      (anki-editor-cloze-region my-anki-editor-cloze-number "")
+      (setq my-anki-editor-cloze-number (1+ my-anki-editor-cloze-number))
+      (forward-sexp))
+    (defun anki-editor-cloze-region-dont-incr (&optional arg)
+      "Cloze region without hint using the previous card number."
+      (interactive)
+      (anki-editor-cloze-region (1- my-anki-editor-cloze-number) "")
+      (forward-sexp))
+    (defun anki-editor-reset-cloze-number (&optional arg)
+      "Reset cloze number to ARG or 1"
+      (interactive)
+      (setq my-anki-editor-cloze-number (or arg 1)))
+    (defun anki-editor-push-tree ()
+      "Push all notes under a tree."
+      (interactive)
+      (anki-editor-push-notes '(4))
+      (anki-editor-reset-cloze-number))
+    ;; Initialize
+    (anki-editor-reset-cloze-number)
+    )
+
+
+  ;; Org-capture templates
+  (setq org-my-anki-file "~/org/anki.org")
+  (add-to-list 'org-capture-templates
+               '("a" "Anki basic"
+                 entry
+                 (file+headline org-my-anki-file "Dispatch Shelf")
+                 "* %U   %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:END:\n** Front\n%?\n** Back\n\n"))
+  (add-to-list 'org-capture-templates
+               '("A" "Anki cloze"
+                 entry
+                 (file+headline org-my-anki-file "Dispatch Shelf")
+                 "* %U   %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:END:\n** Text\n\n** Extra\n\n"))
+
+#+end_src
 * Ivy, counsel, swiper
 :PROPERTIES:
 :ID:       9e6e4ef7-5aa9-4301-826f-2ec5a49b4f4c
@@ -847,3 +955,5 @@ NOT WORKING #+BEGIN_SRC emacs-lisp
   ;;   (("M-p" . drag-stuff-up)
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
+
+

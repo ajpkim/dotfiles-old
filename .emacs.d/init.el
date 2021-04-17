@@ -16,8 +16,8 @@
   (package-refresh-contents)
   (package-install `rebecca-theme)) 
 
-(load-theme 'rebecca t)
-
+;; (load-theme 'rebecca t)
+;; (load-theme 'cyberpunk t)
 ;;; --------------------------
 ;;; Everything above must stay in init file and not config.org file
 ;;; --------------------------
@@ -42,6 +42,7 @@
    ["#212526" "#ff4b4b" "#b4fa70" "#fce94f" "#729fcf" "#e090d7" "#8cc4ff" "#eeeeec"])
  '(awesome-tray-mode-line-active-color "#2fafff")
  '(awesome-tray-mode-line-inactive-color "#323232")
+ '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
    '("aa85228e4b6d188c3c0b8553548142c2c75726429614376c26255a51378982f5" "81c3de64d684e23455236abde277cda4b66509ef2c28f66e059aa925b8b12534" "d0aa1464d7e55d18ca1e0381627fac40229b9a24bca2a3c1db8446482ce8185e" "e208e45345b91e391fa66ce028e2b30a6aa82a37da8aa988c3f3c011a15baa22" "d600c677f1777c1e4bfb066529b5b73c0179d0499dd4ffa3f599a0fb0cfbd501" "b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" default))
  '(exwm-floating-border-color "#646464")
@@ -73,11 +74,17 @@
  '(ibuffer-filter-group-name-face 'modus-theme-mark-symbol)
  '(ibuffer-marked-face 'modus-theme-mark-sel)
  '(ibuffer-title-face 'modus-theme-pseudo-header)
+ '(org-agenda-custom-commands
+   '(("n" "Agenda and all TODOs"
+      ((agenda "" nil)
+       (alltodo "" nil))
+      nil)
+     ("v" "Active tasks" alltodo "ACTIVE" nil)))
  '(org-agenda-files
-   '("~/org/job-hunt.org" "~/org/journal.org" "~/org/now.org" "~/.emacs.d/config.org" "~/org/tasks.org" "~/org/orgbox.org" "/home/ajpkim/org/journal/2021-03-31.org"))
+   '("~/org/development.org" "~/org/inbox.org" "~/org/work.org" "~/org/learn.org" "~/org/personal.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-04-16.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
-   '(multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
+   '(anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
  '(pdf-view-midnight-colors '("#ffffff" . "#110b11"))
  '(pos-tip-background-color "#414E63")
  '(pos-tip-foreground-color "#BEC8DB")
@@ -113,8 +120,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :foundry "PfEd" :family "DejaVu Sans Mono"))))
- '(bold ((t (:foreground "Plum1" :weight bold))))
- '(org-level-1 ((t (:inherit bold :foreground "LightSkyBlue1" :height 1.3))))
- '(org-link ((t (:foreground "light sky blue" :underline t))))
- '(org-roam-link ((t (:inherit org-link :foreground "medium spring green" :weight bold))))
  '(variable-pitch ((t (:family "Ubuntu")))))
