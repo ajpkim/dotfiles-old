@@ -278,7 +278,7 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 bindsym $mod+Shift+x exec /home/ajpkim/scripts/i3lock-multimonitor.sh
 
 # Key-bindings
-bindsym $mod+Control+e exec emacs
+bindsym $mod+Control+e exec emacsclient --create-frame
 bindsym $mod+Control+n exec emacs ~/org/now.org 
 bindsym $mod+Control+f exec firefox
 bindsym $mod+F5 exec virtualbox

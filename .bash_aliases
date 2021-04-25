@@ -24,9 +24,8 @@ alias ve='source venv/bin/activate'
 
 ### Applications
 alias ff='firefox'
-alias e='emacs'
-alias ef='emacs -fs'
-alias et='emacs -nw'
+alias e='emacsclient --create-frame'
+alias et='emacsclient -nw'
 alias lynx='lynx -accept_all_cookies'
 alias py='python3'
 
