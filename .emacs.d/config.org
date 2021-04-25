@@ -168,15 +168,14 @@ Modus-Vivendi
           org-ellipsis " »"
           org-hide-emphasis-markers t
           org-startup-with-inline-images t
-          org-startup-with-latex-preview t
-          ;; org-pretty-entities t
+          org-startup-with-latex-preview nil
+          org-pretty-entities nil
           org-startup-folded t
           org-archive-location "~/org/archives/%s_archive::"
-
           )
     :hook
-    (org-mode-hook  . visual-line-mode))
-    ;; (org-mode . olivetti-mode))
+    (org-mode . visual-line-mode))
+  ;; (org-mode . olivetti-mode))
 #+END_SRC
 ** Global Org keys
 :PROPERTIES:
@@ -338,7 +337,9 @@ First attempt at custom commands...
 
 #+begin_src emacs-lisp
   (setq org-capture-templates
-        '(("a" "Anki")
+        '(
+          ;; Anki templates
+          ("a" "Anki")
           ("aa" "Anki basic"
            entry
            (file+headline org-my-anki-file "Dispatch Shelf")
@@ -351,6 +352,7 @@ First attempt at custom commands...
            entry
            (file+headline org-my-anki-file "Dispatch Shelf")
            "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+          ;; General templates
           ("c" "Add a task" entry (file "~/org/inbox.org")
            "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
            :prepend t
@@ -368,7 +370,6 @@ First attempt at custom commands...
 :PROPERTIES:
 :ID:       745d204e-d319-46c4-b67f-d63996bc9044
 :END:
-- Look in current file and all agenda files for refile menu.
 #+begin_src emacs-lisp
   (setq org-refile-targets '((org-agenda-files :todo . "PROJECT")))
 #+end_src
@@ -380,14 +381,18 @@ First attempt at custom commands...
 #+begin_src emacs-lisp
   (setq org-tag-alist
         '(
-          ("anki" . ?a)
-          ("linux" . ?l)
-          ("ML" . ?m)
           ("note" . ?n)
           ("paper" . ?p)
           ("read" . ?r)
           ("recur" . ?R)
           ("5m" . ?f)
+          ;; Anki tags for anki-editor and exporting
+          ("anki")  ;; Helpful to filter out anki cards for tag searches
+          ("linux" . ?l)
+          ("ML" . ?m)
+          ("unix" . ?u)
+          ;; Courses (still Anki)
+          ("MIT6036")
           ))
   (setq org-fast-tag-selection-single-key (quote expert))
 #+end_src
@@ -512,13 +517,12 @@ First attempt at custom commands...
   ;;   (kill-buffer-and-window))
   ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'ak/org-journal-save-entry-and-exit)
 #+end_src
-** Org-drill
+** LaTeX
 :PROPERTIES:
-:ID:       95cfeb90-0814-489d-9dad-14e86eb9760f
+:ID:       91f5cce8-3b02-491a-886a-9f4c464c2f67
 :END:
 #+begin_src emacs-lisp
-  (use-package org-drill
-    :ensure t)
+
 #+end_src
 ** toc-org
 :PROPERTIES:
@@ -743,7 +747,8 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
     :config
     (setq anki-editor-create-decks t
-          anki-editor-org-tags-as-anki-tags t)
+          anki-editor-org-tags-as-anki-tags t
+          anki-editor-ignored-org-tags '("anki")) 
 
     (defun anki-editor-cloze-region-auto-incr (&optional arg)
       "Cloze region without hint and increase card number."
@@ -773,14 +778,14 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;; Org-capture templates
   (setq org-my-anki-file "~/org/anki.org")
 
-	     
 
 
 
 
 
 
-	     
+
+
   ;;              '("a" "Anki basic"
   ;;                entry
   ;;                (file+headline org-my-anki-file "Dispatch Shelf")
