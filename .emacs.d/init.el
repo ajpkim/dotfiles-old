@@ -50,6 +50,7 @@
  '(flymake-error-bitmap '(flymake-double-exclamation-mark modus-theme-fringe-red))
  '(flymake-note-bitmap '(exclamation-mark modus-theme-fringe-cyan))
  '(flymake-warning-bitmap '(exclamation-mark modus-theme-fringe-yellow))
+ '(global-hl-line-mode t)
  '(highlight-tail-colors '(("#2f4a00" . 0) ("#00415e" . 20)))
  '(hl-todo-keyword-faces
    '(("HOLD" . "#cfdf30")
@@ -81,7 +82,7 @@
       nil)
      ("v" "Active tasks" alltodo "ACTIVE" nil)))
  '(org-agenda-files
-   '("~/org/anki-exports.org" "~/org/self.org" "~/org/anki.org" "~/org/development.org" "~/org/inbox.org" "~/org/work.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-04-25.org"))
+   '("~/org/anki-exports.org" "~/org/self.org" "~/org/anki.org" "~/org/development.org" "~/org/inbox.org" "~/org/work.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-05-05.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
    '(anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
@@ -121,3 +122,5 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :foundry "PfEd" :family "DejaVu Sans Mono"))))
  '(variable-pitch ((t (:family "Ubuntu")))))
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)

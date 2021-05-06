@@ -20,11 +20,28 @@
   ;; (setq-default cursor-type `bar)
   ;; (set-cursor-color "#a5fbff")
   (blink-cursor-mode 1)
-  (when window-system (global-hl-line-mode t))
   ;; (global-prettify-symbols-mode t)
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
+
+  (global-hl-line-mode)
+  ;;;; Trying to disable line highlighting in terminal... No success
+  ;; (setq global-hl-line-mode t)
+  ;; (if (display-graphic-p) (global-hl-line-mode t))
+  ;; (add-hook 'term-mode-hook '(lambda() (set (make-local-variable 'global-hl-line-mode) nil)))
+
+  ;; (global-hl-line-mode)
+  ;; (make-variable-buffer-local 'global-hl-line-mode)
+  ;; (add-hook 'term-mode-hook (lambda () (setq global-hl-line-mode nil)))
+
+  ;; (add-hook 'term-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+
+  ;; ;; let's enable it for all programming major modes
+  ;; (add-hook 'prog-mode-hook #'hl-line-mode)
+  ;; ;; and for all modes derived from text-mode
+  ;; (add-hook 'text-mode-hook #'hl-line-mode)
+
 
   ;; Allow Emacs to access content from clipboard.
   (setq x-select-enable-clipboard t
@@ -336,34 +353,37 @@ First attempt at custom commands...
 :END:
 
 #+begin_src emacs-lisp
-  (setq org-capture-templates
-        '(
-          ;; Anki templates
-          ("a" "Anki")
-          ("aa" "Anki basic"
-           entry
-           (file+headline org-my-anki-file "Dispatch Shelf")
-           "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
-          ("ac" "Anki cloze"
-           entry
-           (file+headline org-my-anki-file "Dispatch Shelf")
-           "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
-          ("at" "Anki Type"
-           entry
-           (file+headline org-my-anki-file "Dispatch Shelf")
-           "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
-          ;; General templates
-          ("c" "Add a task" entry (file "~/org/inbox.org")
-           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
-           :prepend t
-           )
-          ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
-           "%?"
-           :tree-type 'daily)
-          ("f" ">5m" entry (file "~/org/inbox.org")
-           "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
-           :prepend t)
-          ))
+    (setq org-capture-templates
+          '(
+            ;; Anki templates
+            ("a" "Anki")
+            ("aa" "Anki basic"
+             entry
+             (file+headline org-my-anki-file "Dispatch Shelf")
+             "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+            ("ac" "Anki cloze"
+             entry
+             (file+headline org-my-anki-file "Dispatch Shelf")
+             "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
+            ("at" "Anki Type"
+             entry
+             (file+headline org-my-anki-file "Dispatch Shelf")
+             "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+            ;; General templates
+            ("c" "Add a task" entry (file "~/org/inbox.org")
+             "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
+             :prepend t
+             )
+            ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
+             "%?"
+             :tree-type 'daily)
+            ("f" ">5m" entry (file "~/org/inbox.org")
+             "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
+             :prepend t)
+            ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Jobs")
+             "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?"
+             :prepend t)
+            ))
 #+end_src
 
 ** Refile
@@ -516,6 +536,10 @@ First attempt at custom commands...
   ;;   (save-buffer)
   ;;   (kill-buffer-and-window))
   ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'ak/org-journal-save-entry-and-exit)
+#+end_src
+** Clocking
+#+begin_src emacs-lisp
+  (setq org-clocktable-defaults '(:maxlevel 2 :lang "en" :scope file :block nil :wstart 1 :mstart 1 :tstart nil :tend nil :step nil :stepskip0 nil :fileskip0 t :tags nil :match nil :emphasize nil :link nil :narrow 40! :indent t :hidefiles nil :formula nil :timestamp nil :level nil :tcolumns nil :formatter nil))
 #+end_src
 ** LaTeX
 :PROPERTIES:
