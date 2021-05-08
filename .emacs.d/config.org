@@ -1,3 +1,6 @@
+:PROPERTIES:
+:ID:       0dc72d79-3d75-42df-bff4-4dc1330fc942
+:END:
 #+TITLE: Emacs Config
 #+STARTUP: overview
 :PROPERTIES:
@@ -148,7 +151,7 @@ Modus-Vivendi
                   (lambda () (interactive) (find-file-other-frame "~/org/inbox.org")))
   (global-set-key (kbd "C-c f m")
                   (lambda () (interactive) (find-file-other-frame "~/org/media-lists.org")))
-  (global-set-key (kbd "C-c f p")
+  (global-set-key (kbd "C-c f s")
                   (lambda () (interactive) (find-file-other-frame "~/org/self.org")))
   (global-set-key (kbd "C-c f l")
                   (lambda () (interactive) (find-file-other-frame "~/org/learn.org")))
@@ -380,7 +383,7 @@ First attempt at custom commands...
             ("f" ">5m" entry (file "~/org/inbox.org")
              "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
              :prepend t)
-            ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Jobs")
+            ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Apps")
              "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?"
              :prepend t)
             ))
@@ -497,19 +500,20 @@ First attempt at custom commands...
     :ensure t
     :defer t
     :init
-    ;; ;; Change default prefix key; needs to be set before loading org-journal
-    (setq org-journal-prefix-key "")  ;; disable default key-bindings: https://github.com/bastibe/org-journal/pull/278#issuecomment-664986601
+    (setq org-journal-prefix-key "")  ;; disable default key-bindings: https://github.com/bastibe/org-journal/pull/278#issuecomment-664986601 (allows for user customization entirely)
     :config
-    (setq org-journal-dir "~/org/journal/"
-          org-journal-date-format "%a, %Y-%m-%d"
-          org-journal-date-prefix "#+TITLE: "  ;; this string prefixes the data at the top of journal file
-          org-journal-time-prefix "* "  ;; Entries are 1st level headers
-          org-journal-file-format "%Y-%m-%d.org"
-          org-journal-file-type 'daily
-          org-journal-carryover-items ""  ;; Default behavior is to carryover TODOs.
-          org-journal-enable-agenda-integration t  ;; Add current and future journal entries to agenda
-          )
+    (setq  org-journal-dir "~/org/journal/"
+           org-journal-date-format "%a, %Y-%m-%d"
+           org-journal-date-prefix "* "
+           org-journal-time-prefix "** "  ;; Entries are 2nd level headers
+           org-journal-file-header "#+TITLE: %a, %Y-%m-%d\n* Time\n\n#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 2 :block today\n#+END:\n"
+           org-journal-file-format "%Y-%m-%d.org"
+           org-journal-file-type 'daily
+           org-journal-carryover-items ""  ;; Default behavior is to carryover TODOs.
+           org-journal-enable-agenda-integration t  ;; Add current and future journal entries to agenda
+           )
     :bind (("C-c j" . org-journal-new-entry)
+           ("C-c s" . org-journal-search)
            ))
 
   ;; DOESN'T WORK...
@@ -528,16 +532,11 @@ First attempt at custom commands...
       (org-narrow-to-subtree))
     (goto-char (point-max)))
 
-  ;; (defun ak/org-journal-save-entry-and-exit()
-  ;;   "Simple convenience function.
-  ;;   Saves the buffer of the current day's entry and kills the window
-  ;;   Similar to org-capture like behavior"
-  ;;   (interactive)
-  ;;   (save-buffer)
-  ;;   (kill-buffer-and-window))
-  ;; (define-key org-journal-mode-map (kbd "C-x C-s") 'ak/org-journal-save-entry-and-exit)
 #+end_src
 ** Clocking
+:PROPERTIES:
+:ID:       2610f700-c655-4908-8cd2-638e8e6e95a1
+:END:
 #+begin_src emacs-lisp
   (setq org-clocktable-defaults '(:maxlevel 2 :lang "en" :scope file :block nil :wstart 1 :mstart 1 :tstart nil :tend nil :step nil :stepskip0 nil :fileskip0 t :tags nil :match nil :emphasize nil :link nil :narrow 40! :indent t :hidefiles nil :formula nil :timestamp nil :level nil :tcolumns nil :formatter nil))
 #+end_src
