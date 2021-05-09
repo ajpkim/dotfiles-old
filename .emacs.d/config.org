@@ -326,6 +326,7 @@ Modus-Vivendi
 :ID:       927cbd70-34fa-4c81-9a32-bf8a72a9af5e
 :END:
 #+begin_src emacs-lisp
+<<<<<<< HEAD
   (setq org-agenda-custom-commands	;
         '(
           ;; Library 
@@ -334,6 +335,15 @@ Modus-Vivendi
            ;; For some reason the below 2 lines overwrite agenda files leaving on library.org...
            ((org-agenda-overriding-header "Active Library Items: ")
             (org-agenda-files '("~/org/work.org"))))
+=======
+  (setq org-agenda-custom-commands
+        '(
+          ;; Library 
+          ("l" . "Library Views")
+          ("la" "Active" tags-todo "TODO=\"ACTIVE\""	 
+           ((org-agenda-overriding-header "Active Library Items: ")
+            (org-agenda-files '("~/org/library.org"))))
+>>>>>>> ae2938e7e44ebfa072dc06ce11c9bcfacd24db66
           ("lh" "Hold" tags-todo "TODO={Hold}"
            ((org-agenda-files '("~/org/library.org"))))
           ("lr" "Reading list" tags-todo "TODO=\"TODO\"+Type={article\\|book\\|paper}"
@@ -342,11 +352,19 @@ Modus-Vivendi
            ((org-agenda-files '("~/org/library.org"))))
           ("lw" "Watch list" tags "TODO=\"TODO\"+Type={film\\|lecture\\|show\\|video}"
            ((org-agenda-files '("~/org/library.org"))))
+<<<<<<< HEAD
 	
 
           ("l0" "0 effort" tags "TODO=\"TODO\"+Effort=\"0\""
            ((org-agenda-files '("~/org/library.org"))))
       
+=======
+
+
+          ("l0" "0 effort" tags "TODO=\"TODO\"+Effort=\"0\""
+           ((org-agenda-files '("~/org/library.org"))))
+
+>>>>>>> ae2938e7e44ebfa072dc06ce11c9bcfacd24db66
 	
           ("i" "Inbox" alltodo ""
            ((org-agenda-files '("~/org/inbox.org"))))
