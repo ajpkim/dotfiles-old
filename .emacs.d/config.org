@@ -78,6 +78,25 @@
         (delete-file file))))
 #+END_SRC
 * Base Font and faces
+* Util Funcs
+:PROPERTIES:
+:ID:       14f157e2-fb12-4805-98d5-62eacb4a6cf2
+:END:
+#+begin_src emacs-lisp
+  (defun sort-words (reverse beg end)
+  
+    "From https://www.emacswiki.org/emacs/SortWords 
+  Sort words in region alphabetically, in REVERSE if negative.
+      Prefixed with negative \\[universal-argument], sorts in reverse.
+  
+      The variable `sort-fold-case' determines whether alphabetic case
+      affects the sort order.
+  
+      See `sort-regexp-fields'."
+    (interactive "*P\nr")
+    (sort-regexp-fields reverse "\\w+" "\\&" beg end))
+
+#+end_src
 * Themes
 :PROPERTIES:
 :ID:       0f66277e-5f9f-48b6-b90d-0c02805b8446
@@ -302,28 +321,35 @@ Modus-Vivendi
   (setq org-agenda-todo-ignore-deadlines nil
         org-agenda-todo-ignore-scheduled nil)
 #+end_src
-*** TODO Custom agenda views
+*** Custom agenda views
 :PROPERTIES:
 :ID:       927cbd70-34fa-4c81-9a32-bf8a72a9af5e
 :END:
-
-First attempt at custom commands...
 #+begin_src emacs-lisp
-  ;; (setq org-agenda-custom-commands
-  ;;       '(("n" "Simple agenda/tasks view"
-  ;;          ((agenda "")
-  ;;           (alltodo "")))
-  ;;         ("x" "NEXT and STARTED tasks"
-  ;;          ((todo "STARTED")
-  ;;           (todo "NEXT")))
-  ;;         ("d" "Archiving" todo "DONE|PASS")
-  ;;         ("w" "Writing inbox"
-  ;;          ((tags "wi")))
-  ;;         ("W" "Weekend"
-  ;;          ((tags "weekend")))
-  ;;         ("r" "Review items"
-  ;;          ((tags "review")))
-  ;;         ))
+  (setq org-agenda-custom-commands
+        '(
+          ;; Library 
+          ("l" . "Library Views")
+          ("la" "Active" tags-todo "TODO=\"ACTIVE\""	 
+           ((org-agenda-overriding-header "Active Library Items: ")
+            (org-agenda-files '("~/org/library.org"))))
+          ("lh" "Hold" tags-todo "TODO={Hold}"
+           ((org-agenda-files '("~/org/library.org"))))
+          ("lr" "Reading list" tags-todo "TODO=\"TODO\"+Type={article\\|book\\|paper}"
+           ((org-agenda-files '("~/org/library.org"))))
+          ("ls" "Study materials" tags "Type={study}+TODO={TODO\\|ACTIVE}"
+           ((org-agenda-files '("~/org/library.org"))))
+          ("lw" "Watch list" tags "TODO=\"TODO\"+Type={film\\|lecture\\|show\\|video}"
+           ((org-agenda-files '("~/org/library.org"))))
+
+
+          ("l0" "0 effort" tags "TODO=\"TODO\"+Effort=\"0\""
+           ((org-agenda-files '("~/org/library.org"))))
+
+	
+          ("i" "Inbox" alltodo ""
+           ((org-agenda-files '("~/org/inbox.org"))))
+          ))
 #+end_src
 ** TODOs
 :PROPERTIES:
@@ -354,39 +380,86 @@ First attempt at custom commands...
 :PROPERTIES:
 :ID:       3d4c732d-b5aa-466c-b68e-a832f85d27a5
 :END:
-
 #+begin_src emacs-lisp
-    (setq org-capture-templates
-          '(
-            ;; Anki templates
-            ("a" "Anki")
-            ("aa" "Anki basic"
-             entry
-             (file+headline org-my-anki-file "Dispatch Shelf")
-             "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
-            ("ac" "Anki cloze"
-             entry
-             (file+headline org-my-anki-file "Dispatch Shelf")
-             "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
-            ("at" "Anki Type"
-             entry
-             (file+headline org-my-anki-file "Dispatch Shelf")
-             "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
-            ;; General templates
-            ("c" "Add a task" entry (file "~/org/inbox.org")
-             "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
-             :prepend t
-             )
-            ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
-             "%?"
-             :tree-type 'daily)
-            ("f" ">5m" entry (file "~/org/inbox.org")
-             "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
-             :prepend t)
-            ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Apps")
-             "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?"
-             :prepend t)
-            ))
+  (setq org-capture-templates
+        '(
+          ;; Anki templates
+          ("a" "Anki")
+          ("aa" "Anki basic"
+           entry
+           (file+headline org-my-anki-file "Dispatch Shelf")
+           "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+          ("ac" "Anki cloze"
+           entry
+           (file+headline org-my-anki-file "Dispatch Shelf")
+           "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
+          ("at" "Anki Type"
+           entry
+           (file+headline org-my-anki-file "Dispatch Shelf")
+           "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+
+          ;; Library templates
+          ("l" "Library")
+          ("lA" "Album"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: album\n:Creator: %^\n:Published: %^\n:END:\n%?"
+           :prepend t)
+          ("la" "Article"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: article\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           :prepend t)
+          ("lb" "Book"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: book\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           :prepend t)
+          ("lf" "Film"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: film\n:Creator: %^\n:Published: %^\n:END:\n%?"
+           :prepend t)
+          ("lc" "Lecture"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: lecture\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           :prepend t)
+          ("lp" "Paper"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: paper\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           :prepend t)
+          ("lP" "Podcast"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: podcast\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           :prepend t)
+          ("lS" "Show"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: show\n:Creator: %^\n:Published: %^\n:END:\n%?"
+           :prepend t)
+          ("ls" "Study"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: study\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           :prepend t)
+          ("lt" "Textbook"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: textbook\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           :prepend t)
+          ("lv" "Video"
+           entry (file "~/org/library.org")
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: video\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           :prepend t)
+
+          ;; General templates
+          ("c" "Add a task" entry (file "~/org/inbox.org")
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
+           :prepend t
+           )
+          ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
+           "%?"
+           :tree-type 'daily)
+          ("f" ">5m" entry (file "~/org/inbox.org")
+           "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
+           :prepend t)
+          ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Apps")
+           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?"
+           :prepend t)
+          ))
 #+end_src
 
 ** Refile

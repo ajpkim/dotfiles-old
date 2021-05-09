@@ -82,7 +82,7 @@
       nil)
      ("v" "Active tasks" alltodo "ACTIVE" nil)))
  '(org-agenda-files
-   '("~/org/anki-exports.org" "~/org/self.org" "~/org/anki.org" "~/org/development.org" "~/org/inbox.org" "~/org/work.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-05-07.org"))
+   '("~/org/library.org" "~/org/anki-exports.org" "~/org/self.org" "~/org/anki.org" "~/org/development.org" "~/org/inbox.org" "~/org/work.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-05-08.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
    '(anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
