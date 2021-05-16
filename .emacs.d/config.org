@@ -326,16 +326,6 @@ Modus-Vivendi
 :ID:       927cbd70-34fa-4c81-9a32-bf8a72a9af5e
 :END:
 #+begin_src emacs-lisp
-<<<<<<< HEAD
-  (setq org-agenda-custom-commands	;
-        '(
-          ;; Library 
-          ("l" . "Library Views")
-          ("la" "Active" tags-todo "TODO=\"ACTIVE\""
-           ;; For some reason the below 2 lines overwrite agenda files leaving on library.org...
-           ((org-agenda-overriding-header "Active Library Items: ")
-            (org-agenda-files '("~/org/work.org"))))
-=======
   (setq org-agenda-custom-commands
         '(
           ;; Library 
@@ -343,7 +333,6 @@ Modus-Vivendi
           ("la" "Active" tags-todo "TODO=\"ACTIVE\""	 
            ((org-agenda-overriding-header "Active Library Items: ")
             (org-agenda-files '("~/org/library.org"))))
->>>>>>> ae2938e7e44ebfa072dc06ce11c9bcfacd24db66
           ("lh" "Hold" tags-todo "TODO={Hold}"
            ((org-agenda-files '("~/org/library.org"))))
           ("lr" "Reading list" tags-todo "TODO=\"TODO\"+Type={article\\|book\\|paper}"
@@ -352,19 +341,10 @@ Modus-Vivendi
            ((org-agenda-files '("~/org/library.org"))))
           ("lw" "Watch list" tags "TODO=\"TODO\"+Type={film\\|lecture\\|show\\|video}"
            ((org-agenda-files '("~/org/library.org"))))
-<<<<<<< HEAD
-	
-
-          ("l0" "0 effort" tags "TODO=\"TODO\"+Effort=\"0\""
-           ((org-agenda-files '("~/org/library.org"))))
-      
-=======
-
 
           ("l0" "0 effort" tags "TODO=\"TODO\"+Effort=\"0\""
            ((org-agenda-files '("~/org/library.org"))))
 
->>>>>>> ae2938e7e44ebfa072dc06ce11c9bcfacd24db66
 	
           ("i" "Inbox" alltodo ""
            ((org-agenda-files '("~/org/inbox.org"))))
@@ -631,6 +611,10 @@ Modus-Vivendi
 :END:
 #+begin_src emacs-lisp
   (setq org-clocktable-defaults '(:maxlevel 2 :lang "en" :scope file :block nil :wstart 1 :mstart 1 :tstart nil :tend nil :step nil :stepskip0 nil :fileskip0 t :tags nil :match nil :emphasize nil :link nil :narrow 40! :indent t :hidefiles nil :formula nil :timestamp nil :level nil :tcolumns nil :formatter nil))
+
+
+  (setq org-clock-mode-line-total 'current
+        org-clock-report-include-clocking-task t)
 #+end_src
 ** LaTeX
 :PROPERTIES:
@@ -965,7 +949,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :ensure t
     :config
     (setq olivetti-body-width 80)
-    ;; (setq olivetti-minimum-body-width 50)
+    (setq olivetti-minimum-body-width 50)
     :bind
     ("C-c o" . olivetti-mode))
 #+end_src
