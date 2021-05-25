@@ -67,4 +67,7 @@ SCRIPTS="~/scripts"
 # Remap Caps Lock to Control
 setxkbmap -layout us -option ctrl:nocaps
 
+eval "$(rbenv init -)"
+
 echo "Yo0o0o :)"
+

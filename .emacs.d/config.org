@@ -27,25 +27,7 @@
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
-
   (global-hl-line-mode)
-  ;;;; Trying to disable line highlighting in terminal... No success
-  ;; (setq global-hl-line-mode t)
-  ;; (if (display-graphic-p) (global-hl-line-mode t))
-  ;; (add-hook 'term-mode-hook '(lambda() (set (make-local-variable 'global-hl-line-mode) nil)))
-
-  ;; (global-hl-line-mode)
-  ;; (make-variable-buffer-local 'global-hl-line-mode)
-  ;; (add-hook 'term-mode-hook (lambda () (setq global-hl-line-mode nil)))
-
-  ;; (add-hook 'term-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-
-  ;; ;; let's enable it for all programming major modes
-  ;; (add-hook 'prog-mode-hook #'hl-line-mode)
-  ;; ;; and for all modes derived from text-mode
-  ;; (add-hook 'text-mode-hook #'hl-line-mode)
-
-
   ;; Allow Emacs to access content from clipboard.
   (setq x-select-enable-clipboard t
         x-select-enable-primary t)
@@ -135,21 +117,9 @@ Modus-Vivendi
   ;;    '(bold ((t (:foreground Plum1 :weight bold))))
   ;;    '(org-level-1 ((t (:inherit bold :foreground LightSkyBlue1 :height 1.3))))
   ;;    '(org-level-2 ((t nil)))
-  ;;    ))		
-                                          ;
+  ;;    ))		                                          ;
 #+end_src
 
-* Tasks
-:PROPERTIES:
-:ID:       a52d68e1-3446-4169-8f76-3dcbc79d30a7
-:END:
-#+begin_src emacs-lisp
-  (with-eval-after-load ""
-    (custom-theme-set-faces
-     'cyberpunk
-     '(org-level-2 ((t (:extend nil :foreground "SeaGreen1"))))))
-
-#+end_src
 * Modeline
 :PROPERTIES:
 :ID:       5099a7e6-066f-41ac-a992-60fe2eb0ccea
@@ -168,12 +138,14 @@ Modus-Vivendi
                   (lambda () (interactive) (find-file-other-frame "~/.emacs.d/config.org")))
   (global-set-key (kbd "C-c f i")
                   (lambda () (interactive) (find-file-other-frame "~/org/inbox.org")))
-  (global-set-key (kbd "C-c f m")
-                  (lambda () (interactive) (find-file-other-frame "~/org/media-lists.org")))
-  (global-set-key (kbd "C-c f s")
-                  (lambda () (interactive) (find-file-other-frame "~/org/self.org")))
+  (global-set-key (kbd "C-c f I")
+                  (lambda () (interactive) (find-file-other-frame "~/org/interwebs.org")))
   (global-set-key (kbd "C-c f l")
                   (lambda () (interactive) (find-file-other-frame "~/org/learn.org")))
+  (global-set-key (kbd "C-c f L")
+                  (lambda () (interactive) (find-file-other-frame "~/org/library.org")))
+  (global-set-key (kbd "C-c f s")
+                  (lambda () (interactive) (find-file-other-frame "~/org/self.org")))
   (global-set-key (kbd "C-c f w")
                   (lambda () (interactive) (find-file-other-frame "~/org/work.org")))
 
@@ -214,8 +186,7 @@ Modus-Vivendi
           )
     :hook
     (org-mode . visual-line-mode))
-  ;; (org-mode . olivetti-mode))
-#+END_SRC
+  #+END_SRC
 ** Global Org keys
 :PROPERTIES:
 :ID:       1b7b7d27-43c8-44e2-8679-67e8af4e153f
@@ -255,7 +226,6 @@ Modus-Vivendi
 :END:
 #+begin_src emacs-lisp
   (require 'ox-publish)
-  ;; (require 'ox-html)
   (setq org-publish-project-alist
         '(
           ("ajpkim-org-posts"
@@ -286,17 +256,6 @@ Modus-Vivendi
           ))
 #+end_src
 ** Agenda
-*** Agenda files
-:PROPERTIES:
-:ID:       b7a25464-eb55-49e0-bbbb-242adaba58ef
-:END:
-- Doing manually now with =C-c [= and =C-c ]=.
-- Another solution with recursive file search:
-  - =(setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$"))=
-- Can also create a file with a /list/ of files to read and then can append and remove from this list easily (I believe).
-#+begin_src emacs-lisp
-  ;; (setq org-agenda-files '("~/org/"))
-#+end_src
 *** Base settings
 :PROPERTIES:
 :ID:       8b484d69-0fdc-46ee-a7dc-bd8b14e01e29
@@ -316,7 +275,6 @@ Modus-Vivendi
 :PROPERTIES:
 :ID:       b66d5f7f-1316-4d29-ac4a-410b78634969
 :END:
-- Turned off.
 #+begin_src emacs-lisp
   (setq org-agenda-todo-ignore-deadlines nil
         org-agenda-todo-ignore-scheduled nil)
@@ -355,6 +313,7 @@ Modus-Vivendi
 :ID:       b97b0215-7ab5-4d7e-ae0a-330b9ad3730e
 :END:
 - The "!" triggers autologging (into the LOGBOOK). Not using anymore because of new archive workflow.
+  - e.g. =(sequence "TODO(t!)"...=
 #+begin_src emacs-lisp
   (setq org-todo-keywords
         '((sequence "TODO(t)" "ACTIVE(a)" "HOLD(h)" "SOMEDAY(s)" "PROJECT(P)" "|" "DONE(d)" "PASS(p)")))
@@ -421,7 +380,7 @@ Modus-Vivendi
            :prepend t)
           ("lp" "Paper"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: paper\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: paper\n:Creator: %^\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
            :prepend t)
           ("lP" "Podcast"
            entry (file "~/org/library.org")
@@ -455,6 +414,9 @@ Modus-Vivendi
           ("f" ">5m" entry (file "~/org/inbox.org")
            "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
            :prepend t)
+          ("i" "InterWebs" entry (file "~/org/interwebs.org")
+           "* %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
+           :prepend t)
           ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Apps")
            "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?"
            :prepend t)
@@ -481,6 +443,7 @@ Modus-Vivendi
           ("read" . ?r)
           ("recur" . ?R)
           ("5m" . ?f)
+	
           ;; Anki tags for anki-editor and exporting
           ("anki")  ;; Helpful to filter out anki cards for tag searches
           ("linux" . ?l)
@@ -500,11 +463,12 @@ Modus-Vivendi
    'org-babel-load-languages
    '((emacs-lisp . t)
      (haskell    . t)
-     (python     .t)
-     (sql        .t)
+     (python     . t)
+     (sql        . t)
      (latex      . t)
      (js         . t)
      (shell      . t)
+     (scheme     . t)
      ))
 #+end_src
 ** Org-roam
@@ -577,7 +541,7 @@ Modus-Vivendi
     (setq  org-journal-dir "~/org/journal/"
            org-journal-date-format "%a, %Y-%m-%d"
            org-journal-date-prefix "* "
-           org-journal-time-prefix "** "  ;; Entries are 2nd level headers
+           org-journal-time-prefix "** "
            org-journal-file-header "#+TITLE: %a, %Y-%m-%d\n* Time\n\n#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 2 :block today\n#+END:\n"
            org-journal-file-format "%Y-%m-%d.org"
            org-journal-file-type 'daily
@@ -591,7 +555,6 @@ Modus-Vivendi
   ;; DOESN'T WORK...
   (defcustom org-journal-find-file 'find-file
     "The function to use when opening an entry.
-
   Set this to `find-file' if you don't want org-journal to split your window."
     :type 'function)
 
@@ -603,7 +566,6 @@ Modus-Vivendi
     (unless (eq org-journal-file-type 'daily)
       (org-narrow-to-subtree))
     (goto-char (point-max)))
-
 #+end_src
 ** Clocking
 :PROPERTIES:
@@ -612,18 +574,14 @@ Modus-Vivendi
 #+begin_src emacs-lisp
   (setq org-clocktable-defaults '(:maxlevel 2 :lang "en" :scope file :block nil :wstart 1 :mstart 1 :tstart nil :tend nil :step nil :stepskip0 nil :fileskip0 t :tags nil :match nil :emphasize nil :link nil :narrow 40! :indent t :hidefiles nil :formula nil :timestamp nil :level nil :tcolumns nil :formatter nil))
 
-
   (setq org-clock-mode-line-total 'current
         org-clock-report-include-clocking-task t)
 #+end_src
-** LaTeX
-:PROPERTIES:
-:ID:       91f5cce8-3b02-491a-886a-9f4c464c2f67
-:END:
-#+begin_src emacs-lisp
-
-#+end_src
 ** toc-org
+:PROPERTIES:
+:ID:       5808be45-a815-4030-b08b-5611cc0074eb
+:END:
+- Package for generating table of contents for blog posts and whatnot.
 :PROPERTIES:
 :ID:       f66f207e-fabe-46de-8584-c1d6294641b3
 :END:
@@ -632,10 +590,7 @@ Modus-Vivendi
     :ensure t
     :config
     (setq toc-org-max-depth 3
-          toc-org-hrefify-default "org"  ;; Options are org or gh (github)
-          )
-    )
-
+          toc-org-hrefify-default "org"))  ;; Options are org or gh (github)
 #+end_src
 ** Org-id
 :PROPERTIES:
@@ -643,40 +598,9 @@ Modus-Vivendi
 :END:
 - Generate IDs for linking purposes when execute 'C-c l'
 #+begin_src emacs-lisp
-  (setq org-id-link-to-org-use-id t  ;; May want to set to "if-interactive"
-        )
+  ;; May want to set to "if-interactive"
+  (setq org-id-link-to-org-use-id t)
 #+end_src
-- Testing : [[https://writequit.org/articles/emacs-org-mode-generate-ids.html#automating-id-creation][SO]]
-#+begin_src emacs-lisp
-  (defun ak/org-uuid-custom-id-get (&optional pom create prefix)
-    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
-     If POM is nil, refer to the entry at point. If the entry does
-     not have an CUSTOM_ID, the function returns nil. However, when
-     CREATE is non nil, create a CUSTOM_ID if none is present
-     already. PREFIX will be passed through to `org-id-new'. In any
-     case, the CUSTOM_ID of the entry is returned."
-    (interactive)
-    (org-with-point-at pom
-      (let ((id (org-entry-get nil "CUSTOM_ID")))
-        (cond
-         ((and id (stringp id) (string-match "\\S-" id))
-          id)
-         (create
-          ;; (setq id (org-id-new (concat prefix "h")))
-          (setq id (org-id-new))
-          (org-entry-put pom "CUSTOM_ID" id)
-          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-          id)))))
-
-  (defun ak/org-add-uuid-custom-ids-to-headlines-in-file ()
-    "Add CUSTOM_ID properties to all headlines in the
-     current file which do not already have one."
-    (interactive)
-    (org-map-entries (lambda () (ak/org-uuid-cstom-id-get (point) 'create))))
-
-#+end_src
-- Another option with CUSTOM_IDs that are based on headers (want this for blog exports)
-- IMPROVE THE regexp replace to make better urls
 #+begin_src emacs-lisp
   (defun ak/org-publish-add-header-text-custom-ids ()
     "Add CUSTOM_ID property to each header in current buffer that is based on header text."
@@ -697,7 +621,6 @@ Modus-Vivendi
          (lambda ()
            (org-entry-put (point) "CUSTOM_ID" (get-id)))))))
 #+end_src
-- Another one that does more parsing of non-alphanumerics
 #+begin_src emacs-lisp
   (defun ak/org-get-headline-based-ids (&rest _) 
     "Source: https://alhassy.github.io/AlBasmala.html#Ensuring-Useful-HTML-Anchors 
@@ -781,7 +704,7 @@ Modus-Vivendi
     :after org
     :hook (org-mode . org-bullets-mode))
 #+END_SRC
-** org-format-latex
+** LaTeX
 :PROPERTIES:
 :ID:       cccbaae3-f942-4c93-98c5-a490a3e1edcc
 :END:
@@ -813,23 +736,11 @@ Modus-Vivendi
 :PROPERTIES:
 :ID:       d2ae51b2-7f74-4bc9-88f5-2a1fdfc4540c
 :END:
-- Changed mind. I want the blank lines now (esp. for journal).
 #+begin_src emacs-lisp
   ;; (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   (setf org-blank-before-new-entry '((heading . auto)
                                     (plain-list-item . auto)))
 #+end_src
-** Possible additions...
-*** Setting fonts, etc.
-  (dolist (face `((org-level-1 . 1.2 )
-		  (org-level-2 . 1.1 )
-		  (org-level-3 . 1.05 )
-		  (org-level-4 . 1.0 )
-		  (org-level-5 . 1.0 )
-		  (org-level-6 . 1.1 )
-		  (org-level-7 . 1.1 )
-		  (org-level-8 . 1.1 )))
-		  (set-face-attribute (car face) nil :font "courier" :weight `regular :height (cdr face)))
 * anki-editor
 :PROPERTIES:
 :ID:       27e07ae9-a8ec-4b08-b0d1-ccbf85a930f7
@@ -870,37 +781,10 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
       (anki-editor-push-notes '(4))
       (anki-editor-reset-cloze-number))
     ;; Initialize
-    (anki-editor-reset-cloze-number)
-    )
-
+    (anki-editor-reset-cloze-number))
 
   ;; Org-capture templates
   (setq org-my-anki-file "~/org/anki.org")
-
-
-
-
-
-
-
-
-
-  ;;              '("a" "Anki basic"
-  ;;                entry
-  ;;                (file+headline org-my-anki-file "Dispatch Shelf")
-  ;;                "* %U  \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n"))
-  ;; (add-to-list 'org-capture-templates
-  ;;              '("A" "Anki cloze"
-  ;;                entry
-  ;;                (file+headline org-my-anki-file "Dispatch Shelf")
-  ;;                "* %U  ^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n\n** Extra\n\n"))
-  ;; (add-to-list 'org-capture-templates
-  ;;              '("T" "Anki Type"
-  ;;                entry
-  ;;                (file+headline org-my-anki-file "Dispatch Shelf")
-  ;;                "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n"))
-
-
 #+end_src
 * Ivy, counsel, swiper
 :PROPERTIES:
@@ -911,17 +795,9 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :ensure t
     :config
     (setq ivy-use-virtual-buffers t
-          ivy-count-format "%d/%d ")
-    )
+          ivy-count-format "%d/%d "))
 
   (ivy-mode 1)
-#+end_src
-* Eww
-:PROPERTIES:
-:ID:       eae6f0ac-5480-4ea3-8389-5889c487858f
-:END:
-#+begin_src emacs-lisp
-
 #+end_src
 * Multiple cursors
 :PROPERTIES:
@@ -933,7 +809,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :ensure t
     :config
     (global-set-key (kbd "C-c m e") 'mc/edit-lines)
-    (global-set-key (kbd "C-c m f") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-c m n") 'mc/mark-next-like-this)
     (global-set-key (kbd "C-c m b") 'mc/mark-previous-like-this)
     (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
     (define-key mc/keymap (kbd "<return>") nil)  ;; Allows us to insert new-line with <RET> and still disable multiple-cursor mode with C-g
@@ -968,6 +844,44 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     ;; :config
     ;; (require 'smartparens-config)
     ;; (show-smartparens-global-mode 1))
+#+end_src
+* Company
+:PROPERTIES:
+:ID:       2677331e-b6f1-45c5-9daf-cdccae0f07ec
+:END:
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :config
+    (setq company-idle-delay 0
+          company-show-numbers t
+          company-minimum-prefix-length 2)
+    :init
+    (add-hook 'prog-mode-hook 'global-company-mode))
+
+  ;; (use-package company-quickhelp
+  ;;   ;; Quickhelp may incorrectly place tooltip towards end of buffer
+  ;;   ;; See: https://github.com/expez/company-quickhelp/issues/72
+  ;;   :ensure t
+  ;;   :config
+  ;;   (company-quickhelp-mode)
+  ;;   )
+
+
+  ;; Python setup
+  (use-package anaconda-mode
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'anaconda-mode))
+
+
+  (use-package company-anaconda
+    :ensure t
+    :init (require 'rx)
+    :after (company)
+    :config
+    (add-to-list 'company-backends 'company-anaconda))
+
 #+end_src
 * which-key
 :PROPERTIES:
@@ -1004,6 +918,20 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;; (setq ido-enable-flex-matching t)
   ;; (setq ido-create-new-buffer `always)
 #+END_SRC
+* Scheme
+:PROPERTIES:
+:ID:       83ef0212-bc3f-4bd9-ac94-3e1d0cdf8ccb
+:END:
+#+begin_src emacs-lisp
+  (require 'xscheme)
+
+  (use-package geiser
+    :ensure t)
+
+  (use-package geiser-mit
+    :ensure t)
+
+#+end_src
 * ace-window
 :PROPERTIES:
 :ID:       22367bdc-0fe5-4fb7-8638-f36c4880b0d4
@@ -1037,6 +965,26 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :init
     (beacon-mode 1))
 #+END_SRC
+* Center cursor mode
+:PROPERTIES:
+:ID:       af97a265-8d6b-48d7-a19b-9c12bbd7c735
+:END:
+- See [[https://protesilaos.com/codelog/2020-07-16-emacs-focused-editing/][Prot "Focused editing"]]
+- [[https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs][Source (blog)]]
+  #+begin_src emacs-lisp
+    (define-minor-mode ak/scroll-center-cursor-mode
+      "Toggle center cursor scrolling behavior"
+      :init-value nil
+      :lighter " S="
+      :global nil
+      (if ak/scroll-center-cursor-mode
+          (setq-local scroll-preserve-screen-position t
+                      scroll-conservatively 0
+                      maximum-scroll-margin 0.5
+                      scroll-margin 99999)
+       ))
+      ;; :bind ("C-c " . ak/scroll-center-cursor-mode))
+  #+end_src
 * Config edit/reload
 :PROPERTIES:
 :ID:       ff6369e1-7ca6-443b-a21c-48faef33bf2a
@@ -1088,5 +1036,4 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;;   (("M-p" . drag-stuff-up)
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
-
 
