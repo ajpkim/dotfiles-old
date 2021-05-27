@@ -215,10 +215,21 @@ Modus-Vivendi
     :ensure t
     :config
     (setq org-html-htmlize-output-type 'css))
-  (setq org-export-with-section-numbers nil
+
+  ;;; Clean html export
+  (setq org-html-head-include-scripts nil
+        org-html-head-include-default-style nil
+        org-html-mathjax-template ""
+        org-html-postamble nil
+        org-export-with-section-numbers nil
         org-export-with-toc nil
-        org-export-with-tags nil
-        )
+        org-export-with-tags nil)
+#+end_src
+*** Clean org-html export
+#+begin_src elisp
+  (setq org-html-head-include-scripts nil)
+  (setq org-html-mathjax-template "")
+  (setq org-html-include-default-style nil)
 #+end_src
 *** Publish
 :PROPERTIES:
@@ -236,24 +247,29 @@ Modus-Vivendi
            :publishing-function org-html-publish-to-html
            :html-extension "html"
            :body-only t ;; Only export section between <body> </body>
-           :with-toc nil
-           )
+           :with-toc nil)
           ("ajpkim-html-posts"
            :base-directory "~/org/ajpkim-site/org/"
            :base-extension "html"
            :publishing-directory "~/ajpkim.github.io"
            :recursive t
-           :publishing-function org-publish-attachment
-           )
+           :publishing-function org-publish-attachment)
           ("ajpkim-assets"
            :base-directory "~/org/ajpkim-site/assets/"
            :base-extension "css\\|scss\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3"
            :publishing-directory "~/ajpkim.github.io/assets/"
            :recursive t
-           :publishing-function org-publish-attachment
-           )
+           :publishing-function org-publish-attachment)
           ("ajpkim" :components ("ajpkim-org-posts" "ajpkim-html-posts" "ajpkim-assets"))
-          ))
+
+          ("org-notes"
+           :base-directory "~/org/notes"
+           :base-extension "org"
+           :publishing-directory "~/notes/"
+           :recursive nil
+           :publishing-function org-html-publish-to-html
+           :html-extension t
+           :with-toc nil)))
 #+end_src
 ** Agenda
 *** Base settings
@@ -415,7 +431,7 @@ Modus-Vivendi
            "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
            :prepend t)
           ("i" "InterWebs" entry (file "~/org/interwebs.org")
-           "* %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
+           "* %? %^g\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
            :prepend t)
           ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Apps")
            "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?"
@@ -855,9 +871,10 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :config
     (setq company-idle-delay 0
           company-show-numbers t
-          company-minimum-prefix-length 2)
+          company-minimum-prefix-length 2
+          company-selection-wrap-around t)
     :init
-    (add-hook 'prog-mode-hook 'global-company-mode))
+    (add-hook 'prog-mode-hook 'company-mode))
 
   ;; (use-package company-quickhelp
   ;;   ;; Quickhelp may incorrectly place tooltip towards end of buffer
@@ -918,6 +935,15 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;; (setq ido-enable-flex-matching t)
   ;; (setq ido-create-new-buffer `always)
 #+END_SRC
+* Python
+** Juptyer
+:PROPERTIES:
+:ID:       2bead5a6-7a78-45d5-b8d9-c3f189600ae3
+:END:
+#+begin_src elisp
+  (use-package ein
+    :ensure t)
+#+end_src
 * Scheme
 :PROPERTIES:
 :ID:       83ef0212-bc3f-4bd9-ac94-3e1d0cdf8ccb
