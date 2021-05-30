@@ -6,7 +6,6 @@
 :PROPERTIES:
 :ID:       2b04f9c4-056e-4885-8bbf-18890db97b87
 :END:
-
 * Basic Adjustments
 :PROPERTIES:
 :ID:       893fa650-5c1d-4b03-b3b0-5220bae56043
@@ -60,39 +59,15 @@
         (delete-file file))))
 #+END_SRC
 * Base Font and faces
-* Util Funcs
-:PROPERTIES:
-:ID:       14f157e2-fb12-4805-98d5-62eacb4a6cf2
-:END:
-#+begin_src emacs-lisp
-  (defun sort-words (reverse beg end)
-  
-    "From https://www.emacswiki.org/emacs/SortWords 
-  Sort words in region alphabetically, in REVERSE if negative.
-      Prefixed with negative \\[universal-argument], sorts in reverse.
-  
-      The variable `sort-fold-case' determines whether alphabetic case
-      affects the sort order.
-  
-      See `sort-regexp-fields'."
-    (interactive "*P\nr")
-    (sort-regexp-fields reverse "\\w+" "\\&" beg end))
-
-#+end_src
 * Themes
 :PROPERTIES:
 :ID:       0f66277e-5f9f-48b6-b90d-0c02805b8446
 :END:
+** Modus Themes
+:PROPERTIES:
+:ID:       d5a5b30e-f633-43a9-8568-46a1b3d076cb
+:END:
 
-Cyberpunk
-#+begin_src emacs-lisp
-   (with-eval-after-load "cyberpunk-theme"
-     (custom-theme-set-faces
-      'cyberpunk
-      '(org-level-2 ((t (:inherit bold :foreground "SeaGreen2"))))))
-#+end_src
-
-Modus-Vivendi
 #+begin_src emacs-lisp
   (use-package modus-themes
     :ensure
@@ -100,24 +75,53 @@ Modus-Vivendi
     ;; Add all your customizations prior to loading the themes
     (setq modus-themes-slanted-constructs t
           modus-themes-bold-constructs nil
-          modus-themes-region 'no-extend)
-
+          modus-themes-region 'no-extend
+          modus-themes-org-habit 'simplified)
     ;; Load the theme files before enabling a theme
     (modus-themes-load-themes)
     :config
     ;; Load the theme of your choice:
+    ;; (my-modus-themes-tinted)
     (modus-themes-load-vivendi) ;; OR (modus-themes-load-operandi)
     :bind ("<f5>" . modus-themes-toggle))
-#+end_src
 
-#+begin_src emacs-lisp
-  ;; (with-eval-after-load "modus-vivendi-theme"
-  ;;   (custom-theme-set-faces
-  ;;    'modus-vivendi
-  ;;    '(bold ((t (:foreground Plum1 :weight bold))))
-  ;;    '(org-level-1 ((t (:inherit bold :foreground LightSkyBlue1 :height 1.3))))
-  ;;    '(org-level-2 ((t nil)))
-  ;;    ))		                                          ;
+  (define-minor-mode my-modus-themes-tinted
+         "Tweak some Modus themes colors."
+         :init-value nil
+         :global t
+         (if my-modus-themes-tinted
+             (setq modus-themes-operandi-color-overrides
+                   '((bg-main . "#fefcf4")
+                     (bg-dim . "#faf6ef")
+                     (bg-alt . "#f7efe5")
+                     (bg-hl-line . "#f4f0e3")
+                     (bg-active . "#e8dfd1")
+                     (bg-inactive . "#f6ece5")
+                     (bg-region . "#c6bab1")
+                     (bg-header . "#ede3e0")
+                     (bg-tab-bar . "#dcd3d3")
+                     (bg-tab-active . "#fdf6eb")
+                     (bg-tab-inactive . "#c8bab8")
+                     (fg-unfocused . "#55556f"))
+                   modus-themes-vivendi-color-overrides
+                   '((bg-main . "#100b17")
+                     ;; (bg-main . "#2e3440")  ; nord-0
+                     ;; (bg-main . "#3b4252")  ; nord-1
+                     (bg-dim . "#161129")
+                     (bg-alt . "#1e1e1e")  ; original  "#181732" bad in terminal		   
+                     (bg-hl-line . "#191628")
+                     (bg-active . "#282e46")
+                     (bg-inactive . "#1a1e39")
+                     (bg-region . "#393a53")
+                     (bg-header . "#202037")
+                     (bg-tab-bar . "#262b41")
+                     (bg-tab-active . "#120f18")
+                     (bg-tab-inactive . "#3a3a5a")
+                     (fg-unfocused . "#9a9aab")))
+           (setq modus-themes-operandi-color-overrides nil
+                 modus-themes-vivendi-color-overrides nil)))
+
+  ;;; Toggle my-modus-themes-tinted and reload config for using terminal
 #+end_src
 
 * Modeline
@@ -224,12 +228,6 @@ Modus-Vivendi
         org-export-with-section-numbers nil
         org-export-with-toc nil
         org-export-with-tags nil)
-#+end_src
-*** Clean org-html export
-#+begin_src elisp
-  (setq org-html-head-include-scripts nil)
-  (setq org-html-mathjax-template "")
-  (setq org-html-include-default-style nil)
 #+end_src
 *** Publish
 :PROPERTIES:
@@ -519,12 +517,12 @@ Modus-Vivendi
   (setq org-roam-capture-templates
         '(("r" "default" plain (function org-roam--capture-get-point)
            :file-name "%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+TITLE: ${title}\n#+ROAM_TAGS: %?\n"
+           :head "#+TITLE: ${title}\n#+ROAM_TAGS: %?\n#+SETUPFILE: ~/org/assets/org-export-setup-files/org-html-default-n1.setup\n"
            :unnarrowed t
            :immediate_finish t)
           ))
 
-  (defun ak/org-roam--title-to-slug (title)
+  (defun my-org-roam--title-to-slug (title)
     ;; Change to dashes instead of default underscores. Taken from org-roam source code.
     "Convert TITLE to a filename-suitable slug."
     (cl-flet* ((nonspacing-mark-p (char)
@@ -541,7 +539,7 @@ Modus-Vivendi
              (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
         (downcase slug))))
 
-  (setq org-roam-title-to-slug-function 'ak/org-roam--title-to-slug)
+  (setq org-roam-title-to-slug-function 'my-org-roam--title-to-slug)
 #+end_src
 ** Org-journal
 :PROPERTIES:
@@ -618,27 +616,7 @@ Modus-Vivendi
   (setq org-id-link-to-org-use-id t)
 #+end_src
 #+begin_src emacs-lisp
-  (defun ak/org-publish-add-header-text-custom-ids ()
-    "Add CUSTOM_ID property to each header in current buffer that is based on header text."
-    (interactive)
-    (let (id-list)
-      (cl-labels ((get-id ()
-                          (let ((id (url-encode-url
-                                     (replace-regexp-in-string
-                                      " " "-"
-                                      (org-get-heading t t t t))))
-                                (dup-counter 1))
-                            (while (member id id-list)
-                              (setq id (format "%s-%d" id dup-counter))
-                              (cl-incf dup-counter))
-                            (push id id-list)
-                            id)))
-        (org-map-entries
-         (lambda ()
-           (org-entry-put (point) "CUSTOM_ID" (get-id)))))))
-#+end_src
-#+begin_src emacs-lisp
-  (defun ak/org-get-headline-based-ids (&rest _) 
+  (defun my-org-get-headline-based-ids (&rest _) 
     "Source: https://alhassy.github.io/AlBasmala.html#Ensuring-Useful-HTML-Anchors 
     All non-alphanumeric characters are cleverly replaced with ‘-’.
     If multiple trees end-up with the same id property, issue a
@@ -733,7 +711,7 @@ Modus-Vivendi
 :END:
 - [[https://sainathadapa.github.io/emacs-spacemacs-config/org-config#org497a041][Source]]
 #+begin_src emacs-lisp
-  (defun ak/org-show-current-heading-tidily ()
+  (defun my-org-show-current-heading-tidily ()
     (interactive)
     "Show next entry, keeping other entries closed."
     (if (save-excursion (end-of-line) (outline-invisible-p))
@@ -756,6 +734,19 @@ Modus-Vivendi
   ;; (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   (setf org-blank-before-new-entry '((heading . auto)
                                     (plain-list-item . auto)))
+#+end_src
+* Ivy, counsel, swiper
+:PROPERTIES:
+:ID:       9e6e4ef7-5aa9-4301-826f-2ec5a49b4f4c
+:END:
+#+begin_src emacs-lisp
+  (use-package counsel  ;; Brings in ivy and swiper as dependencies
+    :ensure t
+    :config
+    (setq ivy-use-virtual-buffers t
+          ivy-count-format "%d/%d "))
+
+  (ivy-mode 1)
 #+end_src
 * anki-editor
 :PROPERTIES:
@@ -802,19 +793,6 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;; Org-capture templates
   (setq org-my-anki-file "~/org/anki.org")
 #+end_src
-* Ivy, counsel, swiper
-:PROPERTIES:
-:ID:       9e6e4ef7-5aa9-4301-826f-2ec5a49b4f4c
-:END:
-#+begin_src emacs-lisp
-  (use-package counsel  ;; Brings in ivy and swiper as dependencies
-    :ensure t
-    :config
-    (setq ivy-use-virtual-buffers t
-          ivy-count-format "%d/%d "))
-
-  (ivy-mode 1)
-#+end_src
 * Multiple cursors
 :PROPERTIES:
 :ID:       7932b3d1-59fc-4075-9d72-efa1b0cce146
@@ -830,36 +808,6 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
     (define-key mc/keymap (kbd "<return>") nil)  ;; Allows us to insert new-line with <RET> and still disable multiple-cursor mode with C-g
     )
-#+end_src
-* Olivetti
-:PROPERTIES:
-:ID:       8f172f3f-2017-483d-bbda-d492467620d3
-:END:
-- Centers text by widening the margins.
-#+begin_src emacs-lisp
-  (use-package olivetti
-    :ensure t
-    :config
-    (setq olivetti-body-width 80)
-    (setq olivetti-minimum-body-width 50)
-    :bind
-    ("C-c o" . olivetti-mode))
-#+end_src
-* Smartparens
-:PROPERTIES:
-:ID:       ff9cbb86-b3b8-480c-b2b8-1c3d62a10c7b
-:END:
-#+begin_src emacs-lisp
-  (use-package smartparens
-    :ensure t
-    :config
-    (progn
-      (smartparens-global-mode -1)))
-    ;; :diminish smartparens-mode
-    ;; :hook (prog-mode . smartparens-strict-mode)
-    ;; :config
-    ;; (require 'smartparens-config)
-    ;; (show-smartparens-global-mode 1))
 #+end_src
 * Company
 :PROPERTIES:
@@ -900,6 +848,36 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (add-to-list 'company-backends 'company-anaconda))
 
 #+end_src
+* olivetti
+:PROPERTIES:
+:ID:       8f172f3f-2017-483d-bbda-d492467620d3
+:END:
+- Centers text by widening the margins.
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :ensure t
+    :config
+    (setq-default olivetti-body-width 80)
+    ;; (setq-default olivetti-minimum-body-width 50)
+    :bind
+    ("C-c o" . olivetti-mode))
+#+end_src
+* Smartparens
+:PROPERTIES:
+:ID:       ff9cbb86-b3b8-480c-b2b8-1c3d62a10c7b
+:END:
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :ensure t
+    :config
+    (progn
+      (smartparens-global-mode -1)))
+    ;; :diminish smartparens-mode
+    ;; :hook (prog-mode . smartparens-strict-mode)
+    ;; :config
+    ;; (require 'smartparens-config)
+    ;; (show-smartparens-global-mode 1))
+#+end_src
 * which-key
 :PROPERTIES:
 :ID:       a67ef17a-f150-4aea-bf58-69d89b3f7572
@@ -911,6 +889,166 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :init
     (which-key-mode))
 #+END_SRC
+* Languages
+** Python
+*** Juptyer
+:PROPERTIES:
+:ID:       2bead5a6-7a78-45d5-b8d9-c3f189600ae3
+:END:
+#+begin_src elisp
+  (use-package ein
+    :ensure t)
+#+end_src
+** Scheme
+:PROPERTIES:
+:ID:       83ef0212-bc3f-4bd9-ac94-3e1d0cdf8ccb
+:END:
+#+begin_src emacs-lisp
+  (require 'xscheme)
+
+  (use-package geiser
+    :ensure t)
+
+  (use-package geiser-mit
+    :ensure t)
+
+#+end_src
+* elfeed
+:PROPERTIES:
+:ID:       d663065e-8af3-49fb-b0e4-c7607458240c
+:END:
+#+begin_src elisp
+  (use-package elfeed
+    :ensure t
+    :bind (:map elfeed-search-mode-map
+                ("R" . elfeed-mark-all-as-read)
+                ("U" . elfeed-mark-all-as-unread)
+                ("0" . elfeed-filter-out-big)
+                ("1" . elfeed-read-CCC)
+                ("2" . elfeed-read-aiml)
+                ("3" . elfeed-read-prog)
+                ("4" . elfeed-read-sports)
+                ("5" . elfeed-read-science)
+                ("6" . elfeed-read-general)
+                ("7" . elfeed-read-tech)
+                ("8" . elfeed-read-politics)))
+
+  (global-set-key (kbd "C-x w") 'elfeed)
+
+  ;; See: https://github.com/heikkil/emacs-literal-config/blob/master/emacs.org#news-feed-reader
+  (defun elfeed-mark-all-as-read ()
+    "Mark currently shown articles read"
+    (interactive)
+    (mark-whole-buffer)
+    (elfeed-search-untag-all-unread))
+
+  (defun elfeed-mark-all-as-unread ()
+    "Mark currently shown articles read"
+    (interactive)
+    (mark-whole-buffer)
+    (elfeed-search-tag-all-unread))
+
+  ;; Functions for filtering feed
+  (defun my-elfeed-filter (filter tag)
+    "Template for filtering various feed categories.
+
+     FILTER is the filter string to apply, and TAG is a short name of
+     the displayed category.
+
+     The cursor is moved to the beginning of the first feed line."
+    (setq elfeed-search-filter filter)
+    (elfeed-search-update :force)
+    (goto-char (point-min))
+    (message (concat "elfeed: show " tag)))
+
+  (defun elfeed-filter-out-big ()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread -_ " "small feeds"))
+
+  (defun elfeed-read-CCC ()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +CCC " "CCC"))
+
+  (defun elfeed-read-aiml ()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +AIML " "AI/ML"))
+
+  (defun elfeed-read-prog ()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +prog " "programming"))
+
+  (defun elfeed-read-sports ()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +sports " "sports"))
+
+  (defun elfeed-read-science ()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +science " "science"))
+
+  (defun elfeed-read-general()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +general " "general"))
+
+  (defun elfeed-read-tech()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +tech " "tech"))
+
+  (defun elfeed-read-politics()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +politics " "politics"))
+
+
+
+  ;; (defun elfeed-tag-selection-as (mytag)
+  ;;   "Returns a function that tags an elfeed entry or selection as
+  ;;   MYTAG"
+  ;;   (lambda ()
+  ;;     "Toggle a tag on an Elfeed search selection"
+  ;;     (interactive)
+  ;;     (elfeed-search-toggle-all mytag)))
+
+  ;; (defun elfeed-tag-selection-as (mytag)
+  ;;       "Toggle a tag on an Elfeed search selection"
+  ;;     (interactive)
+  ;;     (elfeed-search-toggle-all mytag))
+
+
+  ;; "_" tag applied to aggregators/companies/large feeds
+  (setq elfeed-feeds
+        '(
+          ;; AI/ML
+          ("http://distill.pub/rss.xml" AIML)
+
+          ;; CCC
+          ("http://philosophyofbrains.com/feed" CCC phil)
+          ("htts://academic.oup.com/rss/site_5412/OpenAccess.xml" CCC neuro)
+          ("http://www.reddit.com/r/alife.rss" alife reddit)
+
+          ;; Prog
+          ("http://protesilaos.com/codelog.xml" emacs prog)
+          ("http://sachachua.com/blog/category/weekly/feed/" emacs prog)
+          ("http://www.reddit.com/r/emacs.rss" _ emacs prog reddit)
+
+          ;; Science
+          ("http://writings.stephenwolfram.com/feed/" science)
+          ("http://www.scottaaronson.com/blog/?feed=rss2" science)
+	
+          ;; Sports
+          ("http://squared2020.com/rss" bball sports)
+          ("http://www.reddit.com/r/nba.rss" _ bball reddit sports)
+          ("http://theathletic.com/rss-feed/" _ sports)
+          ("http://fivethirtyeight.com/rss" _ sports politics)
+
+          ;; Politics
+          ("http://protesilaos.com/politics.xml" politics)
+
+          ;; Tech
+          ("http://news.ycombinator.com/rss" _ news tech)
+
+          ;; General
+          ("http://protesilaos.com/books.xml" general)
+          ))
+#+end_src
 * Avy
 :PROPERTIES:
 :ID:       fd37c3e1-7b47-4a7a-a83b-1aa4d0926078
@@ -935,29 +1073,6 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;; (setq ido-enable-flex-matching t)
   ;; (setq ido-create-new-buffer `always)
 #+END_SRC
-* Python
-** Juptyer
-:PROPERTIES:
-:ID:       2bead5a6-7a78-45d5-b8d9-c3f189600ae3
-:END:
-#+begin_src elisp
-  (use-package ein
-    :ensure t)
-#+end_src
-* Scheme
-:PROPERTIES:
-:ID:       83ef0212-bc3f-4bd9-ac94-3e1d0cdf8ccb
-:END:
-#+begin_src emacs-lisp
-  (require 'xscheme)
-
-  (use-package geiser
-    :ensure t)
-
-  (use-package geiser-mit
-    :ensure t)
-
-#+end_src
 * ace-window
 :PROPERTIES:
 :ID:       22367bdc-0fe5-4fb7-8638-f36c4880b0d4
@@ -991,41 +1106,67 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :init
     (beacon-mode 1))
 #+END_SRC
-* Center cursor mode
+* drag-stuff CONFLICT WITH ORG
+:PROPERTIES:
+:ID:       5682e5b8-e7b5-42b4-ad47-34afb94ae55c
+:END:
+#+begin_src emacs-lisp
+  ;; (use-package drag-stuff
+  ;;   :ensure t
+  ;;   :config
+  ;;   (progn
+  ;;     (drag-stuff-global-mode t)
+  ;;     (drag-stuff-define-keys))
+  ;;   :bind
+  ;;   (("M-p" . drag-stuff-up)
+  ;;    ("M-n" . drag-stuff-down)))
+#+end_src
+
+* Center scroll mode
 :PROPERTIES:
 :ID:       af97a265-8d6b-48d7-a19b-9c12bbd7c735
 :END:
 - See [[https://protesilaos.com/codelog/2020-07-16-emacs-focused-editing/][Prot "Focused editing"]]
 - [[https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs][Source (blog)]]
   #+begin_src emacs-lisp
-    (define-minor-mode ak/scroll-center-cursor-mode
+    (define-minor-mode my-scroll-center-cursor-mode
       "Toggle center cursor scrolling behavior"
       :init-value nil
       :lighter " S="
       :global nil
-      (if ak/scroll-center-cursor-mode
+      (if my-scroll-center-cursor-mode
           (setq-local scroll-preserve-screen-position t
                       scroll-conservatively 0
                       maximum-scroll-margin 0.5
                       scroll-margin 99999)
-       ))
-      ;; :bind ("C-c " . ak/scroll-center-cursor-mode))
+        (setq-local scroll-preserve-screen-position nil
+                    scroll-conservatively 100
+                    maximum-scroll-margin 0.25
+                    scroll-margin 0)))
   #+end_src
-* Config edit/reload
+* focus minor mode
 :PROPERTIES:
-:ID:       ff6369e1-7ca6-443b-a21c-48faef33bf2a
+:ID:       c592b5f1-3af1-490f-9df8-4babd5907a05
 :END:
-#+begin_src emacs-lisp
-  (defun config-visit ()
-    (interactive)
-    (find-file "~/.emacs.d/config.org"))
-  (global-set-key (kbd "C-c e") 'config-visit)
-#+end_src
-#+begin_src emacs-lisp
-  (defun config-reload ()
-    (interactive)
-    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-  (global-set-key (kbd "C-c r") 'config-reload)
+#+begin_src elisp
+  (define-minor-mode my-focus-mode
+    "Focused reading and editing env"
+    :init-value nil
+    :global nil
+    (if my-focus-mode
+        (progn
+          (olivetti-mode 1)
+          (my-scroll-center-cursor-mode 1)
+          (setq mode-line-format nil))
+      (progn
+        (olivetti-mode -1)
+        (my-scroll-center-cursor-mode -1)
+        (setq mode-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position
+                                 (vc-mode vc-mode)
+                                 "  " mode-line-modes mode-line-misc-info mode-line-end-spaces)))))
+
+
+  (global-set-key (kbd "C-c z") 'my-focus-mode)
 #+end_src
 * window splitting functions
 :PROPERTIES:
@@ -1047,19 +1188,38 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (other-window 1))
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
-* drag-stuff CONFLICT WITH ORG
+* Config edit/reload
 :PROPERTIES:
-:ID:       5682e5b8-e7b5-42b4-ad47-34afb94ae55c
+:ID:       ff6369e1-7ca6-443b-a21c-48faef33bf2a
 :END:
 #+begin_src emacs-lisp
-  ;; (use-package drag-stuff
-  ;;   :ensure t
-  ;;   :config
-  ;;   (progn
-  ;;     (drag-stuff-global-mode t)
-  ;;     (drag-stuff-define-keys))
-  ;;   :bind
-  ;;   (("M-p" . drag-stuff-up)
-  ;;    ("M-n" . drag-stuff-down)))
+  (defun config-visit ()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c e") 'config-visit)
 #+end_src
+#+begin_src emacs-lisp
+  (defun config-reload ()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+end_src
+* Util Funcs
+:PROPERTIES:
+:ID:       14f157e2-fb12-4805-98d5-62eacb4a6cf2
+:END:
+#+begin_src emacs-lisp
+  (defun sort-words (reverse beg end)
+  
+    "From https://www.emacswiki.org/emacs/SortWords 
+  Sort words in region alphabetically, in REVERSE if negative.
+      Prefixed with negative \\[universal-argument], sorts in reverse.
+  
+      The variable `sort-fold-case' determines whether alphabetic case
+      affects the sort order.
+  
+      See `sort-regexp-fields'."
+    (interactive "*P\nr")
+    (sort-regexp-fields reverse "\\w+" "\\&" beg end))
 
+#+end_src
