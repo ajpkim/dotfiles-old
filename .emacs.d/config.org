@@ -138,20 +138,28 @@
 :ID:       1d3b5412-b5e0-4230-bbb8-c454d1a3bf79
 :END:
 #+begin_src emacs-lisp
+  (defun my-shortcut (file)
+    (interactive)
+    (if (equal current-prefix-arg nil) ; no C-u
+        (find-file file)
+      (find-file-other-frame file)))
+
   (global-set-key (kbd "C-c f c")
-                  (lambda () (interactive) (find-file-other-frame "~/.emacs.d/config.org")))
+                  (lambda () (interactive) (my-shortcut "~/.emacs.d/config.org")))
   (global-set-key (kbd "C-c f i")
-                  (lambda () (interactive) (find-file-other-frame "~/org/inbox.org")))
+                  (lambda () (interactive) (my-shortcut "~/org/inbox.org")))
   (global-set-key (kbd "C-c f I")
-                  (lambda () (interactive) (find-file-other-frame "~/org/interwebs.org")))
+                  (lambda () (interactive) (my-shortcut "~/org/interwebs.org")))
   (global-set-key (kbd "C-c f l")
-                  (lambda () (interactive) (find-file-other-frame "~/org/learn.org")))
+                  (lambda () (interactive) (my-shortcut "~/org/learn.org")))
   (global-set-key (kbd "C-c f L")
-                  (lambda () (interactive) (find-file-other-frame "~/org/library.org")))
+                  (lambda () (interactive) (my-shortcut "~/org/library.org")))
   (global-set-key (kbd "C-c f s")
-                  (lambda () (interactive) (find-file-other-frame "~/org/self.org")))
+                  (lambda () (interactive) (my-shortcut "~/org/self.org")))
   (global-set-key (kbd "C-c f w")
-                  (lambda () (interactive) (find-file-other-frame "~/org/work.org")))
+                  (lambda () (interactive) (my-shortcut "~/org/2021-W22.org")))
+  (global-set-key (kbd "C-c f W")
+                  (lambda () (interactive) (my-shortcut "~/org/work.org")))
 
 #+end_src
 ** Bookmarks
@@ -223,6 +231,7 @@
   ;;; Clean html export
   (setq org-html-head-include-scripts nil
         org-html-head-include-default-style nil
+        org-export-headline-levels 10
         org-html-mathjax-template ""
         org-html-postamble nil
         org-export-with-section-numbers nil
@@ -556,17 +565,17 @@
            org-journal-date-format "%a, %Y-%m-%d"
            org-journal-date-prefix "* "
            org-journal-time-prefix "** "
-           org-journal-file-header "#+TITLE: %a, %Y-%m-%d\n* Time\n\n#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 2 :block today\n#+END:\n"
+           org-journal-file-header "#+TITLE: %a, %Y-%m-%d\n* Time\n\n#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 2 :block %Y-%m-%d\n#+END:\n"
            org-journal-file-format "%Y-%m-%d.org"
            org-journal-file-type 'daily
            org-journal-carryover-items ""  ;; Default behavior is to carryover TODOs.
            org-journal-enable-agenda-integration t  ;; Add current and future journal entries to agenda
            )
     :bind (("C-c j" . org-journal-new-entry)
+           ("C-c J" . org-journal-open-current-journal-file)
            ("C-c s" . org-journal-search)
            ))
 
-  ;; DOESN'T WORK...
   (defcustom org-journal-find-file 'find-file
     "The function to use when opening an entry.
   Set this to `find-file' if you don't want org-journal to split your window."
