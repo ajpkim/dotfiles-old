@@ -3,16 +3,94 @@
 :END:
 #+TITLE: Emacs Config
 #+STARTUP: overview
+#+SETUPFILE: ~/org/assets/org-export-setup-files/org-html-default-config.setup
 :PROPERTIES:
 :ID:       2b04f9c4-056e-4885-8bbf-18890db97b87
 :END:
-* Basic Adjustments
+
+* Table of Contentes                                                    :toc:
+:PROPERTIES:
+:CUSTOM_ID: Table-of-Contentes
+:ID:       7da33b7e-5dfd-4d14-a661-ce45dd9702cc
+:END:
+
+- [[Basic Appearance][Basic Appearance]]
+  - [[Basic UI][Basic UI]]
+  - [[Modeline][Modeline]]
+  - [[rainbow][rainbow]]
+  - [[beacon][beacon]]
+  - [[Themes][Themes]]
+    - [[Modus Themes][Modus Themes]]
+- [[Autosave and backups][Autosave and backups]]
+  - [[Custom dir][Custom dir]]
+  - [[Delete old files][Delete old files]]
+- [[File shortcuts & bookmarks][File shortcuts & bookmarks]]
+  - [[Files][Files]]
+  - [[Bookmarks][Bookmarks]]
+- [[Org][Org]]
+  - [[Setup (ellispsis, emphasis, indent, etc)][Setup (ellispsis, emphasis, indent, etc)]]
+  - [[Global Org keys][Global Org keys]]
+  - [[Extend day untill 2am][Extend day untill 2am]]
+  - [[Export & Publishing][Export & Publishing]]
+    - [[Export][Export]]
+    - [[Publish][Publish]]
+  - [[Agenda][Agenda]]
+    - [[Base settings][Base settings]]
+    - [[Agenda global TODO list decluttering][Agenda global TODO list decluttering]]
+    - [[Custom agenda views][Custom agenda views]]
+  - [[TODOs][TODOs]]
+  - [[Capture][Capture]]
+  - [[Refile][Refile]]
+  - [[Archiving][Archiving]]
+  - [[Tags][Tags]]
+  - [[Babel][Babel]]
+  - [[org-roam][org-roam]]
+  - [[org-journal][org-journal]]
+  - [[Clocking][Clocking]]
+  - [[toc-org][toc-org]]
+  - [[org-id][org-id]]
+  - [[Modules][Modules]]
+  - [[Images (allow for resizing with imagemagick)][Images (allow for resizing with imagemagick)]]
+  - [[Hyphens to dots][Hyphens to dots]]
+  - [[org-tempo][org-tempo]]
+  - [[org-bullets][org-bullets]]
+  - [[LaTeX][LaTeX]]
+  - [[Fold non-current headers][Fold non-current headers]]
+  - [[Never add new lines after headlines][Never add new lines after headlines]]
+- [[magit][magit]]
+- [[ivy, counsel, swiper][ivy, counsel, swiper]]
+- [[ido][ido]]
+  - [[Enable Ido-mode][Enable Ido-mode]]
+- [[anki-editor][anki-editor]]
+- [[multiple-cursors][multiple-cursors]]
+- [[company][company]]
+- [[olivetti][olivetti]]
+- [[focus minor mode][focus minor mode]]
+- [[Center scroll mode][Center scroll mode]]
+- [[smartparens][smartparens]]
+- [[which-key][which-key]]
+- [[Languages][Languages]]
+  - [[Python][Python]]
+    - [[Juptyer][Juptyer]]
+  - [[Scheme][Scheme]]
+- [[elfeed][elfeed]]
+- [[avy][avy]]
+- [[ace-window][ace-window]]
+- [[drag-stuff CONFLICT WITH ORG][drag-stuff CONFLICT WITH ORG]]
+- [[Util Funcs][Util Funcs]]
+  - [[Text editing][Text editing]]
+  - [[Config edit/reload][Config edit/reload]]
+  - [[window splitting functions][window splitting functions]]
+
+* Basic Appearance
 :PROPERTIES:
 :ID:       893fa650-5c1d-4b03-b3b0-5220bae56043
+:CUSTOM_ID: Basic-Appearance
 :END:
 ** Basic UI
 :PROPERTIES:
 :ID:       0224cbdd-9cf9-47a6-ba6e-bcfecbc9a234
+:CUSTOM_ID: Basic-UI
 :END:
 #+BEGIN_SRC emacs-lisp
   (set-face-attribute 'default nil :height 140)  ;; Magnify text here
@@ -31,41 +109,47 @@
   (setq x-select-enable-clipboard t
         x-select-enable-primary t)
 #+END_SRC
-** Autosave and backups
-*** Custom dir
+** Modeline
 :PROPERTIES:
-:ID:       391cefa3-e4c2-407b-bcc3-33883a52d664
+:ID:       5099a7e6-066f-41ac-a992-60fe2eb0ccea
+:CUSTOM_ID: Modeline
 :END:
-#+BEGIN_SRC emacs-lisp
-  (setq backup-directory-alist
-        `((".*" . "~/emacs-backups/")))
-  (setq auto-save-file-name-transforms
-        `((".*" "~/emacs-backups/" t)))
-#+END_SRC
-*** Delete old files
+#+begin_src emacs-lisp
+  (setq column-number-mode t)
+#+end_src
+** rainbow
 :PROPERTIES:
-:ID:       300373a1-0b3b-4e08-be8b-4c2d8de64411
+:ID:       a6397383-0a81-4c23-99ac-fa469bc10941
+:CUSTOM_ID: rainbow
 :END:
-- Delete old backups not accessed for a week (from emacs wiki: https://www.emacswiki.org/emacs/BackupDirectory#toc2)
+- Add coloring to hex color tags (e.g. #22ff22).
 #+BEGIN_SRC emacs-lisp
-  (message "Deleting old backup files...")
-  (let ((week (* 60 60 24 7))
-        (current (float-time (current-time))))
-    (dolist (file (directory-files temporary-file-directory t))
-      (when (and (backup-file-name-p file)
-                 (> (- current (float-time (fifth (file-attributes file))))
-                    week))
-        (message "%s" file)
-        (delete-file file))))
+  (use-package rainbow-mode
+    :ensure t
+    :init
+    (rainbow-mode 1))
 #+END_SRC
-* Base Font and faces
-* Themes
+** beacon
+:PROPERTIES:
+:ID:       c61b5de4-d377-4976-8c50-5dc1607f1408
+:CUSTOM_ID: beacon
+:END:
+- Highlight cursor line.
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :ensure t
+    :init
+    (beacon-mode 1))
+#+END_SRC
+** Themes
 :PROPERTIES:
 :ID:       0f66277e-5f9f-48b6-b90d-0c02805b8446
+:CUSTOM_ID: Themes
 :END:
-** Modus Themes
+*** Modus Themes
 :PROPERTIES:
 :ID:       d5a5b30e-f633-43a9-8568-46a1b3d076cb
+:CUSTOM_ID: Modus-Themes
 :END:
 
 #+begin_src emacs-lisp
@@ -124,18 +208,47 @@
   ;;; Toggle my-modus-themes-tinted and reload config for using terminal
 #+end_src
 
-* Modeline
+* Autosave and backups
 :PROPERTIES:
-:ID:       5099a7e6-066f-41ac-a992-60fe2eb0ccea
+:CUSTOM_ID: Autosave-and-backups
 :END:
-#+begin_src emacs-lisp
-  (setq column-number-mode t)
-#+end_src
+** Custom dir
+:PROPERTIES:
+:ID:       391cefa3-e4c2-407b-bcc3-33883a52d664
+:CUSTOM_ID: Custom-dir
+:END:
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist
+        `((".*" . "~/emacs-backups/")))
+  (setq auto-save-file-name-transforms
+        `((".*" "~/emacs-backups/" t)))
+#+END_SRC
+** Delete old files
+:PROPERTIES:
+:ID:       300373a1-0b3b-4e08-be8b-4c2d8de64411
+:CUSTOM_ID: Delete-old-files
+:END:
+- Delete old backups not accessed for a week (from emacs wiki: https://www.emacswiki.org/emacs/BackupDirectory#toc2)
+#+BEGIN_SRC emacs-lisp
+  (message "Deleting old backup files...")
+  (let ((week (* 60 60 24 7))
+        (current (float-time (current-time))))
+    (dolist (file (directory-files temporary-file-directory t))
+      (when (and (backup-file-name-p file)
+                 (> (- current (float-time (fifth (file-attributes file))))
+                    week))
+        (message "%s" file)
+        (delete-file file))))
+#+END_SRC
 * File shortcuts & bookmarks
+:PROPERTIES:
+:CUSTOM_ID: File-shortcuts-bookmarks
+:END:
 - Shortcuts to open common files in new frames to enable control with i3.
 ** Files
 :PROPERTIES:
 :ID:       1d3b5412-b5e0-4230-bbb8-c454d1a3bf79
+:CUSTOM_ID: Files
 :END:
 #+begin_src emacs-lisp
   (defun my-shortcut (file)
@@ -165,24 +278,29 @@
 ** Bookmarks
 :PROPERTIES:
 :ID:       ce34b1bf-6208-4aab-83e3-3834e9d9e757
+:CUSTOM_ID: Bookmarks
 :END:
 #+begin_src emacs-lisp
   (global-set-key (kbd "<f1>") '(lambda () (interactive) (bookmark-set "SAVED")))
   (global-set-key (kbd "<f2>") '(lambda () (interactive) (bookmark-jump "SAVED")))
 #+end_src
-* Magit
+* Quick Bindings
 :PROPERTIES:
-:ID:       8e7a10d2-8304-45eb-97bf-aaee40c46c2d
+:ID:       0e5984b3-f1e6-4e0c-8ef9-3c5f4dc16ab5
 :END:
-#+begin_src emacs-lisp
-  ;; (use-package magit
-  ;;   :ensure t)
+#+begin_src elisp
+  (global-set-key (kbd "C-c h r") 'replace-string)
+  (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
 #+end_src
 * Org
+:PROPERTIES:
+:CUSTOM_ID: Org
+:END:
 - [[https://orgmode.org/org.html][Org Manual]]
 ** Setup (ellispsis, emphasis, indent, etc)
 :PROPERTIES:
 :ID:       351d9037-f52d-4954-82b7-e7ad4c8ae8fd
+:CUSTOM_ID: Setup-ellispsis-emphasis-indent-etc
 :END:
 #+BEGIN_SRC emacs-lisp
   (use-package org
@@ -198,10 +316,29 @@
           )
     :hook
     (org-mode . visual-line-mode))
+
+
+  ;; Assign these so that I can toggle variable-pitch-mode and have sensible fixed width still
+  ;; https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
   #+END_SRC
+** Faces
+:PROPERTIES:
+:ID:       7589cc72-7791-4e51-998e-c1cbf24578bd
+:END:
+#+begin_src elisp
+
+#+end_src
 ** Global Org keys
 :PROPERTIES:
 :ID:       1b7b7d27-43c8-44e2-8679-67e8af4e153f
+:CUSTOM_ID: Global-Org-keys
 :END:
 - Recommended global commands (org manual)
 #+begin_src emacs-lisp
@@ -212,14 +349,19 @@
 ** Extend day untill 2am
 :PROPERTIES:
 :ID:       9ba5c3d5-9af9-4c12-a481-0ee51158c634
+:CUSTOM_ID: Extend-day-untill-2am
 :END:
 #+begin_src emacs-lisp
   (setq org-extend-today-until 2)
 #+end_src
 ** Export & Publishing
+:PROPERTIES:
+:CUSTOM_ID: Export-Publishing
+:END:
 *** Export
 :PROPERTIES:
 :ID:       1b270d93-fc3b-4026-88b5-c33d979f9cfa
+:CUSTOM_ID: Export
 :END:
 #+begin_src emacs-lisp
   (require 'ox-html)
@@ -241,6 +383,7 @@
 *** Publish
 :PROPERTIES:
 :ID:       a9b43374-75bd-41fd-bce0-4a7978c4ec6d
+:CUSTOM_ID: Publish
 :END:
 #+begin_src emacs-lisp
   (require 'ox-publish)
@@ -279,9 +422,13 @@
            :with-toc nil)))
 #+end_src
 ** Agenda
+:PROPERTIES:
+:CUSTOM_ID: Agenda
+:END:
 *** Base settings
 :PROPERTIES:
 :ID:       8b484d69-0fdc-46ee-a7dc-bd8b14e01e29
+:CUSTOM_ID: Base-settings
 :END:
 :LOGBOOK:
 - State "TODO"       from              [2021-01-29 Fri 22:59]
@@ -297,6 +444,7 @@
 *** Agenda global TODO list decluttering
 :PROPERTIES:
 :ID:       b66d5f7f-1316-4d29-ac4a-410b78634969
+:CUSTOM_ID: Agenda-global-TODO-list-decluttering
 :END:
 #+begin_src emacs-lisp
   (setq org-agenda-todo-ignore-deadlines nil
@@ -305,6 +453,7 @@
 *** Custom agenda views
 :PROPERTIES:
 :ID:       927cbd70-34fa-4c81-9a32-bf8a72a9af5e
+:CUSTOM_ID: Custom-agenda-views
 :END:
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands
@@ -334,6 +483,7 @@
 ** TODOs
 :PROPERTIES:
 :ID:       b97b0215-7ab5-4d7e-ae0a-330b9ad3730e
+:CUSTOM_ID: TODOs
 :END:
 - The "!" triggers autologging (into the LOGBOOK). Not using anymore because of new archive workflow.
   - e.g. =(sequence "TODO(t!)"...=
@@ -360,6 +510,7 @@
 ** Capture
 :PROPERTIES:
 :ID:       3d4c732d-b5aa-466c-b68e-a832f85d27a5
+:CUSTOM_ID: Capture
 :END:
 #+begin_src emacs-lisp
   (setq org-capture-templates
@@ -383,47 +534,47 @@
           ("l" "Library")
           ("lA" "Album"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: album\n:Creator: %^\n:Published: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: album\n:Creator: %^\n:Published: %^\n:END:\n"
            :prepend t)
           ("la" "Article"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: article\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: article\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
           ("lb" "Book"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: book\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: book\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
           ("lf" "Film"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: film\n:Creator: %^\n:Published: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: film\n:Creator: %^\n:Published: %^\n:END:\n"
            :prepend t)
           ("lc" "Lecture"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: lecture\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: lecture\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
           ("lp" "Paper"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: paper\n:Creator: %^\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: paper\n:Creator: %^\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
           ("lP" "Podcast"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: podcast\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: podcast\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
           ("lS" "Show"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: show\n:Creator: %^\n:Published: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: show\n:Creator: %^\n:Published: %^\n:END:\n"
            :prepend t)
           ("ls" "Study"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: study\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: study\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
           ("lt" "Textbook"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: textbook\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: textbook\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
           ("lv" "Video"
            entry (file "~/org/library.org")
-           "* TODO %^\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: video\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n%?"
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: video\n:Field: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
 
           ;; General templates
@@ -449,13 +600,38 @@
 ** Refile
 :PROPERTIES:
 :ID:       745d204e-d319-46c4-b67f-d63996bc9044
+:CUSTOM_ID: Refile
 :END:
 #+begin_src emacs-lisp
   (setq org-refile-targets '((org-agenda-files :todo . "PROJECT")))
 #+end_src
+** Archiving
+:PROPERTIES:
+:ID:       2947edc5-9d88-4ba4-9b4e-956da671ae66
+:CUSTOM_ID: Archiving
+:END:
+#+begin_src elisp
+  (defun my-org-archive-done-tasks-file ()
+    (interactive)
+    (org-map-entries
+     (lambda ()
+       (org-archive-subtree)
+       (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
+     "/DONE" 'file))
+
+  (defun my-org-archive-done-tasks-tree ()
+    (interactive)
+    (org-map-entries
+     (lambda ()
+       (org-archive-subtree)
+       (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
+     "/DONE" 'tree))
+
+#+end_src
 ** Tags
 :PROPERTIES:
 :ID:       9b259c2f-ff29-49b6-9af1-1bdc801a7c3b
+:CUSTOM_ID: Tags
 :END:
 - Can use =C-c C-c= and single key selection (in expert mode) to add tags quickly.
 #+begin_src emacs-lisp
@@ -466,20 +642,21 @@
           ("read" . ?r)
           ("recur" . ?R)
           ("5m" . ?f)
-	
+
           ;; Anki tags for anki-editor and exporting
           ("anki")  ;; Helpful to filter out anki cards for tag searches
           ("linux" . ?l)
           ("ML" . ?m)
           ("unix" . ?u)
           ;; Courses (still Anki)
-          ("MIT6036")
-          ))
+          ("MIT6036")))
+ 
   (setq org-fast-tag-selection-single-key (quote expert))
 #+end_src
 ** Babel
 :PROPERTIES:
 :ID:       a16c5ff0-8587-4356-9443-857710394623
+:CUSTOM_ID: Babel
 :END:
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
@@ -491,12 +668,12 @@
      (latex      . t)
      (js         . t)
      (shell      . t)
-     (scheme     . t)
-     ))
+     (scheme     . t)))
 #+end_src
-** Org-roam
+** org-roam
 :PROPERTIES:
 :ID:       9e24b8ee-1291-4c3c-a09e-b3870bf8dd9e
+:CUSTOM_ID: org-roam
 :END:
 #+begin_src emacs-lisp
   (use-package org-roam
@@ -550,9 +727,10 @@
 
   (setq org-roam-title-to-slug-function 'my-org-roam--title-to-slug)
 #+end_src
-** Org-journal
+** org-journal
 :PROPERTIES:
 :ID:       2ea65a55-a166-4676-abe1-0479341dc138
+:CUSTOM_ID: org-journal
 :END:
 #+begin_src emacs-lisp
   (use-package org-journal
@@ -593,16 +771,146 @@
 ** Clocking
 :PROPERTIES:
 :ID:       2610f700-c655-4908-8cd2-638e8e6e95a1
+:CUSTOM_ID: Clocking
 :END:
+Default settings
 #+begin_src emacs-lisp
   (setq org-clocktable-defaults '(:maxlevel 2 :lang "en" :scope file :block nil :wstart 1 :mstart 1 :tstart nil :tend nil :step nil :stepskip0 nil :fileskip0 t :tags nil :match nil :emphasize nil :link nil :narrow 40! :indent t :hidefiles nil :formula nil :timestamp nil :level nil :tcolumns nil :formatter nil))
 
   (setq org-clock-mode-line-total 'current
         org-clock-report-include-clocking-task t)
 #+end_src
+
+[[https://www.reddit.com/r/emacs/comments/jp5ear/sorting_org_clocktables_by_category_instead_of/https://www.reddit.com/r/emacs/comments/jp5ear/sorting_org_clocktables_by_category_instead_of/][reddit src for category clocktable]]
+#+begin_src elisp
+  (defun my-org-clocktable-formatter (ipos tables params)
+    "Custom formatter for org-mode clocktables which groups by category rather than file.
+  It uses `org-clock-clocktable-formatter' for the insertion of the table after sorting 
+  the items into tables based on an items category property. Thus all parameters supported 
+  by `org-clock-clocktable-formatter' are supported. To use this to sort a clocktable add
+  `:properties (\"CATEGORY\") :formatter my-org-clocktable-formatter' to that clocktable's
+  arguments."
+    (let* ((tt (-flatten-n 1 (-map #'-last-item tables)))
+           (formatter (or org-clock-clocktable-formatter
+                          'org-clocktable-write-default))
+           (newprops (remove "CATEGORY" (plist-get params :properties)))
+           (newparams (plist-put (plist-put params :multifile t) :properties newprops))
+           newtables)
+
+      ;; Compute net clocked time for each item
+      (setq tt
+            (--map-indexed
+             (let* ((it-level (car it))
+                    (it-time (nth 4 it))
+                    (it-subtree (--take-while (< it-level (car it))
+                                              (-drop (1+ it-index) tt)))
+                    (it-children (--filter (= (1+ it-level) (car it))
+                                           it-subtree)))
+               (-replace-at 4 (- it-time (-sum (--map (nth 4 it) it-children)))
+                            it))
+             tt))
+
+      ;; Add index (ie id) and indexes of parents (these are needed in the
+      ;; sorting step). This can probably be written more functionally using --reduce?
+      ;; At least without having to modify hist.
+      (setq tt
+            (let (hist)
+              (--map-indexed (let* ((it-level (car it))
+                                    (it-hist (-drop (- (length hist)
+                                                       it-level -1)
+                                                    hist)))
+                               (setq hist (cons it-index it-hist))
+                               (cons it-index (cons it-hist it))) 
+                             tt)))
+
+      ;; Now comes the important phase: sorting, where we copy items with >0 net time
+      ;; into newtables based on their category, and we copy their parents when
+      ;; appropriate.
+      (--each tt (let* ((it-hist (nth 1 it))
+                        (it-time (nth 6 it))
+                        (it-prop (-last-item it))
+                        (it-cat (alist-get "CATEGORY" it-prop nil nil #'string=))
+                        ;; Find the index of the table for category: it-cat or if
+                        ;; it doesn't yet exist add it to the start of newtables.
+                        (cat-pos (or
+                                  (--find-index (string= (car it) it-cat) newtables)
+                                  (progn (push (list it-cat nil) newtables) 0)))
+                        (cat-members (-map #'car (-last-item (nth cat-pos newtables))))
+                        (it-parent
+                         (or (--find-index (member it								 
+                                                   cat-members)
+                                           it-hist)
+                             (length it-hist)))
+                        (hist-to-add
+                         ;; replace the time of copied parents with 0 since if a
+                         ;; parents is being copied and has time >0 then it has
+                         ;; already been placed in the table for a different
+                         ;; category. ie. We don't want time double counted.
+                         (--map (-replace-at 6 0 (nth it tt))
+                                (-take it-parent it-hist))))
+
+                   (when (not (= 0 it-time))
+                     (setf (-last-item (nth cat-pos newtables))
+                           (append (cons it hist-to-add) 
+                                   (-last-item (nth cat-pos newtables)))))))
+
+      (--each newtables (setf (-last-item it) (reverse (-last-item it))))
+      ;; Cleanup, remove ids and list of parents, as they are no longer needed.
+      (setq newtables
+            (--map (list (car it) 0 (--map (-drop 2 it) (-last-item it))) newtables))
+
+      ;; Recompute the total times for each node.
+      ;; (replace this with --each and setf?)
+      (setq newtables
+            (--map (let* ((it-children (sum-direct-children-org 1 (-last-item it)))
+                          (it-total-time (-sum
+                                          (--map (nth 4 it)
+                                                 (--filter (= 1 (car it))
+                                                           it-children)))))
+                     (list (car it) it-total-time it-children)) 
+                   newtables))
+      ;; Actually insert the clocktable now.
+      (funcall formatter ipos newtables newparams)
+      ;; Replace "File" with "Category" in the "file" column and "*File time*" with "* 
+      ;; Category time*" in the table.
+      (org-table-goto-line 1)
+      (org-table-blank-field)
+      (insert "Category")
+      (org-table-align)
+      (let ((n 2))
+        (while (org-table-goto-line n)
+          (org-table-next-field)
+          ;; This won't work if there are addition columns eg. Property column.
+          ;; Instead look forward along each line to see if that regexp is matched?
+          (when (looking-at "\\*File time\\* .*\| *\\*.*[0-9]:[0-9][0-9]\\*")
+            (org-table-blank-field)
+            (insert "*Category time*")
+            (org-table-align))
+          (incf n)))))
+
+  (defun sum-direct-children-org (level children)
+    "Update the time LEVEL nodes recursively to be the sum of the times of its children. 
+  Used in `my-org-clocktable-formatter' to go from net times back to tatal times."
+    (let ((subtrees (-partition-before-pred (lambda (it) (= level (car it))) children)))
+      (-flatten-n 1
+                  (--map (let ((it-children (sum-direct-children-org (1+ level)
+                                                                     (cdr it))))
+                           (cons (--update-at
+                                  4 (+ it				
+                                       (-sum
+                                        (--map (nth 4 it)
+                                               (--filter (= (1+ level)
+                                                            (car it))
+                                                         it-children))))
+                                  (car it))
+                                 it-children))
+                         subtrees))))
+
+#+end_src
 ** toc-org
 :PROPERTIES:
 :ID:       5808be45-a815-4030-b08b-5611cc0074eb
+:CUSTOM_ID: toc-org
 :END:
 - Package for generating table of contents for blog posts and whatnot.
 :PROPERTIES:
@@ -615,9 +923,10 @@
     (setq toc-org-max-depth 3
           toc-org-hrefify-default "org"))  ;; Options are org or gh (github)
 #+end_src
-** Org-id
+** org-id
 :PROPERTIES:
 :ID:       5b3d9ed6-ea18-4746-8477-7f1fbb6f33b5
+:CUSTOM_ID: org-id
 :END:
 - Generate IDs for linking purposes when execute 'C-c l'
 #+begin_src emacs-lisp
@@ -656,6 +965,7 @@
 ** Modules
 :PROPERTIES:
 :ID:       0cbbed90-4cb3-4af7-b9b4-11d177328017
+:CUSTOM_ID: Modules
 :END:
 #+begin_src emacs-lisp
   (setq org-modules '(org-habit
@@ -674,6 +984,7 @@
 ** Images (allow for resizing with imagemagick)
 :PROPERTIES:
 :ID:       3f9556d3-7a43-4c16-8aa6-62b97fc2454e
+:CUSTOM_ID: Images-allow-for-resizing-with-imagemagick
 :END:
 #+begin_src emacs-lisp
   (setq org-image-actual-width nil)
@@ -681,6 +992,7 @@
 ** Hyphens to dots
 :PROPERTIES:
 :ID:       24e526f3-eaa4-4d82-836a-ef3ac76312cb
+:CUSTOM_ID: Hyphens-to-dots
 :END:
 - Customize the leading list element char.
 #+BEGIN_SRC emacs-lisp
@@ -688,18 +1000,20 @@
 			  `(("^ *\\([-]\\) "
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
 #+END_SRC
-** Org-tempo
+** org-tempo
 :PROPERTIES:
 :ID:       b6bdd19d-6fea-4625-b69d-6a30e7184816
+:CUSTOM_ID: org-tempo
 :END:
 - [[https://orgmode.org/manual/Structure-Templates.html][Org Manual page]]
 - For shortcuts like "<s TAB" for inserting code block
 #+BEGIN_SRC emacs-lisp
   (require 'org-tempo)
 #+END_SRC
-** Org-bullets
+** org-bullets
 :PROPERTIES:
 :ID:       ba2490f2-7e3c-4351-be9f-8643e7edeac0
+:CUSTOM_ID: org-bullets
 :END:
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
@@ -710,6 +1024,7 @@
 ** LaTeX
 :PROPERTIES:
 :ID:       cccbaae3-f942-4c93-98c5-a490a3e1edcc
+:CUSTOM_ID: LaTeX
 :END:
 #+begin_src emacs-lisp
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
@@ -717,6 +1032,7 @@
 ** Fold non-current headers
 :PROPERTIES:
 :ID:       4c1c5bb0-ddda-48f8-95a1-ab171d4b51dd
+:CUSTOM_ID: Fold-non-current-headers
 :END:
 - [[https://sainathadapa.github.io/emacs-spacemacs-config/org-config#org497a041][Source]]
 #+begin_src emacs-lisp
@@ -738,15 +1054,26 @@
 ** Never add new lines after headlines
 :PROPERTIES:
 :ID:       d2ae51b2-7f74-4bc9-88f5-2a1fdfc4540c
+:CUSTOM_ID: Never-add-new-lines-after-headlines
 :END:
 #+begin_src emacs-lisp
   ;; (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   (setf org-blank-before-new-entry '((heading . auto)
                                     (plain-list-item . auto)))
 #+end_src
-* Ivy, counsel, swiper
+* magit
+:PROPERTIES:
+:ID:       8e7a10d2-8304-45eb-97bf-aaee40c46c2d
+:CUSTOM_ID: magit
+:END:
+#+begin_src emacs-lisp
+  ;; (use-package magit
+  ;;   :ensure t)
+#+end_src
+* ivy, counsel, swiper
 :PROPERTIES:
 :ID:       9e6e4ef7-5aa9-4301-826f-2ec5a49b4f4c
+:CUSTOM_ID: ivy-counsel-swiper
 :END:
 #+begin_src emacs-lisp
   (use-package counsel  ;; Brings in ivy and swiper as dependencies
@@ -757,9 +1084,27 @@
 
   (ivy-mode 1)
 #+end_src
+* ido
+:PROPERTIES:
+:CUSTOM_ID: ido
+:END:
+- Smart file completion.
+- [2021-03-07 Sun 23:51] Switching to Ivy.
+** Enable Ido-mode
+:PROPERTIES:
+:ID:       9b4388fb-f79e-41b8-88b8-cf799cbd8317
+:CUSTOM_ID: Enable-Ido-mode
+:END:
+#+BEGIN_SRC emacs-lisp
+  ;; (ido-mode 1)
+  ;; (setq ido-everywhere t)
+  ;; (setq ido-enable-flex-matching t)
+  ;; (setq ido-create-new-buffer `always)
+#+END_SRC
 * anki-editor
 :PROPERTIES:
 :ID:       27e07ae9-a8ec-4b08-b0d1-ccbf85a930f7
+:CUSTOM_ID: anki-editor
 :END:
 Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/dot-emacs/blob/master/init.el][yiufung init.el]]
 #+begin_src emacs-lisp
@@ -802,9 +1147,10 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;; Org-capture templates
   (setq org-my-anki-file "~/org/anki.org")
 #+end_src
-* Multiple cursors
+* multiple-cursors
 :PROPERTIES:
 :ID:       7932b3d1-59fc-4075-9d72-efa1b0cce146
+:CUSTOM_ID: multiple-cursors
 :END:
 - Doesn't work well with =M-x=, needs key-bindings.
 #+begin_src emacs-lisp
@@ -818,9 +1164,10 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (define-key mc/keymap (kbd "<return>") nil)  ;; Allows us to insert new-line with <RET> and still disable multiple-cursor mode with C-g
     )
 #+end_src
-* Company
+* company
 :PROPERTIES:
 :ID:       2677331e-b6f1-45c5-9daf-cdccae0f07ec
+:CUSTOM_ID: company
 :END:
 #+begin_src emacs-lisp
   (use-package company
@@ -860,6 +1207,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 * olivetti
 :PROPERTIES:
 :ID:       8f172f3f-2017-483d-bbda-d492467620d3
+:CUSTOM_ID: olivetti
 :END:
 - Centers text by widening the margins.
 #+begin_src emacs-lisp
@@ -867,13 +1215,60 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :ensure t
     :config
     (setq-default olivetti-body-width 80)
-    ;; (setq-default olivetti-minimum-body-width 50)
     :bind
     ("C-c o" . olivetti-mode))
 #+end_src
-* Smartparens
+* focus minor mode
+:PROPERTIES:
+:ID:       c592b5f1-3af1-490f-9df8-4babd5907a05
+:CUSTOM_ID: focus-minor-mode
+:END:
+#+begin_src elisp
+  (define-minor-mode my-focus-mode
+    "Focused reading and editing env"
+    :init-value nil
+    :global nil
+    (if my-focus-mode
+        (progn
+          (olivetti-mode 1)
+          (my-scroll-center-cursor-mode 1)
+          (setq mode-line-format nil))
+      (progn
+        (olivetti-mode -1)
+        (my-scroll-center-cursor-mode -1)
+        (setq mode-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position
+                                 (vc-mode vc-mode)
+                                 "  " mode-line-modes mode-line-misc-info mode-line-end-spaces)))))
+
+  (global-set-key (kbd "C-c z") 'my-focus-mode)
+#+end_src
+* Center scroll mode
+:PROPERTIES:
+:ID:       af97a265-8d6b-48d7-a19b-9c12bbd7c735
+:CUSTOM_ID: Center-scroll-mode
+:END:
+- See [[https://protesilaos.com/codelog/2020-07-16-emacs-focused-editing/][Prot "Focused editing"]]
+- [[https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs][Source (blog)]]
+  #+begin_src emacs-lisp
+    (define-minor-mode my-scroll-center-cursor-mode
+      "Toggle center cursor scrolling behavior"
+      :init-value nil
+      :lighter " S="
+      :global nil
+      (if my-scroll-center-cursor-mode
+          (setq-local scroll-preserve-screen-position t
+                      scroll-conservatively 0
+                      maximum-scroll-margin 0.5
+                      scroll-margin 99999)
+        (setq-local scroll-preserve-screen-position nil
+                    scroll-conservatively 100
+                    maximum-scroll-margin 0.25
+                    scroll-margin 0)))
+  #+end_src
+* smartparens
 :PROPERTIES:
 :ID:       ff9cbb86-b3b8-480c-b2b8-1c3d62a10c7b
+:CUSTOM_ID: smartparens
 :END:
 #+begin_src emacs-lisp
   (use-package smartparens
@@ -890,6 +1285,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 * which-key
 :PROPERTIES:
 :ID:       a67ef17a-f150-4aea-bf58-69d89b3f7572
+:CUSTOM_ID: which-key
 :END:
 - Provide popup info on commands given input current sequence.
 #+BEGIN_SRC emacs-lisp
@@ -899,10 +1295,17 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (which-key-mode))
 #+END_SRC
 * Languages
+:PROPERTIES:
+:CUSTOM_ID: Languages
+:END:
 ** Python
+:PROPERTIES:
+:CUSTOM_ID: Python
+:END:
 *** Juptyer
 :PROPERTIES:
 :ID:       2bead5a6-7a78-45d5-b8d9-c3f189600ae3
+:CUSTOM_ID: Juptyer
 :END:
 #+begin_src elisp
   (use-package ein
@@ -911,6 +1314,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 ** Scheme
 :PROPERTIES:
 :ID:       83ef0212-bc3f-4bd9-ac94-3e1d0cdf8ccb
+:CUSTOM_ID: Scheme
 :END:
 #+begin_src emacs-lisp
   (require 'xscheme)
@@ -925,6 +1329,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 * elfeed
 :PROPERTIES:
 :ID:       d663065e-8af3-49fb-b0e4-c7607458240c
+:CUSTOM_ID: elfeed
 :END:
 #+begin_src elisp
   (use-package elfeed
@@ -1058,9 +1463,10 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
           ("http://protesilaos.com/books.xml" general)
           ))
 #+end_src
-* Avy
+* avy
 :PROPERTIES:
 :ID:       fd37c3e1-7b47-4a7a-a83b-1aa4d0926078
+:CUSTOM_ID: avy
 :END:
 - Fast navigation to any char on screen.
 #+BEGIN_SRC emacs-lisp
@@ -1069,22 +1475,10 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :bind
     ("M-s" . avy-goto-char))
 #+END_SRC
-* Ido
-- Smart file completion.
-- [2021-03-07 Sun 23:51] Switching to Ivy.
-** Enable Ido-mode
-:PROPERTIES:
-:ID:       9b4388fb-f79e-41b8-88b8-cf799cbd8317
-:END:
-#+BEGIN_SRC emacs-lisp
-  ;; (ido-mode 1)
-  ;; (setq ido-everywhere t)
-  ;; (setq ido-enable-flex-matching t)
-  ;; (setq ido-create-new-buffer `always)
-#+END_SRC
 * ace-window
 :PROPERTIES:
 :ID:       22367bdc-0fe5-4fb7-8638-f36c4880b0d4
+:CUSTOM_ID: ace-window
 :END:
 - Navigate buffers efficently.
 #+BEGIN_SRC emacs-lisp
@@ -1093,31 +1487,10 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :config (setq aw-keys `(?a ?s ?d ?f ?j ?k ?l))
     :bind ("C-x o" . ace-window))
 #+END_SRC
-* rainbow
-:PROPERTIES:
-:ID:       a6397383-0a81-4c23-99ac-fa469bc10941
-:END:
-- Add coloring to hex color tags (e.g. #22ff22).
-#+BEGIN_SRC emacs-lisp
-  (use-package rainbow-mode
-    :ensure t
-    :hook
-    (prog-mode-hook . rainbow-mode))
-#+END_SRC
-* beacon
-:PROPERTIES:
-:ID:       c61b5de4-d377-4976-8c50-5dc1607f1408
-:END:
-- Highlight cursor line.
-#+BEGIN_SRC emacs-lisp
-  (use-package beacon
-    :ensure t
-    :init
-    (beacon-mode 1))
-#+END_SRC
 * drag-stuff CONFLICT WITH ORG
 :PROPERTIES:
 :ID:       5682e5b8-e7b5-42b4-ad47-34afb94ae55c
+:CUSTOM_ID: drag-stuff-CONFLICT-WITH-ORG
 :END:
 #+begin_src emacs-lisp
   ;; (use-package drag-stuff
@@ -1131,55 +1504,52 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;;    ("M-n" . drag-stuff-down)))
 #+end_src
 
-* Center scroll mode
+* Util Funcs
 :PROPERTIES:
-:ID:       af97a265-8d6b-48d7-a19b-9c12bbd7c735
+:ID:       14f157e2-fb12-4805-98d5-62eacb4a6cf2
+:CUSTOM_ID: Util-Funcs
 :END:
-- See [[https://protesilaos.com/codelog/2020-07-16-emacs-focused-editing/][Prot "Focused editing"]]
-- [[https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs][Source (blog)]]
-  #+begin_src emacs-lisp
-    (define-minor-mode my-scroll-center-cursor-mode
-      "Toggle center cursor scrolling behavior"
-      :init-value nil
-      :lighter " S="
-      :global nil
-      (if my-scroll-center-cursor-mode
-          (setq-local scroll-preserve-screen-position t
-                      scroll-conservatively 0
-                      maximum-scroll-margin 0.5
-                      scroll-margin 99999)
-        (setq-local scroll-preserve-screen-position nil
-                    scroll-conservatively 100
-                    maximum-scroll-margin 0.25
-                    scroll-margin 0)))
-  #+end_src
-* focus minor mode
+** Text editing
 :PROPERTIES:
-:ID:       c592b5f1-3af1-490f-9df8-4babd5907a05
+:ID:       0397686b-c4e1-4fba-a450-b8445277a05c
+:CUSTOM_ID: Text-editing
 :END:
-#+begin_src elisp
-  (define-minor-mode my-focus-mode
-    "Focused reading and editing env"
-    :init-value nil
-    :global nil
-    (if my-focus-mode
-        (progn
-          (olivetti-mode 1)
-          (my-scroll-center-cursor-mode 1)
-          (setq mode-line-format nil))
-      (progn
-        (olivetti-mode -1)
-        (my-scroll-center-cursor-mode -1)
-        (setq mode-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position
-                                 (vc-mode vc-mode)
-                                 "  " mode-line-modes mode-line-misc-info mode-line-end-spaces)))))
+#+begin_src emacs-lisp
+  (defun sort-words (reverse beg end)
+  
+    "From https://www.emacswiki.org/emacs/SortWords 
+  Sort words in region alphabetically, in REVERSE if negative.
+      Prefixed with negative \\[universal-argument], sorts in reverse.
+  
+      The variable `sort-fold-case' determines whether alphabetic case
+      affects the sort order.
+  
+      See `sort-regexp-fields'."
+    (interactive "*P\nr")
+    (sort-regexp-fields reverse "\\w+" "\\&" beg end))
 
-
-  (global-set-key (kbd "C-c z") 'my-focus-mode)
 #+end_src
-* window splitting functions
+** Config edit/reload
+:PROPERTIES:
+:ID:       ff6369e1-7ca6-443b-a21c-48faef33bf2a
+:CUSTOM_ID: Config-edit-reload
+:END:
+#+begin_src emacs-lisp
+  (defun config-visit ()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c e") 'config-visit)
+#+end_src
+#+begin_src emacs-lisp
+  (defun config-reload ()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+end_src
+** window splitting functions
 :PROPERTIES:
 :ID:       d264734a-f207-4fef-a38e-8bdbc87d3b67
+:CUSTOM_ID: window-splitting-functions
 :END:
 - Move cursor to newly created windows (default is stagnant cursor).
 #+BEGIN_SRC emacs-lisp
@@ -1197,38 +1567,3 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (other-window 1))
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
-* Config edit/reload
-:PROPERTIES:
-:ID:       ff6369e1-7ca6-443b-a21c-48faef33bf2a
-:END:
-#+begin_src emacs-lisp
-  (defun config-visit ()
-    (interactive)
-    (find-file "~/.emacs.d/config.org"))
-  (global-set-key (kbd "C-c e") 'config-visit)
-#+end_src
-#+begin_src emacs-lisp
-  (defun config-reload ()
-    (interactive)
-    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-  (global-set-key (kbd "C-c r") 'config-reload)
-#+end_src
-* Util Funcs
-:PROPERTIES:
-:ID:       14f157e2-fb12-4805-98d5-62eacb4a6cf2
-:END:
-#+begin_src emacs-lisp
-  (defun sort-words (reverse beg end)
-  
-    "From https://www.emacswiki.org/emacs/SortWords 
-  Sort words in region alphabetically, in REVERSE if negative.
-      Prefixed with negative \\[universal-argument], sorts in reverse.
-  
-      The variable `sort-fold-case' determines whether alphabetic case
-      affects the sort order.
-  
-      See `sort-regexp-fields'."
-    (interactive "*P\nr")
-    (sort-regexp-fields reverse "\\w+" "\\&" beg end))
-
-#+end_src

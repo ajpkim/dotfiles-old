@@ -209,6 +209,10 @@ bindsym $mod+x move workspace to output right
 bindsym $mod+Shift+minus move scratchpad
 # Show the first scratchpad window
 bindsym $mod+minus scratchpad show
+for_window [instance="sp"] floating enable, resize set 1000 500
+for_window [instance="sp"] move absolute position center
+for_window [instance="sp"] move window to scratchpad
+
 
 # toggle split v split h with single key binding
 bindsym $mod+t split toggle
