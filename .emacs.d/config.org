@@ -93,7 +93,7 @@
 :CUSTOM_ID: Basic-UI
 :END:
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil :height 140)  ;; Magnify text here
+  (set-face-attribute 'default nil :height 150)  ;; Magnify text here
   (setq inhibit-startup-message t)
   (setq visible-bell t)
   (setq scroll-conservatively 100)
@@ -259,6 +259,8 @@
 
   (global-set-key (kbd "C-c f c")
                   (lambda () (interactive) (my-shortcut "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c f d")
+                  (lambda () (interactive) (my-shortcut "~/org/development.org")))
   (global-set-key (kbd "C-c f i")
                   (lambda () (interactive) (my-shortcut "~/org/inbox.org")))
   (global-set-key (kbd "C-c f I")
@@ -270,7 +272,7 @@
   (global-set-key (kbd "C-c f s")
                   (lambda () (interactive) (my-shortcut "~/org/self.org")))
   (global-set-key (kbd "C-c f w")
-                  (lambda () (interactive) (my-shortcut "~/org/2021-W22.org")))
+                  (lambda () (interactive) (my-shortcut "~/org/2021-W23.org")))
   (global-set-key (kbd "C-c f W")
                   (lambda () (interactive) (my-shortcut "~/org/work.org")))
 
@@ -315,7 +317,8 @@
           org-archive-location "~/org/archives/%s_archive::"
           )
     :hook
-    (org-mode . visual-line-mode))
+    (org-mode . visual-line-mode)
+    (org-mode . variable-pitch-mode))
 
 
   ;; Assign these so that I can toggle variable-pitch-mode and have sensible fixed width still
@@ -438,6 +441,7 @@
         org-agenda-start-on-weekday nil  ;; Start from current day
         org-agenda-skip-deadline-if-done t  ;; Declutter the agenda
         org-agenda-skip-scheduled-if-done t
+        org-deadline-warning-days 3
         org-agenda-window-setup 'current-window
         )
 #+end_src
@@ -637,11 +641,17 @@
 #+begin_src emacs-lisp
   (setq org-tag-alist
         '(
-          ("note" . ?n)
-          ("paper" . ?p)
+          ;; Type of thing
           ("read" . ?r)
           ("recur" . ?R)
           ("5m" . ?f)
+
+          ;; Genre of thing
+          ("CS" . ?c)
+
+
+          ;; Personal metadata
+          ("fav" . ?v)
 
           ;; Anki tags for anki-editor and exporting
           ("anki")  ;; Helpful to filter out anki cards for tag searches
@@ -650,9 +660,13 @@
           ("unix" . ?u)
           ;; Courses (still Anki)
           ("MIT6036")))
- 
+
   (setq org-fast-tag-selection-single-key (quote expert))
 #+end_src
+
+#+RESULTS:
+: expert
+
 ** Babel
 :PROPERTIES:
 :ID:       a16c5ff0-8587-4356-9443-857710394623
@@ -923,7 +937,7 @@ Default settings
     (setq toc-org-max-depth 3
           toc-org-hrefify-default "org"))  ;; Options are org or gh (github)
 #+end_src
-** org-id
+** IDs
 :PROPERTIES:
 :ID:       5b3d9ed6-ea18-4746-8477-7f1fbb6f33b5
 :CUSTOM_ID: org-id
@@ -961,6 +975,33 @@ Default settings
                  (undo)
                  (setq quit-flag t))
                (org-entry-put nil "CUSTOM_ID" id))))))))
+
+
+  (defun my-org-uuid-custom-id-get (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+     If POM is nil, refer to the entry at point. If the entry does
+     not have an CUSTOM_ID, the function returns nil. However, when
+     CREATE is non nil, create a CUSTOM_ID if none is present
+     already. PREFIX will be passed through to `org-id-new'. In any
+     case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          ;; (setq id (org-id-new (concat prefix "h")))
+          (setq id (org-id-new))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
+
+  (defun my-org-add-uudid-custom-ids-to-headlines-in-file ()
+    "Add CUSTOM_ID properties to all headlines in the
+     current file which do not already have one."
+    (interactive)
+    (org-map-entries (lambda () (my-org-uuid-custom-id-get (point) 'create))))
 #+end_src
 ** Modules
 :PROPERTIES:
@@ -980,6 +1021,14 @@ Default settings
                       ol-mhe
                       ol-rmail
                       ol-eww))
+#+end_src
+** org-habits
+:PROPERTIES:
+:ID:       452209a6-d713-4712-8f52-31f29a120c12
+:END:
+#+begin_src elisp
+  (setq org-habit-following-days 0)
+  (setq org-habit-preceding-days 30)
 #+end_src
 ** Images (allow for resizing with imagemagick)
 :PROPERTIES:
@@ -1214,7 +1263,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   (use-package olivetti
     :ensure t
     :config
-    (setq-default olivetti-body-width 80)
+    (setq-default olivetti-body-width 75)
     :bind
     ("C-c o" . olivetti-mode))
 #+end_src
@@ -1339,11 +1388,11 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
                 ("U" . elfeed-mark-all-as-unread)
                 ("0" . elfeed-filter-out-big)
                 ("1" . elfeed-read-CCC)
-                ("2" . elfeed-read-aiml)
-                ("3" . elfeed-read-prog)
-                ("4" . elfeed-read-sports)
+                ("2" . elfeed-read-general)
+                ("3" . elfeed-read-aiml)
+                ("4" . elfeed-read-prog)
                 ("5" . elfeed-read-science)
-                ("6" . elfeed-read-general)
+                ("6" . elfeed-read-sports)
                 ("7" . elfeed-read-tech)
                 ("8" . elfeed-read-politics)))
 
@@ -1441,17 +1490,17 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
           ;; Prog
           ("http://protesilaos.com/codelog.xml" emacs prog)
           ("http://sachachua.com/blog/category/weekly/feed/" emacs prog)
-          ("http://www.reddit.com/r/emacs.rss" _ emacs prog reddit)
+          ;; ("http://www.reddit.com/r/emacs.rss" _ emacs prog reddit)
 
           ;; Science
           ("http://writings.stephenwolfram.com/feed/" science)
           ("http://www.scottaaronson.com/blog/?feed=rss2" science)
-	
+
           ;; Sports
           ("http://squared2020.com/rss" bball sports)
-          ("http://www.reddit.com/r/nba.rss" _ bball reddit sports)
-          ("http://theathletic.com/rss-feed/" _ sports)
-          ("http://fivethirtyeight.com/rss" _ sports politics)
+          ;; ("http://www.reddit.com/r/nba.rss" _ bball reddit sports)
+          ;; ("http://theathletic.com/rss-feed/" _ sports)
+          ;; ("http://fivethirtyeight.com/rss" _ sports politics)
 
           ;; Politics
           ("http://protesilaos.com/politics.xml" politics)
@@ -1567,3 +1616,5 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (other-window 1))
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
+
+
