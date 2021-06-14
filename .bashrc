@@ -24,7 +24,7 @@ LCYAN='\[\033[01;36m\]'
 WHITE='\[\033[01;37m\]'
 
 if [ $HOSTNAME == "arch-swift3" ] || [ $HOSTNAME == "arch-macair15" ]; then
-    export PS1="\`if [ \$? = 0 ]; then echo '$LBLUE\w $YELLOW\$ '; else echo '$LRED\w \$ '; fi\`$CLEAR"
+    export PS1="[ $LBLUE\w $CLEAR]\`if [ \$? = 0 ]; then echo ' $LYELLOW\n\$ '; else echo '$LRED\n\$ '; fi\`$CLEAR"
 else
     export PS1='(\A) \u@\h: \w \$ '
 fi

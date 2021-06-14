@@ -172,64 +172,32 @@ font:
   #  cursor: CellForeground
 
 
-# # Colors (Dracula)
-# colors:
-#   # Default colors
-#   primary:
-#     background: '#282a36'
-#     foreground: '#f8f8f2'
-
-#   # Normal colors
-#   normal:
-#     black:   '#000000'
-#     red:     '#ff5555'
-#     green:   '#50fa7b'
-#     yellow:  '#f1fa8c'
-#     blue:    '#caa9fa'
-#     magenta: '#ff79c6'
-#     cyan:    '#8be9fd'
-#     white:   '#bfbfbf'
-
-#   # Bright colors
-#   bright:
-#     black:   '#575b70'
-#     red:     '#ff6e67'
-#     green:   '#5af78e'
-#     yellow:  '#f4f99d'
-#     blue:    '#caa9fa'
-#     magenta: '#ff92d0'
-#     cyan:    '#9aedfe'
-#     white:   '#e6e6e6'
-
-# # Colors (Nord)
-# colors:
-#    # Default colors
-#    primary:
-#      background: '#2E3440'
-#      foreground: '#D8DEE9'
-
-#    # Normal colors
-#    normal:
-#      black:   '#3B4252'
-#      red:     '#BF616A'
-#      green:   '#A3BE8C'
-#      yellow:  '#EBCB8B'
-#      blue:    '#81A1C1'
-#      magenta: '#B48EAD'
-#      cyan:    '#88C0D0'
-#      white:   '#E5E9F0'
-
-#    # Bright colors
-#    bright:
-#      black:   '#4C566A'
-#      red:     '#BF616A'
-#      green:   '#A3BE8C'
-#      yellow:  '#EBCB8B'
-#      blue:    '#81A1C1'
-#      magenta: '#B48EAD'
-#      cyan:    '#8FBCBB'
-#      white:   '#ECEFF4'
-
+# Theme: modus-vivendi
+# Description: Alacritty port of modus-vivendi (Modus themes for Emacs)
+# Author: Protesilaos Stavrou, <https://protesilaos.com>
+colors:
+  primary:
+    background: '#100b17'
+    foreground: '#ffffff'
+  normal:
+    black:   '#000000'
+    red:     '#100b17'  # originally '#ff8059', but this is bg for some reason... but need for things like git...
+    red:     '#ff8059'	
+    green:   '#44bc44'
+    yellow:  '#eecc00'
+    blue:    '#2fafff'
+    magenta: '#feacd0'
+    cyan:    '#00d3d0'
+    white:   '#bfbfbf'
+  bright:
+    black:   '#595959'
+    red:     '#f4923b'
+    green:   '#70c900'
+    yellow:  '#cfdf30'
+    blue:    '#79a8ff'
+    magenta: '#b6a0ff'
+    cyan:    '#6ae4b9'
+    white:   '#ffffff'
 
 ##################################################
 
