@@ -192,7 +192,7 @@
                      ;; (bg-main . "#2e3440")  ; nord-0
                      ;; (bg-main . "#3b4252")  ; nord-1
                      (bg-dim . "#161129")
-                     (bg-alt . "#1e1e1e")  ; original  "#181732" bad in terminal		   
+                     (bg-alt . "#1e1e1e")  ; original  "#181732" bad in terminal
                      (bg-hl-line . "#191628")
                      (bg-active . "#282e46")
                      (bg-inactive . "#1a1e39")
@@ -272,7 +272,7 @@
   (global-set-key (kbd "C-c f s")
                   (lambda () (interactive) (my-shortcut "~/org/self.org")))
   (global-set-key (kbd "C-c f w")
-                  (lambda () (interactive) (my-shortcut "~/org/2021-W23.org")))
+                  (lambda () (interactive) (my-shortcut "~/org/2021-w26.org")))
   (global-set-key (kbd "C-c f W")
                   (lambda () (interactive) (my-shortcut "~/org/work.org")))
 
@@ -293,6 +293,14 @@
 #+begin_src elisp
   (global-set-key (kbd "C-c h r") 'replace-string)
   (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
+#+end_src
+* etc. hooks
+:PROPERTIES:
+:ID:       f2a45bf2-ce33-47cf-8af2-f6c279e67e0b
+:END:
+#+begin_src elisp
+  (add-hook 'before-save-hook
+            'delete-trailing-whitespace)
 #+end_src
 * Org
 :PROPERTIES:
@@ -316,6 +324,8 @@
           org-startup-folded t
           org-archive-location "~/org/archives/%s_archive::"
           )
+    :bind
+    (("C-x n t" . org-toggle-narrow-to-subtree))
     :hook
     (org-mode . visual-line-mode)
     (org-mode . variable-pitch-mode))
@@ -441,18 +451,15 @@
         org-agenda-start-on-weekday nil  ;; Start from current day
         org-agenda-skip-deadline-if-done t  ;; Declutter the agenda
         org-agenda-skip-scheduled-if-done t
+        org-agenda-todo-ignore-deadlines nil
+        org-agenda-todo-ignore-scheduled nil
         org-deadline-warning-days 3
         org-agenda-window-setup 'current-window
+        org-agenda-start-with-log-mode t ;; '(clock)
         )
-#+end_src
-*** Agenda global TODO list decluttering
-:PROPERTIES:
-:ID:       b66d5f7f-1316-4d29-ac4a-410b78634969
-:CUSTOM_ID: Agenda-global-TODO-list-decluttering
-:END:
-#+begin_src emacs-lisp
-  (setq org-agenda-todo-ignore-deadlines nil
-        org-agenda-todo-ignore-scheduled nil)
+
+  ;; Can hide specific tags in agenda view (or all)
+  (setq org-agenda-hide-tags-regexp ".")
 #+end_src
 *** Custom agenda views
 :PROPERTIES:
@@ -462,9 +469,60 @@
 #+begin_src emacs-lisp
   (setq org-agenda-custom-commands
         '(
-          ;; Library 
+          ;; Main view
+          ;; ("t" "Today"
+          ;;  ((agenda ""
+          ;; 	  ((org-agenda-span 1)
+          ;; 	   (org-agenda-skip-function
+          ;; 	    '(org-agenda-skip-entry-if 'deadline)))))
+
+          ;;  )
+            ;; (tags "CLOSED>=\"<today>\""
+            ;;       ((org-agenda-overriding-header "\nCompleted today\n"))))
+
+            ;; (todo "ACTIVE")))
+
+
+          ("t" "Today"
+
+            ((agenda ""
+                     ((org-agenda-span 1)
+                      (org-agenda-start-with-log-mode t)
+                      (org-agenda-skip-function
+                      '(org-agenda-skip-entry-if 'deadline))
+                     (org-deadline-warning-days 0)))
+            ;; (todo "ACTIVE"
+            ;;       ((org-agenda-skip-function
+            ;;         '(org-agenda-skip-entry-if 'deadline))
+            ;;        (org-agenda-prefix-format "  %i %-12:c ")
+            ;;        (org-agenda-overriding-header "\nTasks\n")))
+            ;; (agenda nil
+            ;;         ((org-agenda-entry-types '(:deadline))
+            ;;          (org-agenda-format-date "")
+            ;;          (org-deadline-warning-days 7)
+            ;;          (org-agenda-skip-function
+            ;;           '(org-agenda-skip-entry-if 'notregexp "\\* ACTIVE"))
+            ;;          (org-agenda-overriding-header "\nDeadlines")))
+             (tags "CLOSED>=\"<today>\""
+                   ((org-agenda-overriding-header "\nCompleted today\n")))
+             (tags-todo "inbox"
+                        ((org-agenda-prefix-format "  %?-12t% s")
+                         (org-agenda-overriding-header "\nInbox\n")))))
+
+
+          ("W" "Weekly Review"
+           ((agenda ""
+                    ((org-agenda-start-day "-7d")
+                    (org-agenda-span 7)
+                    (org-agenda-start-on-weekday 1)
+                    (org-agenda-start-with-log-mode t)
+                    (org-agenda-archives-mode t)
+                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE "))))))
+
+
+          ;; Library
           ("l" . "Library Views")
-          ("la" "Active" tags-todo "TODO=\"ACTIVE\""	 
+          ("la" "Active" tags-todo "TODO=\"ACTIVE\""
            ((org-agenda-overriding-header "Active Library Items: ")
             (org-agenda-files '("~/org/library.org"))))
           ("lh" "Hold" tags-todo "TODO={Hold}"
@@ -479,7 +537,7 @@
           ("l0" "0 effort" tags "TODO=\"TODO\"+Effort=\"0\""
            ((org-agenda-files '("~/org/library.org"))))
 
-	
+
           ("i" "Inbox" alltodo ""
            ((org-agenda-files '("~/org/inbox.org"))))
           ))
@@ -489,7 +547,7 @@
 :ID:       b97b0215-7ab5-4d7e-ae0a-330b9ad3730e
 :CUSTOM_ID: TODOs
 :END:
-- The "!" triggers autologging (into the LOGBOOK). Not using anymore because of new archive workflow.
+- Adding "!" triggers autologging (into the LOGBOOK)
   - e.g. =(sequence "TODO(t!)"...=
 #+begin_src emacs-lisp
   (setq org-todo-keywords
@@ -505,11 +563,8 @@
           ("DONE" . (:foreground "#19ffaf" :weight bold))
           ("PASS" . (:foreground "#ff3d40" :weight bold))))
 
-  ;; (setq org-log-done 'time)  ;; Don't need with all other logging in LOGBOOK
+  (setq org-log-done 'time)
   (setq org-log-into-drawer "LOGBOOK")
-
-  ;; Don't set timestamp or note when shifting through TODO states.
-  ;; (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 #+end_src
 ** Capture
 :PROPERTIES:
@@ -540,13 +595,13 @@
            entry (file "~/org/library.org")
            "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: album\n:Creator: %^\n:Published: %^\n:END:\n"
            :prepend t)
-          ("la" "Article"
-           entry (file "~/org/library.org")
-           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: article\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n"
-           :prepend t)
           ("lb" "Book"
            entry (file "~/org/library.org")
            "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: book\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n"
+           :prepend t)
+          ("le" "Essay"
+           entry (file "~/org/library.org")
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:Type: essay\n:Creator: %^\n:Published: %^\n:Effort: %^\n:END:\n"
            :prepend t)
           ("lf" "Film"
            entry (file "~/org/library.org")
@@ -589,7 +644,7 @@
           ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
            "%?"
            :tree-type 'daily)
-          ("f" ">5m" entry (file "~/org/inbox.org")
+          ("f" "<5m" entry (file "~/org/inbox.org")
            "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
            :prepend t)
           ("i" "InterWebs" entry (file "~/org/interwebs.org")
@@ -598,6 +653,12 @@
           ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Apps")
            "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?"
            :prepend t)
+          ("t" "Add a task for today" entry (file "~/org/inbox.org")
+           "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a>>\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
+           :prepend t
+           )
+          ("z" "ZZZ" entry (file+datetree "~/org/zzz.org")
+           "* %<%R >%? %^g\n%T")
           ))
 #+end_src
 
@@ -608,6 +669,10 @@
 :END:
 #+begin_src emacs-lisp
   (setq org-refile-targets '((org-agenda-files :todo . "PROJECT")))
+
+  ;; Subtree completion
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps nil)
 #+end_src
 ** Archiving
 :PROPERTIES:
@@ -754,10 +819,11 @@
     (setq org-journal-prefix-key "")  ;; disable default key-bindings: https://github.com/bastibe/org-journal/pull/278#issuecomment-664986601 (allows for user customization entirely)
     :config
     (setq  org-journal-dir "~/org/journal/"
-           org-journal-date-format "%a, %Y-%m-%d"
+           org-journal-date-format "%Y-%m-%d, %a"
            org-journal-date-prefix "* "
            org-journal-time-prefix "** "
-           org-journal-file-header "#+TITLE: %a, %Y-%m-%d\n* Time\n\n#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 2 :block %Y-%m-%d\n#+END:\n"
+           ;; org-journal-file-header "#+TITLE: %a, %Y-%m-%d\n* Time\n\n#+BEGIN: clocktable :scope agenda-with-archives :maxlevel 2 :block %Y-%m-%d\n#+END:\
+           org-journal-file-header "#+TITLE: %Y-%m-%d, %a\n"
            org-journal-file-format "%Y-%m-%d.org"
            org-journal-file-type 'daily
            org-journal-carryover-items ""  ;; Default behavior is to carryover TODOs.
@@ -799,8 +865,8 @@ Default settings
 #+begin_src elisp
   (defun my-org-clocktable-formatter (ipos tables params)
     "Custom formatter for org-mode clocktables which groups by category rather than file.
-  It uses `org-clock-clocktable-formatter' for the insertion of the table after sorting 
-  the items into tables based on an items category property. Thus all parameters supported 
+  It uses `org-clock-clocktable-formatter' for the insertion of the table after sorting
+  the items into tables based on an items category property. Thus all parameters supported
   by `org-clock-clocktable-formatter' are supported. To use this to sort a clocktable add
   `:properties (\"CATEGORY\") :formatter my-org-clocktable-formatter' to that clocktable's
   arguments."
@@ -834,7 +900,7 @@ Default settings
                                                        it-level -1)
                                                     hist)))
                                (setq hist (cons it-index it-hist))
-                               (cons it-index (cons it-hist it))) 
+                               (cons it-index (cons it-hist it)))
                              tt)))
 
       ;; Now comes the important phase: sorting, where we copy items with >0 net time
@@ -851,7 +917,7 @@ Default settings
                                   (progn (push (list it-cat nil) newtables) 0)))
                         (cat-members (-map #'car (-last-item (nth cat-pos newtables))))
                         (it-parent
-                         (or (--find-index (member it								 
+                         (or (--find-index (member it
                                                    cat-members)
                                            it-hist)
                              (length it-hist)))
@@ -865,7 +931,7 @@ Default settings
 
                    (when (not (= 0 it-time))
                      (setf (-last-item (nth cat-pos newtables))
-                           (append (cons it hist-to-add) 
+                           (append (cons it hist-to-add)
                                    (-last-item (nth cat-pos newtables)))))))
 
       (--each newtables (setf (-last-item it) (reverse (-last-item it))))
@@ -881,11 +947,11 @@ Default settings
                                           (--map (nth 4 it)
                                                  (--filter (= 1 (car it))
                                                            it-children)))))
-                     (list (car it) it-total-time it-children)) 
+                     (list (car it) it-total-time it-children))
                    newtables))
       ;; Actually insert the clocktable now.
       (funcall formatter ipos newtables newparams)
-      ;; Replace "File" with "Category" in the "file" column and "*File time*" with "* 
+      ;; Replace "File" with "Category" in the "file" column and "*File time*" with "*
       ;; Category time*" in the table.
       (org-table-goto-line 1)
       (org-table-blank-field)
@@ -903,14 +969,14 @@ Default settings
           (incf n)))))
 
   (defun sum-direct-children-org (level children)
-    "Update the time LEVEL nodes recursively to be the sum of the times of its children. 
+    "Update the time LEVEL nodes recursively to be the sum of the times of its children.
   Used in `my-org-clocktable-formatter' to go from net times back to tatal times."
     (let ((subtrees (-partition-before-pred (lambda (it) (= level (car it))) children)))
       (-flatten-n 1
                   (--map (let ((it-children (sum-direct-children-org (1+ level)
                                                                      (cdr it))))
                            (cons (--update-at
-                                  4 (+ it				
+                                  4 (+ it
                                        (-sum
                                         (--map (nth 4 it)
                                                (--filter (= (1+ level)
@@ -948,8 +1014,8 @@ Default settings
   (setq org-id-link-to-org-use-id t)
 #+end_src
 #+begin_src emacs-lisp
-  (defun my-org-get-headline-based-ids (&rest _) 
-    "Source: https://alhassy.github.io/AlBasmala.html#Ensuring-Useful-HTML-Anchors 
+  (defun my-org-get-headline-based-ids (&rest _)
+    "Source: https://alhassy.github.io/AlBasmala.html#Ensuring-Useful-HTML-Anchors
     All non-alphanumeric characters are cleverly replaced with ‘-’.
     If multiple trees end-up with the same id property, issue a
     message and undo any property insertion thus far.
@@ -1168,7 +1234,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :config
     (setq anki-editor-create-decks t
           anki-editor-org-tags-as-anki-tags t
-          anki-editor-ignored-org-tags '("anki")) 
+          anki-editor-ignored-org-tags '("anki"))
 
     (defun anki-editor-cloze-region-auto-incr (&optional arg)
       "Cloze region without hint and increase card number."
@@ -1506,7 +1572,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
           ("http://protesilaos.com/politics.xml" politics)
 
           ;; Tech
-          ("http://news.ycombinator.com/rss" _ news tech)
+          ;; ("http://news.ycombinator.com/rss" _ news tech)
 
           ;; General
           ("http://protesilaos.com/books.xml" general)
@@ -1565,14 +1631,14 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 :END:
 #+begin_src emacs-lisp
   (defun sort-words (reverse beg end)
-  
-    "From https://www.emacswiki.org/emacs/SortWords 
+
+    "From https://www.emacswiki.org/emacs/SortWords
   Sort words in region alphabetically, in REVERSE if negative.
       Prefixed with negative \\[universal-argument], sorts in reverse.
-  
+
       The variable `sort-fold-case' determines whether alphabetic case
       affects the sort order.
-  
+
       See `sort-regexp-fields'."
     (interactive "*P\nr")
     (sort-regexp-fields reverse "\\w+" "\\&" beg end))
@@ -1616,5 +1682,3 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (other-window 1))
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
-
-
