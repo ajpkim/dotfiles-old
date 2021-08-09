@@ -27,8 +27,11 @@
 - [[File shortcuts & bookmarks][File shortcuts & bookmarks]]
   - [[Files][Files]]
   - [[Bookmarks][Bookmarks]]
+- [[Quick Bindings][Quick Bindings]]
+- [[etc. hooks][etc. hooks]]
 - [[Org][Org]]
   - [[Setup (ellispsis, emphasis, indent, etc)][Setup (ellispsis, emphasis, indent, etc)]]
+  - [[Faces][Faces]]
   - [[Global Org keys][Global Org keys]]
   - [[Extend day untill 2am][Extend day untill 2am]]
   - [[Export & Publishing][Export & Publishing]]
@@ -36,7 +39,6 @@
     - [[Publish][Publish]]
   - [[Agenda][Agenda]]
     - [[Base settings][Base settings]]
-    - [[Agenda global TODO list decluttering][Agenda global TODO list decluttering]]
     - [[Custom agenda views][Custom agenda views]]
   - [[TODOs][TODOs]]
   - [[Capture][Capture]]
@@ -48,8 +50,9 @@
   - [[org-journal][org-journal]]
   - [[Clocking][Clocking]]
   - [[toc-org][toc-org]]
-  - [[org-id][org-id]]
+  - [[IDs][IDs]]
   - [[Modules][Modules]]
+  - [[org-habits][org-habits]]
   - [[Images (allow for resizing with imagemagick)][Images (allow for resizing with imagemagick)]]
   - [[Hyphens to dots][Hyphens to dots]]
   - [[org-tempo][org-tempo]]
@@ -253,9 +256,10 @@
 #+begin_src emacs-lisp
   (defun my-shortcut (file)
     (interactive)
-    (if (equal current-prefix-arg nil) ; no C-u
-        (find-file file)
-      (find-file-other-frame file)))
+    (if (file-exists-p file)
+        (if (equal current-prefix-arg nil) ; no C-u
+            (find-file file)
+          (find-file-other-frame file))))
 
   (global-set-key (kbd "C-c f c")
                   (lambda () (interactive) (my-shortcut "~/.emacs.d/config.org")))
@@ -272,10 +276,9 @@
   (global-set-key (kbd "C-c f s")
                   (lambda () (interactive) (my-shortcut "~/org/self.org")))
   (global-set-key (kbd "C-c f w")
-                  (lambda () (interactive) (my-shortcut "~/org/2021-w26.org")))
-  (global-set-key (kbd "C-c f W")
                   (lambda () (interactive) (my-shortcut "~/org/work.org")))
-
+  (global-set-key (kbd "C-c f W")
+                  (lambda () (interactive) (my-shortcut (format-time-string "~/org/weeks/%Y-W%W.org"))))
 #+end_src
 ** Bookmarks
 :PROPERTIES:
@@ -442,9 +445,6 @@
 :PROPERTIES:
 :ID:       8b484d69-0fdc-46ee-a7dc-bd8b14e01e29
 :CUSTOM_ID: Base-settings
-:END:
-:LOGBOOK:
-- State "TODO"       from              [2021-01-29 Fri 22:59]
 :END:
 #+begin_src emacs-lisp
   (setq org-agenda-span 5 ;; Number of days to show in agenda
@@ -658,8 +658,10 @@
            :prepend t
            )
           ("z" "ZZZ" entry (file+datetree "~/org/zzz.org")
-           "* %<%R >%? %^g\n%T")
-          ))
+           "* %<%R >%? %^g\n%T")))
+
+
+
 #+end_src
 
 ** Refile
@@ -1176,6 +1178,81 @@ Default settings
   (setf org-blank-before-new-entry '((heading . auto)
                                     (plain-list-item . auto)))
 #+end_src
+* Weekly Review
+
+Functions for creating and updating weekly file with template data and daily journal entries.
+
+:PROPERTIES:
+:ID:       50805e74-4b1d-4907-ab54-c96d6e30e6ad
+:END:
+#+begin_src emacs-lisp
+  (defun create-week-file (&optional week)
+    (interactive)
+    (if week
+        (setq week (number-to-string week))
+      (setq week (format-time-string "%W")))
+    (setq week-file (concat "~/org/weeks/" (format-time-string "%Y-W") week ".org"))
+    (if (file-exists-p week-file)
+        (find-file week-file)
+      (find-file week-file)
+      (insert (format-time-string "#+TITLE: %Y, Week %W\n"))
+      (insert-file-contents "~/org/weeks/template.org")))
+
+  (defun iso-week-to-date (year week day)
+    ;; https://emacs.stackexchange.com/questions/43984/convert-between-iso-week-and-a-normal-date
+    (pcase-let ((`(,m ,d ,y)
+                 (calendar-gregorian-from-absolute
+                  (calendar-iso-to-absolute (list week day year)))))
+      (format-time-string "%F" (encode-time 0 0 0 d m y))))
+
+  (defun get-iso-week-journal-files (&optional year week)
+    (or year (setq year (string-to-number (format-time-string "%Y"))))
+    (or week (setq week (string-to-number (format-time-string "%W"))))
+    (setq files (list))
+    (dolist (day (number-sequence 1 7))
+      (setq file (concat "~/org/journal/" (iso-week-to-date year week day) ".org"))
+      (add-to-list 'files file t))
+    files)
+
+  (defun get-week-file (&optional year week)
+    (if year
+        (setq year (number-to-string year))
+      (setq year (format-time-string "%Y")))
+    (if week
+        (setq week (number-to-string week))
+      (setq week (format-time-string "%W")))
+    (concat "~/org/weeks/" year "-W" week ".org"))
+
+  (defun extract-entry-subtree (entry)
+    (if (file-exists-p entry)
+        (with-temp-buffer
+          (insert-file-contents entry)
+          (goto-char (point-min))
+          (org-mode)
+          (org-next-visible-heading 1)
+          (org-narrow-to-subtree)
+          (org-shiftmetaright)
+          (buffer-string))))
+
+  (defun copy-journal-entries-to-week-file (&optional year week)
+    (interactive)
+    (setq week-file (get-week-file year week))
+    (setq journal-files (get-iso-week-journal-files year week))
+    (set-buffer (find-file-noselect week-file))
+    (save-excursion
+      (goto-char (point-min))
+      (search-forward "* Days")
+      (org-narrow-to-subtree)
+      (setq beg (point))
+      (end-of-buffer)
+      (delete-region beg (point))
+      (newline 2)
+      (dolist (entry journal-files)
+        (if (file-exists-p entry)
+            (insert (extract-entry-subtree entry))))
+      (org-toggle-narrow-to-subtree)
+      (save-current-buffer)))
+#+end_src
 * magit
 :PROPERTIES:
 :ID:       8e7a10d2-8304-45eb-97bf-aaee40c46c2d
@@ -1329,7 +1406,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   (use-package olivetti
     :ensure t
     :config
-    (setq-default olivetti-body-width 75)
+    ;; (setq-default olivetti-body-width 75)
     :bind
     ("C-c o" . olivetti-mode))
 #+end_src
