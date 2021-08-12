@@ -8,83 +8,6 @@
 :ID:       2b04f9c4-056e-4885-8bbf-18890db97b87
 :END:
 
-* Table of Contentes                                                    :toc:
-:PROPERTIES:
-:CUSTOM_ID: Table-of-Contentes
-:ID:       7da33b7e-5dfd-4d14-a661-ce45dd9702cc
-:END:
-
-- [[Basic Appearance][Basic Appearance]]
-  - [[Basic UI][Basic UI]]
-  - [[Modeline][Modeline]]
-  - [[rainbow][rainbow]]
-  - [[beacon][beacon]]
-  - [[Themes][Themes]]
-    - [[Modus Themes][Modus Themes]]
-- [[Autosave and backups][Autosave and backups]]
-  - [[Custom dir][Custom dir]]
-  - [[Delete old files][Delete old files]]
-- [[File shortcuts & bookmarks][File shortcuts & bookmarks]]
-  - [[Files][Files]]
-  - [[Bookmarks][Bookmarks]]
-- [[Quick Bindings][Quick Bindings]]
-- [[etc. hooks][etc. hooks]]
-- [[Org][Org]]
-  - [[Setup (ellispsis, emphasis, indent, etc)][Setup (ellispsis, emphasis, indent, etc)]]
-  - [[Faces][Faces]]
-  - [[Global Org keys][Global Org keys]]
-  - [[Extend day untill 2am][Extend day untill 2am]]
-  - [[Export & Publishing][Export & Publishing]]
-    - [[Export][Export]]
-    - [[Publish][Publish]]
-  - [[Agenda][Agenda]]
-    - [[Base settings][Base settings]]
-    - [[Custom agenda views][Custom agenda views]]
-  - [[TODOs][TODOs]]
-  - [[Capture][Capture]]
-  - [[Refile][Refile]]
-  - [[Archiving][Archiving]]
-  - [[Tags][Tags]]
-  - [[Babel][Babel]]
-  - [[org-roam][org-roam]]
-  - [[org-journal][org-journal]]
-  - [[Clocking][Clocking]]
-  - [[toc-org][toc-org]]
-  - [[IDs][IDs]]
-  - [[Modules][Modules]]
-  - [[org-habits][org-habits]]
-  - [[Images (allow for resizing with imagemagick)][Images (allow for resizing with imagemagick)]]
-  - [[Hyphens to dots][Hyphens to dots]]
-  - [[org-tempo][org-tempo]]
-  - [[org-bullets][org-bullets]]
-  - [[LaTeX][LaTeX]]
-  - [[Fold non-current headers][Fold non-current headers]]
-  - [[Never add new lines after headlines][Never add new lines after headlines]]
-- [[magit][magit]]
-- [[ivy, counsel, swiper][ivy, counsel, swiper]]
-- [[ido][ido]]
-  - [[Enable Ido-mode][Enable Ido-mode]]
-- [[anki-editor][anki-editor]]
-- [[multiple-cursors][multiple-cursors]]
-- [[company][company]]
-- [[olivetti][olivetti]]
-- [[focus minor mode][focus minor mode]]
-- [[Center scroll mode][Center scroll mode]]
-- [[smartparens][smartparens]]
-- [[which-key][which-key]]
-- [[Languages][Languages]]
-  - [[Python][Python]]
-    - [[Juptyer][Juptyer]]
-  - [[Scheme][Scheme]]
-- [[elfeed][elfeed]]
-- [[avy][avy]]
-- [[ace-window][ace-window]]
-- [[drag-stuff CONFLICT WITH ORG][drag-stuff CONFLICT WITH ORG]]
-- [[Util Funcs][Util Funcs]]
-  - [[Text editing][Text editing]]
-  - [[Config edit/reload][Config edit/reload]]
-  - [[window splitting functions][window splitting functions]]
-
 * Basic Appearance
 :PROPERTIES:
 :ID:       893fa650-5c1d-4b03-b3b0-5220bae56043
@@ -96,12 +19,9 @@
 :CUSTOM_ID: Basic-UI
 :END:
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil :height 150)  ;; Magnify text here
   (setq inhibit-startup-message t)
   (setq visible-bell t)
   (setq scroll-conservatively 100)
-  ;; (setq-default cursor-type `bar)
-  ;; (set-cursor-color "#a5fbff")
   (blink-cursor-mode 1)
   ;; (global-prettify-symbols-mode t)
   (tool-bar-mode -1)
@@ -110,7 +30,7 @@
   (global-hl-line-mode)
   ;; Allow Emacs to access content from clipboard.
   (setq x-select-enable-clipboard t
-        x-select-enable-primary t)
+	x-select-enable-primary t)
 #+END_SRC
 ** Modeline
 :PROPERTIES:
@@ -168,7 +88,6 @@
     (modus-themes-load-themes)
     :config
     ;; Load the theme of your choice:
-    ;; (my-modus-themes-tinted)
     (modus-themes-load-vivendi) ;; OR (modus-themes-load-operandi)
     :bind ("<f5>" . modus-themes-toggle))
 
@@ -191,7 +110,8 @@
                      (bg-tab-inactive . "#c8bab8")
                      (fg-unfocused . "#55556f"))
                    modus-themes-vivendi-color-overrides
-                   '((bg-main . "#100b17")
+                   '(
+                     ;; (bg-main . "#100b17")  ; makes emacs in terminal all light blue bg
                      ;; (bg-main . "#2e3440")  ; nord-0
                      ;; (bg-main . "#3b4252")  ; nord-1
                      (bg-dim . "#161129")
@@ -215,6 +135,13 @@
 :PROPERTIES:
 :CUSTOM_ID: Autosave-and-backups
 :END:
+** Auto refresh files from disk
+:PROPERTIES:
+:ID:       3d726a60-067c-4ba8-9aef-9f6f81abc148
+:END:
+#+begin_src emacs-lisp
+  (global-auto-revert-mode t)
+#+end_src
 ** Custom dir
 :PROPERTIES:
 :ID:       391cefa3-e4c2-407b-bcc3-33883a52d664
@@ -243,6 +170,7 @@
         (message "%s" file)
         (delete-file file))))
 #+END_SRC
+
 * File shortcuts & bookmarks
 :PROPERTIES:
 :CUSTOM_ID: File-shortcuts-bookmarks
@@ -310,6 +238,7 @@
 :CUSTOM_ID: Org
 :END:
 - [[https://orgmode.org/org.html][Org Manual]]
+
 ** Setup (ellispsis, emphasis, indent, etc)
 :PROPERTIES:
 :ID:       351d9037-f52d-4954-82b7-e7ad4c8ae8fd
@@ -331,7 +260,8 @@
     (("C-x n t" . org-toggle-narrow-to-subtree))
     :hook
     (org-mode . visual-line-mode)
-    (org-mode . variable-pitch-mode))
+    (org-mode . variable-pitch-mode)
+    (org-mode . olivetti-mode))
 
 
   ;; Assign these so that I can toggle variable-pitch-mode and have sensible fixed width still
@@ -344,6 +274,36 @@
   (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
   #+END_SRC
+
+** QoL
+*** Text editing
+#+begin_src elisp
+  (defun insert-raquo ()
+    "Use this to signal my personal voice when notetaking etc."
+    (interactive)
+    (insert "\\raquo"))
+
+  (define-key org-mode-map (kbd "C-c h a") 'insert-raquo)
+#+end_src
+*** Custom sort
+:PROPERTIES:
+:ID:       4aab78ea-f2b4-48b4-9703-347300ec8147
+:END:
+
+#+begin_src emacs-lisp
+  (defun my-org-sort-entries ()
+    (interactive)
+    ;; (org-sort-entries t ?r)  ;; Don't know how to provide input programmatically
+    ;; (org-sort-entries t ?a)  ;;
+    (org-sort-entries t ?o)
+    (org-cycle)
+    (org-cycle))
+
+  ;; Both ways of remapping work
+  ;; (define-key org-mode-map (kbd "C-c ^") 'my-org-sort-entries)
+  (define-key org-mode-map (kbd "<f6>") 'my-org-sort-entries)
+  ;; (define-key org-mode-map [remap org-sort] 'my-org-sort-entries)
+#+end_src
 ** Faces
 :PROPERTIES:
 :ID:       7589cc72-7791-4e51-998e-c1cbf24578bd
@@ -431,10 +391,10 @@
           ("org-notes"
            :base-directory "~/org/notes"
            :base-extension "org"
-           :publishing-directory "~/notes/"
+           :publishing-directory "~/notes-html/"
            :recursive nil
            :publishing-function org-html-publish-to-html
-           :html-extension t
+           :html-extension "html"
            :with-toc nil)))
 #+end_src
 ** Agenda
@@ -455,7 +415,7 @@
         org-agenda-todo-ignore-scheduled nil
         org-deadline-warning-days 3
         org-agenda-window-setup 'current-window
-        org-agenda-start-with-log-mode t ;; '(clock)
+        ;; org-agenda-start-with-log-mode t ;; '(clock)
         )
 
   ;; Can hide specific tags in agenda view (or all)
@@ -551,17 +511,19 @@
   - e.g. =(sequence "TODO(t!)"...=
 #+begin_src emacs-lisp
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "ACTIVE(a)" "HOLD(h)" "SOMEDAY(s)" "PROJECT(P)" "|" "DONE(d)" "PASS(p)")))
+        '((sequence "PROJECT(P)" "ACTIVE(a)" "TODO(t)" "HOLD(h)" "SOMEDAY(s)" "|" "PASS(p)" "DONE(d)")))
 
+  ;; #ffff66 is the yellow I like
+  ;; #79a8ff is a nice royal blue
   (setq org-todo-keyword-faces
         '(
-          ("TODO" . (:foreground "#ffff66" :weight bold))
-          ("ACTIVE" . (:foreground "#44ddff" :weight bold))
-          ("HOLD" . (:foreground "#dfaa8e" :weight bold))
-          ("SOMEDAY" . (:foreground "#00ffff" :weight bold))
           ("PROJECT" . (:foreground "#ffbbff" :weight bold))
-          ("DONE" . (:foreground "#19ffaf" :weight bold))
-          ("PASS" . (:foreground "#ff3d40" :weight bold))))
+          ("ACTIVE" . (:foreground "#44ddff" :weight bold))
+          ("TODO" . (:foreground "#f0ffff" :weight bold))
+          ("HOLD" . (:foreground "#dfaa8e" :weight bold))
+          ("SOMEDAY" . (:foreground "#acfff0" :weight bold))
+          ("PASS" . (:foreground "#ff3d40" :weight bold))
+          ("DONE" . (:foreground "#19ffaf" :weight bold))))
 
   (setq org-log-done 'time)
   (setq org-log-into-drawer "LOGBOOK")
@@ -759,54 +721,23 @@
 #+begin_src emacs-lisp
   (use-package org-roam
     :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/org/notes/")
+    :bind
+    (("C-c n l" . org-roam-buffer-toggle)
+     ("C-c n f" . org-roam-node-find)
+     ("C-c n i" . org-roam-node-insert))
     :config
-    (setq org-roam-directory "~/org/notes/"
-          ;; Capture tags via #+roam_tags and normal org tags ("vanilla")
-          org-roam-tag-sources '(prop vanilla)
-          org-roam-prefer-id-links t
-          org-roam-completion-system 'ivy
-          )
-    (set-face-attribute 'org-roam-link nil
-                        :foreground "light green"
-                        :weight 'bold)
-    :hook
-    (after-init . org-roam-mode)
-    :bind (:map org-roam-mode-map
-                (("C-c n l" . org-roam)
-                 ("C-c n f" . org-roam-find-file)
-                 ("C-c n c" . org-roam-capture)
-                 ("C-c n g" . org-roam-show-graph)
-                 ("C-c n b" . org-roam-switch-to-buffer))
-                ;; :map org-mode-map
-                ("C-c n i" . org-roam-insert)
-                ))
+    (org-roam-setup))
 
   (setq org-roam-capture-templates
-        '(("r" "default" plain (function org-roam--capture-get-point)
-           :file-name "%<%Y%m%d%H%M%S>-${slug}"
-           :head "#+TITLE: ${title}\n#+ROAM_TAGS: %?\n#+SETUPFILE: ~/org/assets/org-export-setup-files/org-html-default-n1.setup\n"
-           :unnarrowed t
-           :immediate_finish t)
-          ))
-
-  (defun my-org-roam--title-to-slug (title)
-    ;; Change to dashes instead of default underscores. Taken from org-roam source code.
-    "Convert TITLE to a filename-suitable slug."
-    (cl-flet* ((nonspacing-mark-p (char)
-                                  (eq 'Mn (get-char-code-property char 'general-category)))
-               (strip-nonspacing-marks (s)
-                                       (apply #'string (seq-remove #'nonspacing-mark-p
-                                                                   (ucs-normalize-NFD-string s))))
-               (cl-replace (title pair)
-                           (replace-regexp-in-string (car pair) (cdr pair) title)))
-      (let* ((pairs `(("[^[:alnum:][:digit:]]" . "-")  ;; convert anything not alphanumeric
-                      ("__*" . "-")  ;; remove sequential underscores
-                      ("^_" . "")  ;; remove starting underscore
-                      ("_$" . "")))  ;; remove ending underscore
-             (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
-        (downcase slug))))
-
-  (setq org-roam-title-to-slug-function 'my-org-roam--title-to-slug)
+        '(("d" "default" plain "%?" :if-new
+           (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}
+  ,#+setupfile: ~/org/assets/org-export-setup-files/org-html-default-n1.setup
+  ,#+filetags:")
+           :unnarrowed t)))
 #+end_src
 ** org-journal
 :PROPERTIES:
@@ -1146,6 +1077,25 @@ Default settings
 #+begin_src emacs-lisp
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2))
 #+end_src
+** org-pomodoro
+:PROPERTIES:
+:ID:       f5fac7af-e570-437c-9d6c-f11aee9e6e2b
+:END:
+
+- [[https://colekillian.com/posts/org-pomodoro-and-polybar/][org-pomodoro and polybar example]]
+
+#+begin_src elisp
+  (use-package org-pomodoro
+    :ensure t
+    :commands (org-pomodoro)
+    :config
+    (setq org-pomodoro-length 1)
+    (setq org-pomodoro-short-break-length 1)
+    (setq org-pomodoro-manual-break t)
+    (setq org-pomodoro-long-break-frequency 100)
+    :bind ("C-c p" . org-pomodoro))
+#+end_src
+
 ** Fold non-current headers
 :PROPERTIES:
 :ID:       4c1c5bb0-ddda-48f8-95a1-ab171d4b51dd
@@ -1178,89 +1128,14 @@ Default settings
   (setf org-blank-before-new-entry '((heading . auto)
                                     (plain-list-item . auto)))
 #+end_src
-* Weekly Review
-
-Functions for creating and updating weekly file with template data and daily journal entries.
-
-:PROPERTIES:
-:ID:       50805e74-4b1d-4907-ab54-c96d6e30e6ad
-:END:
-#+begin_src emacs-lisp
-  (defun create-week-file (&optional week)
-    (interactive)
-    (if week
-        (setq week (number-to-string week))
-      (setq week (format-time-string "%W")))
-    (setq week-file (concat "~/org/weeks/" (format-time-string "%Y-W") week ".org"))
-    (if (file-exists-p week-file)
-        (find-file week-file)
-      (find-file week-file)
-      (insert (format-time-string "#+TITLE: %Y, Week %W\n"))
-      (insert-file-contents "~/org/weeks/template.org")))
-
-  (defun iso-week-to-date (year week day)
-    ;; https://emacs.stackexchange.com/questions/43984/convert-between-iso-week-and-a-normal-date
-    (pcase-let ((`(,m ,d ,y)
-                 (calendar-gregorian-from-absolute
-                  (calendar-iso-to-absolute (list week day year)))))
-      (format-time-string "%F" (encode-time 0 0 0 d m y))))
-
-  (defun get-iso-week-journal-files (&optional year week)
-    (or year (setq year (string-to-number (format-time-string "%Y"))))
-    (or week (setq week (string-to-number (format-time-string "%W"))))
-    (setq files (list))
-    (dolist (day (number-sequence 1 7))
-      (setq file (concat "~/org/journal/" (iso-week-to-date year week day) ".org"))
-      (add-to-list 'files file t))
-    files)
-
-  (defun get-week-file (&optional year week)
-    (if year
-        (setq year (number-to-string year))
-      (setq year (format-time-string "%Y")))
-    (if week
-        (setq week (number-to-string week))
-      (setq week (format-time-string "%W")))
-    (concat "~/org/weeks/" year "-W" week ".org"))
-
-  (defun extract-entry-subtree (entry)
-    (if (file-exists-p entry)
-        (with-temp-buffer
-          (insert-file-contents entry)
-          (goto-char (point-min))
-          (org-mode)
-          (org-next-visible-heading 1)
-          (org-narrow-to-subtree)
-          (org-shiftmetaright)
-          (buffer-string))))
-
-  (defun copy-journal-entries-to-week-file (&optional year week)
-    (interactive)
-    (setq week-file (get-week-file year week))
-    (setq journal-files (get-iso-week-journal-files year week))
-    (set-buffer (find-file-noselect week-file))
-    (save-excursion
-      (goto-char (point-min))
-      (search-forward "* Days")
-      (org-narrow-to-subtree)
-      (setq beg (point))
-      (end-of-buffer)
-      (delete-region beg (point))
-      (newline 2)
-      (dolist (entry journal-files)
-        (if (file-exists-p entry)
-            (insert (extract-entry-subtree entry))))
-      (org-toggle-narrow-to-subtree)
-      (save-current-buffer)))
-#+end_src
 * magit
 :PROPERTIES:
 :ID:       8e7a10d2-8304-45eb-97bf-aaee40c46c2d
 :CUSTOM_ID: magit
 :END:
 #+begin_src emacs-lisp
-  ;; (use-package magit
-  ;;   :ensure t)
+  (use-package magit
+    :ensure t)
 #+end_src
 * ivy, counsel, swiper
 :PROPERTIES:
@@ -1633,7 +1508,6 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
           ;; Prog
           ("http://protesilaos.com/codelog.xml" emacs prog)
           ("http://sachachua.com/blog/category/weekly/feed/" emacs prog)
-          ;; ("http://www.reddit.com/r/emacs.rss" _ emacs prog reddit)
 
           ;; Science
           ("http://writings.stephenwolfram.com/feed/" science)
@@ -1641,18 +1515,6 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 
           ;; Sports
           ("http://squared2020.com/rss" bball sports)
-          ;; ("http://www.reddit.com/r/nba.rss" _ bball reddit sports)
-          ;; ("http://theathletic.com/rss-feed/" _ sports)
-          ;; ("http://fivethirtyeight.com/rss" _ sports politics)
-
-          ;; Politics
-          ("http://protesilaos.com/politics.xml" politics)
-
-          ;; Tech
-          ;; ("http://news.ycombinator.com/rss" _ news tech)
-
-          ;; General
-          ("http://protesilaos.com/books.xml" general)
           ))
 #+end_src
 * avy
@@ -1685,17 +1547,95 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 :CUSTOM_ID: drag-stuff-CONFLICT-WITH-ORG
 :END:
 #+begin_src emacs-lisp
-  ;; (use-package drag-stuff
-  ;;   :ensure t
-  ;;   :config
-  ;;   (progn
-  ;;     (drag-stuff-global-mode t)
-  ;;     (drag-stuff-define-keys))
-  ;;   :bind
-  ;;   (("M-p" . drag-stuff-up)
-  ;;    ("M-n" . drag-stuff-down)))
+  (use-package drag-stuff
+    :ensure t
+    :config
+    (progn
+      (drag-stuff-global-mode t)
+      (drag-stuff-define-keys))
+    :bind
+    (("M-p" . drag-stuff-up)
+     ("M-n" . drag-stuff-down)))
 #+end_src
 
+* Weekly Review
+:PROPERTIES:
+:ID:       0fc35a8c-959d-4a3d-9e7d-ac10176ec9a7
+:END:
+
+Functions for creating and updating weekly file with template data and daily journal entries.
+
+:PROPERTIES:
+:ID:       50805e74-4b1d-4907-ab54-c96d6e30e6ad
+:END:
+#+begin_src emacs-lisp
+  (defun create-week-file (&optional week)
+    (interactive)
+    (if week
+        (setq week (number-to-string week))
+      (setq week (format-time-string "%W")))
+    (setq week-file (concat "~/org/weeks/" (format-time-string "%Y-W") week ".org"))
+    (if (file-exists-p week-file)
+        (find-file week-file)
+      (find-file week-file)
+      (insert (format-time-string "#+TITLE: %Y, Week %W\n"))
+      (insert-file-contents "~/org/weeks/template.org")))
+
+  (defun iso-week-to-date (year week day)
+    ;; https://emacs.stackexchange.com/questions/43984/convert-between-iso-week-and-a-normal-date
+    (pcase-let ((`(,m ,d ,y)
+                 (calendar-gregorian-from-absolute
+                  (calendar-iso-to-absolute (list week day year)))))
+      (format-time-string "%F" (encode-time 0 0 0 d m y))))
+
+  (defun get-iso-week-journal-files (&optional year week)
+    (or year (setq year (string-to-number (format-time-string "%Y"))))
+    (or week (setq week (string-to-number (format-time-string "%W"))))
+    (setq files (list))
+    (dolist (day (number-sequence 1 7))
+      (setq file (concat "~/org/journal/" (iso-week-to-date year week day) ".org"))
+      (add-to-list 'files file t))
+    files)
+
+  (defun get-week-file (&optional year week)
+    (if year
+        (setq year (number-to-string year))
+      (setq year (format-time-string "%Y")))
+    (if week
+        (setq week (number-to-string week))
+      (setq week (format-time-string "%W")))
+    (concat "~/org/weeks/" year "-W" week ".org"))
+
+  (defun extract-entry-subtree (entry)
+    (if (file-exists-p entry)
+        (with-temp-buffer
+          (insert-file-contents entry)
+          (goto-char (point-min))
+          (org-mode)
+          (org-next-visible-heading 1)
+          (org-narrow-to-subtree)
+          (org-shiftmetaright)
+          (buffer-string))))
+
+  (defun copy-journal-entries-to-week-file (&optional year week)
+    (interactive)
+    (setq week-file (get-week-file year week))
+    (setq journal-files (get-iso-week-journal-files year week))
+    (set-buffer (find-file-noselect week-file))
+    (save-excursion
+      (goto-char (point-min))
+      (search-forward "* Days")
+      (org-narrow-to-subtree)
+      (setq beg (point))
+      (end-of-buffer)
+      (delete-region beg (point))
+      (newline 2)
+      (dolist (entry journal-files)
+        (if (file-exists-p entry)
+            (insert (extract-entry-subtree entry))))
+      (org-toggle-narrow-to-subtree)
+      (save-buffer)))
+#+end_src
 * Util Funcs
 :PROPERTIES:
 :ID:       14f157e2-fb12-4805-98d5-62eacb4a6cf2
@@ -1719,7 +1659,6 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
       See `sort-regexp-fields'."
     (interactive "*P\nr")
     (sort-regexp-fields reverse "\\w+" "\\&" beg end))
-
 #+end_src
 ** Config edit/reload
 :PROPERTIES:

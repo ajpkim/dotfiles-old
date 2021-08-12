@@ -26,6 +26,7 @@ alias ve='source venv/bin/activate'
 alias ff='firefox'
 alias e='emacsclient --create-frame'
 alias et='emacsclient -nw'
+alias ke='emacsclient -e "(kill-emacs)"'
 alias lynx='lynx -accept_all_cookies'
 alias py='python3'
 

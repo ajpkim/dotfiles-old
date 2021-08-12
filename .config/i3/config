@@ -261,17 +261,17 @@ hide_edge_borders both
 #         status_command i3blocks
 # 	colors {
 # 	        background $bar-bg-color
-# 		separator #757575		
+# 		separator #757575
 # 		#			border			background		text
 # 		focused_workspace	$bar-bg-color		$bar-bg-color		$text-color
 # 		inactive_workspace	$inactive-bg-color	$inactive-bg-color	$inactive-text-color
 # 		urgent_workspace	$urgent-bg-color	$urgent-bg-color	$text-color
-# 		}			
+# 		}
 # 	# modifer
 # 	mode hide
 #     	hidden_state hide
 #     	modifier $mod+Shift
-# 	strip_workspace_numbers yes	
+# 	strip_workspace_numbers yes
 # 	position top
 # }
 
@@ -283,7 +283,7 @@ bindsym $mod+Shift+x exec /home/ajpkim/scripts/i3lock-multimonitor.sh
 
 # Key-bindings
 bindsym $mod+Control+e exec emacsclient --create-frame
-bindsym $mod+Control+n exec emacs ~/org/now.org 
+bindsym $mod+Control+c exec emacsclient --create-frame --no-wait -e "(org-capture)"
 bindsym $mod+Control+f exec firefox
 bindsym $mod+F5 exec virtualbox
 bindsym $mod+F6 exec firefox youtube.com
@@ -311,7 +311,7 @@ set $outergap 2
 set $gapincr 5
 
 gaps inner $innergap
-gaps outer $outergap 
+gaps outer $outergap
 
 bindsym $mod+n		gaps inner current plus $gapincr
 bindsym $mod+Shift+n	gaps inner current minus $gapincr

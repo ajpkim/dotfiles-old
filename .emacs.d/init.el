@@ -76,10 +76,10 @@
       nil)
      ("v" "Active tasks" alltodo "ACTIVE" nil)))
  '(org-agenda-files
-   '("~/org/self.org" "~/org/poker.org" "~/org/work.org" "~/org/inbox.org" "~/org/interwebs.org" "~/org/development.org" "~/org/library.org" "~/org/anki-exports.org" "~/org/anki.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-08-09.org"))
+   '("~/org/self.org" "~/org/poker.org" "~/org/work.org" "~/org/inbox.org" "~/org/interwebs.org" "~/org/development.org" "~/org/library.org" "~/org/anki-exports.org" "~/org/anki.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-08-11.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
-   '(elfeed ein company-quickhelp company-anaconda anaconda-mode company geiser-mit geiser pastelmac-theme clues-theme afternoon-theme sicp anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
+   '(org-pomodoro magit elfeed ein company-quickhelp company-anaconda anaconda-mode company geiser-mit geiser pastelmac-theme clues-theme afternoon-theme sicp anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
  '(pdf-view-midnight-colors '("#ffffff" . "#110b11"))
  '(pos-tip-background-color "#414E63")
  '(pos-tip-foreground-color "#BEC8DB")
@@ -116,7 +116,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :foundry "PfEd" :family "DejaVu Sans Mono"))))
+ '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "PfEd" :family "DejaVu Sans Mono"))))
  '(variable-pitch ((t (:family "Ubuntu")))))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
