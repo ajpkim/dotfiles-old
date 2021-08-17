@@ -1,0 +1,49 @@
+IMAPAccount protonmail
+Host 127.0.0.1
+Port 1143
+User alex@ajpkim.com
+PassCmd "gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.password-store/protonmail-credentials/bridge.gpg"
+SSLType STARTTLS
+CertificateFile ~/.config/protonmail/bridge/cert.pem
+
+
+IMAPStore protonmail-remote
+Account protonmail
+
+MaildirStore protonmail-local
+Subfolders verbatim
+Path ~/Mail/protonmail/alexjpkim/
+Inbox ~/Mail/protonmail/alexjpkim/Inbox
+
+Channel protonmail
+Far :protonmail-remote:
+Near :protonmail-local:
+Patterns *
+Create Both
+SyncState *
+
+##################################################
+
+IMAPAccount gmail
+Host imap.gmail.com
+User alexjpkim@gmail.com
+PassCmd "gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.password-store/gmail/alexjpkim/alexjpkim-app-pw.gpg"
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Subfolders verbatim
+Path ~/Mail/gmail/alexjpkim/
+Inbox ~/Mail/gmail/alexjpkim/Inbox
+
+Channel gmail
+Far :gmail-remote:
+Near :gmail-local:
+Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash" "[Gmail]/Drafts"
+Create Both
+SyncState *
+
+##################################################

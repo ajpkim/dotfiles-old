@@ -277,6 +277,9 @@
 
 ** QoL
 *** Text editing
+:PROPERTIES:
+:ID:       077439ae-2098-4182-b62a-e00fc68dbd51
+:END:
 #+begin_src elisp
   (defun insert-raquo ()
     "Use this to signal my personal voice when notetaking etc."
@@ -599,28 +602,28 @@
            :prepend t)
 
           ;; General templates
-          ("c" "Add a task" entry (file "~/org/inbox.org")
+          ("c" "Task" entry (file "~/org/inbox.org")
            "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
-           :prepend t
-           )
+           :prepend t)
           ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
            "%?"
            :tree-type 'daily)
-          ("f" "<5m" entry (file "~/org/inbox.org")
-           "* TODO %^     :5m:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
+          ("f" "File link" entry (file "~/org/inbox.org")
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%a\n"
+           :prepend t)
+          ("e" "Email" entry (file "~/org/inbox.org")
+           "* TODO %a (%:fromname)  :email:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
+           :prepend t
+           :immediate-finish t)
+          ("q" "Quick" entry (file "~/org/inbox.org")
+           "* TODO %^   :quick:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%?"
            :prepend t)
           ("i" "InterWebs" entry (file "~/org/interwebs.org")
            "* %? %^g\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
            :prepend t)
-          ("J" "Job Hunt" entry (file+headline "~/org/work.org" "Apps")
-           "* TODO %^\n:PROPERTIES:\n:CREATED: %U\n:APP: %^\n:POSITION: %^\n:FIELD: %^\n:INNOVATIVE: %^\n:LOCATION: %^\n:END:\n%?"
-           :prepend t)
-          ("t" "Add a task for today" entry (file "~/org/inbox.org")
+          ("t" "Today task" entry (file "~/org/inbox.org")
            "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a>>\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
-           :prepend t
-           )
-          ("z" "ZZZ" entry (file+datetree "~/org/zzz.org")
-           "* %<%R >%? %^g\n%T")))
+           :prepend t)))
 
 
 
@@ -1089,8 +1092,8 @@ Default settings
     :ensure t
     :commands (org-pomodoro)
     :config
-    (setq org-pomodoro-length 1)
-    (setq org-pomodoro-short-break-length 1)
+    (setq org-pomodoro-length 30)
+    (setq org-pomodoro-short-break-length 5)
     (setq org-pomodoro-manual-break t)
     (setq org-pomodoro-long-break-frequency 100)
     :bind ("C-c p" . org-pomodoro))
@@ -1127,6 +1130,107 @@ Default settings
   ;; (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
   (setf org-blank-before-new-entry '((heading . auto)
                                     (plain-list-item . auto)))
+#+end_src
+* Mail
+** mu4e
+:PROPERTIES:
+:ID:       cd914cce-c422-420c-b803-baab4252a70c
+:END:
+#+begin_src elisp
+  (require 'mu4e)
+
+  (use-package mu4e
+    :ensure nil  ;; Installed via pacman
+    :config
+    (require 'mu4e-org)
+    (setq mu4e-change-filenames-when-moving t  ;; important
+          mu4e-confirm-quit nil
+          mu4e-get-mail-command "mbsync -a"
+          update-interval (* 10 60)
+          mu4e-maildir "~/Mail"
+          send-mail-function 'smtpmail-send-it
+          mu4e-compose-format-flowed t
+          message-kill-buffer-on-exit t
+          mu4e-compose-dont-reply-to-self t
+          )
+
+    (setq mu4e-contexts  ;; We can customize everything for particular email accounts
+          (list
+           (make-mu4e-context
+            :name "protonmail"
+            :match-func  ;; Can run arbitrary matching funcs here to filter etc.
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/protonmail" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address . "alex@ajpkim.com")
+                    (user-full-name . "Alex Kim")
+                    (mu4e-drafts-folder . "/protonmail/alexjpkim/Drafts")
+                    (mu4e-sent-folder . "/protonmail/alexjpkim/Sent")
+                    (mu4e-refile-folder . "/protonmail/alexjpkim/All Mail")
+                    (mu4e-trash-folder . "/protonmail/alexjpkim/Trash")
+                    (mu4e-maildir-shortcuts . ( ("/protonmail/alexjpkim/Inbox" . ?i)
+                                                ("/protonmail/alexjpkim/Sent" . ?s)
+                                                ("/protonmail/alexjpkim/Trash" . ?t)
+                                                ("/protonmail/alexjpkim/All Mail" . ?a)
+                                                ("/protonmail/alexjpkim/Drafts" . ?d)
+                                                ("/protonmail/alexjpkim/Archive" . ?v)))
+                    (smtpmail-smtp-user . "alex@ajpkim.com")
+                    (smtpmail-smtp-server . "127.0.0.1")
+                    (smtpmail-smtp-service . 1025)
+                    (smtpmail-stream-type . starttls)))
+
+           (make-mu4e-context
+            :name "gmail"
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+            :vars '((user-mail-address . "alexjpkim@gmail.com")
+                    (user-full-name . "Alex Kim Gmail")
+                    (mu4e-drafts-folder . "/gmail/alexjpkim/[Gmail]/Drafts")
+                    (mu4e-sent-folder . "/gmail/alexjpkim/[Gmail]/Sent Mail")
+                    (mu4e-refile-folder . "/gmail/alexjpkim/[Gmail]/All Mail")  ;; Gmail archive == "All Mail"
+                    (mu4e-trash-folder . "/gmail/alexjpkim/[Gmail]/Trash")
+                    (mu4e-maildir-shortcuts . ( ("/gmail/alexjpkim/Inbox" . ?i)
+                                                ("/gmail/alexjpkim/\[Gmail\]/Sent Mail" . ?s)
+                                                ("/gmail/alexjpkim/\[Gmail\]/Trash" . ?t)
+                                                ("/gmail/alexjpkim/\[Gmail\]/All Mail" . ?a)
+                                                ("/gmail/alexjpkim/\[Gmail\]/Drafts" . ?d)))
+                    (smtpmail-smtp-user . "alexjpkim@gmail.com")
+                    (smtpmail-smtp-server . "smtp.gmail.com")
+                    (smtpmail-smtp-service . 465)  ;; 587 for tls  (https://support.google.com/mail/thread/78596123/smtp-servermand-port-number?hl=en)
+                    (smtpmail-stream-type . ssl)))))
+
+    (setq mu4e-context-policy 'pick-first
+          mu4e-attachment-dir "~/Downloads")
+    :bind
+    ("C-x m" . mu4e)
+    ("C-x M" . mu4e-compose-new))
+
+
+  ;; Convenient capture in mu4e ("a" brings up quick action menu in mu4e)
+  (defun my-capture-mail (msg)
+    (interactive)
+    (org-capture nil "e"))
+
+  (add-to-list 'mu4e-headers-actions
+               '("org capture mail" . my-capture-mail) t)
+  (add-to-list 'mu4e-view-actions
+               '("org capture email" . my-capture-mail) t)
+
+
+#+end_src
+
+** org-mime
+:PROPERTIES:
+:ID:       c06860f3-3e3e-4766-8b38-4a53ba88f6c6
+:END:
+- For creating HTML formatted mail
+- Uses org html export options (can also override)
+  - We can write custom CSS (i.e. code block background, etc.)
+#+begin_src elisp
+  (use-package org-mime
+    :ensure t)
 #+end_src
 * magit
 :PROPERTIES:
@@ -1393,6 +1497,28 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :ensure t)
 
 #+end_src
+* gpg
+** pinentry
+:PROPERTIES:
+:ID:       2068d977-08db-4d3e-a1ed-dc2c7166b080
+:END:
+#+begin_src elisp
+  (use-package pinentry
+    :ensure t
+    :config
+    (setf epa-pinentry-mode 'loopback)
+    (pinentry-start))
+#+end_src
+** pass
+:PROPERTIES:
+:ID:       6acac906-6e58-422b-b6af-dcc969063350
+:END:
+#+begin_src elisp
+  (use-package pass
+    :ensure t
+    :config
+    (setf epa-pinentry-mode 'loopback))
+#+end_src
 * elfeed
 :PROPERTIES:
 :ID:       d663065e-8af3-49fb-b0e4-c7607458240c
@@ -1541,7 +1667,7 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :config (setq aw-keys `(?a ?s ?d ?f ?j ?k ?l))
     :bind ("C-x o" . ace-window))
 #+END_SRC
-* drag-stuff CONFLICT WITH ORG
+* drag-stuff
 :PROPERTIES:
 :ID:       5682e5b8-e7b5-42b4-ad47-34afb94ae55c
 :CUSTOM_ID: drag-stuff-CONFLICT-WITH-ORG

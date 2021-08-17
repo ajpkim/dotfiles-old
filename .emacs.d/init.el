@@ -76,15 +76,17 @@
       nil)
      ("v" "Active tasks" alltodo "ACTIVE" nil)))
  '(org-agenda-files
-   '("~/org/self.org" "~/org/poker.org" "~/org/work.org" "~/org/inbox.org" "~/org/interwebs.org" "~/org/development.org" "~/org/library.org" "~/org/anki-exports.org" "~/org/anki.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-08-11.org"))
+   '("~/org/self.org" "~/org/poker.org" "~/org/work.org" "~/org/inbox.org" "~/org/interwebs.org" "~/org/development.org" "~/org/library.org" "~/org/anki-exports.org" "~/org/anki.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-08-16.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
-   '(org-pomodoro magit elfeed ein company-quickhelp company-anaconda anaconda-mode company geiser-mit geiser pastelmac-theme clues-theme afternoon-theme sicp anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
+   '(org-mime pass pinentry org-pomodoro magit elfeed ein company-quickhelp company-anaconda anaconda-mode company geiser-mit geiser pastelmac-theme clues-theme afternoon-theme sicp anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
  '(pdf-view-midnight-colors '("#ffffff" . "#110b11"))
  '(pos-tip-background-color "#414E63")
  '(pos-tip-foreground-color "#BEC8DB")
  '(powerline-color1 "#222232")
  '(powerline-color2 "#333343")
+ '(smtpmail-smtp-server "127.0.0.1")
+ '(smtpmail-smtp-service 1025)
  '(vc-annotate-background nil)
  '(vc-annotate-background-mode nil)
  '(vc-annotate-color-map
