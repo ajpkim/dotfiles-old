@@ -129,6 +129,11 @@
                  modus-themes-vivendi-color-overrides nil)))
 
   ;;; Toggle my-modus-themes-tinted and reload config for using terminal
+
+
+  (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
+  (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
+
 #+end_src
 
 * Autosave and backups
@@ -675,23 +680,21 @@
         '(
           ;; Type of thing
           ("read" . ?r)
-          ("recur" . ?R)
-          ("5m" . ?f)
-
-          ;; Genre of thing
-          ("CS" . ?c)
-
-
-          ;; Personal metadata
           ("fav" . ?v)
+          ("learn" . ?l)
+          ("quick" . ?q)
+          ("prog" . p)
+          ("seed" . s)))
+
+
 
           ;; Anki tags for anki-editor and exporting
-          ("anki")  ;; Helpful to filter out anki cards for tag searches
-          ("linux" . ?l)
-          ("ML" . ?m)
-          ("unix" . ?u)
-          ;; Courses (still Anki)
-          ("MIT6036")))
+          ;; ("anki")  ;; Helpful to filter out anki cards for tag searches
+          ;; ("linux" . ?l)
+          ;; ("ML" . ?m)
+          ;; ("unix" . ?u)
+          ;; ;; Courses (still Anki)
+          ;; ("MIT6036")))
 
   (setq org-fast-tag-selection-single-key (quote expert))
 #+end_src
@@ -1152,6 +1155,7 @@ Default settings
           mu4e-compose-format-flowed t
           message-kill-buffer-on-exit t
           mu4e-compose-dont-reply-to-self t
+          mu4e-view-show-images t
           )
 
     (setq mu4e-contexts  ;; We can customize everything for particular email accounts
@@ -1166,7 +1170,7 @@ Default settings
                     (user-full-name . "Alex Kim")
                     (mu4e-drafts-folder . "/protonmail/alexjpkim/Drafts")
                     (mu4e-sent-folder . "/protonmail/alexjpkim/Sent")
-                    (mu4e-refile-folder . "/protonmail/alexjpkim/All Mail")
+                    (mu4e-refile-folder . "/protonmail/alexjpkim/Archive")
                     (mu4e-trash-folder . "/protonmail/alexjpkim/Trash")
                     (mu4e-maildir-shortcuts . ( ("/protonmail/alexjpkim/Inbox" . ?i)
                                                 ("/protonmail/alexjpkim/Sent" . ?s)
@@ -1318,6 +1322,20 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   ;; Org-capture templates
   (setq org-my-anki-file "~/org/anki.org")
 #+end_src
+* olivetti
+:PROPERTIES:
+:ID:       8f172f3f-2017-483d-bbda-d492467620d3
+:CUSTOM_ID: olivetti
+:END:
+- Centers text by widening the margins.
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :ensure t
+    :config
+    ;; (setq-default olivetti-body-width 75)
+    :bind
+    ("C-c o" . olivetti-mode))
+#+end_src
 * multiple-cursors
 :PROPERTIES:
 :ID:       7932b3d1-59fc-4075-9d72-efa1b0cce146
@@ -1334,60 +1352,6 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
     (define-key mc/keymap (kbd "<return>") nil)  ;; Allows us to insert new-line with <RET> and still disable multiple-cursor mode with C-g
     )
-#+end_src
-* company
-:PROPERTIES:
-:ID:       2677331e-b6f1-45c5-9daf-cdccae0f07ec
-:CUSTOM_ID: company
-:END:
-#+begin_src emacs-lisp
-  (use-package company
-    :ensure t
-    :config
-    (setq company-idle-delay 0
-          company-show-numbers t
-          company-minimum-prefix-length 2
-          company-selection-wrap-around t)
-    :init
-    (add-hook 'prog-mode-hook 'company-mode))
-
-  ;; (use-package company-quickhelp
-  ;;   ;; Quickhelp may incorrectly place tooltip towards end of buffer
-  ;;   ;; See: https://github.com/expez/company-quickhelp/issues/72
-  ;;   :ensure t
-  ;;   :config
-  ;;   (company-quickhelp-mode)
-  ;;   )
-
-
-  ;; Python setup
-  (use-package anaconda-mode
-    :ensure t
-    :config
-    (add-hook 'python-mode-hook 'anaconda-mode))
-
-
-  (use-package company-anaconda
-    :ensure t
-    :init (require 'rx)
-    :after (company)
-    :config
-    (add-to-list 'company-backends 'company-anaconda))
-
-#+end_src
-* olivetti
-:PROPERTIES:
-:ID:       8f172f3f-2017-483d-bbda-d492467620d3
-:CUSTOM_ID: olivetti
-:END:
-- Centers text by widening the margins.
-#+begin_src emacs-lisp
-  (use-package olivetti
-    :ensure t
-    :config
-    ;; (setq-default olivetti-body-width 75)
-    :bind
-    ("C-c o" . olivetti-mode))
 #+end_src
 * focus minor mode
 :PROPERTIES:
@@ -1465,10 +1429,68 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :init
     (which-key-mode))
 #+END_SRC
+* company
+:PROPERTIES:
+:ID:       2677331e-b6f1-45c5-9daf-cdccae0f07ec
+:CUSTOM_ID: company
+:END:
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :config
+    (setq company-idle-delay 0
+          company-show-numbers t
+          company-minimum-prefix-length 2
+          company-selection-wrap-around t)
+    :init
+    (add-hook 'prog-mode-hook 'company-mode))
+
+
+  ;; (use-package company-quickhelp
+  ;;   ;; Quickhelp may incorrectly place tooltip towards end of buffer
+  ;;   ;; See: https://github.com/expez/company-quickhelp/issues/72
+  ;;   :ensure t
+  ;;   :config
+  ;;   (company-quickhelp-mode)
+  ;;   )
+
+
+  ;; Python setup
+  (use-package anaconda-mode
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'anaconda-mode))
+
+  (use-package company-anaconda
+    :ensure t
+    :init (require 'rx)
+    :after (company)
+    :config
+    (add-to-list 'company-backends 'company-anaconda))
+
+#+end_src
 * Languages
 :PROPERTIES:
 :CUSTOM_ID: Languages
 :END:
+** Language Server Protocol
+#+begin_src elisp
+  (use-package lsp-mode
+    :ensure t
+    :commands (lsp lsp-deferred)
+    :bind-keymap
+    ("C-c v" . lsp-command-map)
+    :custom
+    (lsp-keymap-prefix "C-c v")
+    :hook
+    (lsp-mode . lsp-enable-which-key-integration)
+    (csharp-mode . lsp))
+
+
+  (use-package lsp-ivy
+    :ensure t
+    :commands lsp-ivy-workspace-symbol)
+#+end_src
 ** Python
 :PROPERTIES:
 :CUSTOM_ID: Python
@@ -1496,6 +1518,20 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   (use-package geiser-mit
     :ensure t)
 
+#+end_src
+** C#
+#+begin_src elisp
+
+  ;;;; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
+  ;; (defun my/csharp-mode-hook ()
+  ;;   (setq-local lsp-auto-guess-root t)
+  ;;   (lsp))
+
+  (setenv "FrameworkPathOverride" "/lib/mono/4.5")  ; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
+
+  (use-package csharp-mode
+    :ensure t
+    :mode "\\.cs\\'")
 #+end_src
 * gpg
 ** pinentry
@@ -1530,15 +1566,13 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :bind (:map elfeed-search-mode-map
                 ("R" . elfeed-mark-all-as-read)
                 ("U" . elfeed-mark-all-as-unread)
-                ("0" . elfeed-filter-out-big)
-                ("1" . elfeed-read-CCC)
-                ("2" . elfeed-read-general)
-                ("3" . elfeed-read-aiml)
-                ("4" . elfeed-read-prog)
-                ("5" . elfeed-read-science)
-                ("6" . elfeed-read-sports)
-                ("7" . elfeed-read-tech)
-                ("8" . elfeed-read-politics)))
+                ("0" . elfeed-read-general)
+                ("1" . elfeed-read-ccc)
+                ("2" . elfeed-read-aiml)
+                ("3" . elfeed-read-prog)
+                ("4" . elfeed-read-science)
+                ("5" . elfeed-read-sports)))
+
 
   (global-set-key (kbd "C-x w") 'elfeed)
 
@@ -1568,43 +1602,33 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     (goto-char (point-min))
     (message (concat "elfeed: show " tag)))
 
-  (defun elfeed-filter-out-big ()
-    (interactive)
-    (my-elfeed-filter "@3-month-ago +unread -_ " "small feeds"))
+  ;; (defun elfeed-filter-out-big ()
+  ;;   (interactive)
+  ;;   (my-elfeed-filter "@3-month-ago +unread -_ " "small feeds"))
 
-  (defun elfeed-read-CCC ()
+  (defun elfeed-read-general ()
     (interactive)
-    (my-elfeed-filter "@3-month-ago +unread +CCC " "CCC"))
+    (my-elfeed-filter "@3-month-ago +unread +general " "general"))
+
+  (defun elfeed-read-ccc ()
+    (interactive)
+    (my-elfeed-filter "@3-month-ago +unread +ccc " "Consciousnes, Computation, Cognition"))
 
   (defun elfeed-read-aiml ()
     (interactive)
-    (my-elfeed-filter "@3-month-ago +unread +AIML " "AI/ML"))
+    (my-elfeed-filter "@3-month-ago +unread +aiml " "AI/ML"))
 
   (defun elfeed-read-prog ()
     (interactive)
     (my-elfeed-filter "@3-month-ago +unread +prog " "programming"))
 
-  (defun elfeed-read-sports ()
-    (interactive)
-    (my-elfeed-filter "@3-month-ago +unread +sports " "sports"))
-
   (defun elfeed-read-science ()
     (interactive)
     (my-elfeed-filter "@3-month-ago +unread +science " "science"))
 
-  (defun elfeed-read-general()
+  (defun elfeed-read-sports ()
     (interactive)
-    (my-elfeed-filter "@3-month-ago +unread +general " "general"))
-
-  (defun elfeed-read-tech()
-    (interactive)
-    (my-elfeed-filter "@3-month-ago +unread +tech " "tech"))
-
-  (defun elfeed-read-politics()
-    (interactive)
-    (my-elfeed-filter "@3-month-ago +unread +politics " "politics"))
-
-
+    (my-elfeed-filter "@3-month-ago +unread +sports " "sports"))
 
   ;; (defun elfeed-tag-selection-as (mytag)
   ;;   "Returns a function that tags an elfeed entry or selection as
@@ -1624,11 +1648,11 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   (setq elfeed-feeds
         '(
           ;; AI/ML
-          ("http://distill.pub/rss.xml" AIML)
+          ("http://distill.pub/rss.xml" aiml)
 
           ;; CCC
-          ("http://philosophyofbrains.com/feed" CCC phil)
-          ("htts://academic.oup.com/rss/site_5412/OpenAccess.xml" CCC neuro)
+          ("http://philosophyofbrains.com/feed" ccc phil)
+          ("htts://academic.oup.com/rss/site_5412/OpenAccess.xml" ccc neuro)
           ("http://www.reddit.com/r/alife.rss" alife reddit)
 
           ;; Prog
@@ -1642,6 +1666,16 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
           ;; Sports
           ("http://squared2020.com/rss" bball sports)
           ))
+#+end_src
+* Unity
+#+begin_src elisp
+  (add-to-list 'load-path "~/.emacs.d/external-lisp/unity.el")
+  (require 'unity)
+  (use-package unity
+    :ensure nil
+    :hook
+    (after-init-hook . #'unity-build-code-shim)
+    (after-init-hook . #'unity-setup))
 #+end_src
 * avy
 :PROPERTIES:

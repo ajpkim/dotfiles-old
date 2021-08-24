@@ -42,7 +42,7 @@ Inbox ~/Mail/gmail/alexjpkim/Inbox
 Channel gmail
 Far :gmail-remote:
 Near :gmail-local:
-Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash" "[Gmail]/Drafts"
+Patterns * # ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash" "[Gmail]/Drafts"
 Create Both
 SyncState *
 
