@@ -30,8 +30,23 @@
   (global-hl-line-mode)
   ;; Allow Emacs to access content from clipboard.
   (setq x-select-enable-clipboard t
-	x-select-enable-primary t)
+        x-select-enable-primary t)
 #+END_SRC
+** Buffer/window management
+#+begin_src emacs-lisp
+  ;; Modifying window layout
+  (global-set-key (kbd "C-c h <left>") 'shrink-window-horizontally)
+  (global-set-key (kbd "C-c h <right>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "C-c h <down>") 'shrink-window)
+  (global-set-key (kbd "C-c h <up>") 'enlarge-window)
+
+  (winner-mode 1)
+  (global-set-key (kbd "<C-s-left>") 'winner-undo)
+  (global-set-key (kbd "<C-s-right>") 'winner-redo)
+
+  (global-set-key (kbd "<C-s-up>") 'ivy-push-view)
+  (global-set-key (kbd "<C-s-down>") 'ivy-switch-view)
+#+end_src
 ** Modeline
 :PROPERTIES:
 :ID:       5099a7e6-066f-41ac-a992-60fe2eb0ccea
@@ -229,12 +244,13 @@
 #+begin_src elisp
   (global-set-key (kbd "C-c h r") 'replace-string)
   (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
+  (global-set-key (kbd "C-c h l") 'display-line-numbers-mode)
 #+end_src
 * etc. hooks
 :PROPERTIES:
 :ID:       f2a45bf2-ce33-47cf-8af2-f6c279e67e0b
 :END:
-#+begin_src elisp
+#+begin_src emacs-lisp
   (add-hook 'before-save-hook
             'delete-trailing-whitespace)
 #+end_src
@@ -362,7 +378,20 @@
         org-html-postamble nil
         org-export-with-section-numbers nil
         org-export-with-toc nil
-        org-export-with-tags nil)
+        org-export-with-tags nil
+        org-html-html5-fancy t
+        org-html-doc-type "HTML5"
+        ;; org-html-xml-declaration ""
+        )
+
+  ;; https://orgmode.org/manual/Bare-HTML.html#Bare-HTML
+  (setq org-html-head ""
+        org-html-head-extra ""
+        org-html-head-include-default-style nil
+        org-html-head-include-scripts nil
+        org-html-preamble nil
+        org-html-postamble nil
+        org-html-use-infojs nil)
 #+end_src
 *** Publish
 :PROPERTIES:
@@ -371,39 +400,42 @@
 :END:
 #+begin_src emacs-lisp
   (require 'ox-publish)
+
   (setq org-publish-project-alist
         '(
-          ("ajpkim-org-posts"
-           :base-directory "~/org/ajpkim-site/org/"
+          ("ajpkim-blog"
+           :base-directory "~/org/ajpkim.com/blog/"
            :base-extension "org"
-           :publishing-directory "~/ajpkim.github.io/"
+           :publishing-directory "~/ajpkim.com/blog/"
            :recursive t
            :publishing-function org-html-publish-to-html
            :html-extension "html"
-           :body-only t ;; Only export section between <body> </body>
-           :with-toc nil)
-          ("ajpkim-html-posts"
-           :base-directory "~/org/ajpkim-site/org/"
-           :base-extension "html"
-           :publishing-directory "~/ajpkim.github.io"
+           :body-only nil
+           :html-head "<link rel='stylesheet' type='text/css' href='../assets/css/styles.css'/>
+  <script id='MathJax-script' async src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'></script>"
+           :html-head-extra nil
+           :html-preamble nil)
+          ("ajpkim-pages"
+           :base-directory "~/org/ajpkim.com/pages"
+           :base-extension "org"
+           :publishing-directory "~/ajpkim.com/pages/"
            :recursive t
-           :publishing-function org-publish-attachment)
-          ("ajpkim-assets"
-           :base-directory "~/org/ajpkim-site/assets/"
-           :base-extension "css\\|scss\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3"
-           :publishing-directory "~/ajpkim.github.io/assets/"
-           :recursive t
-           :publishing-function org-publish-attachment)
-          ("ajpkim" :components ("ajpkim-org-posts" "ajpkim-html-posts" "ajpkim-assets"))
+           :publishing-function org-html-publish-to-html
+           :html-extension "html"
+           :body-only nil
+           :html-head "<link rel='stylesheet' type='text/css' href='../assets/css/styles.css'/>
+  <script id='MathJax-script' async src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'></script>"
+           :html-head-extra nil
+           :html-preamble v)
 
-          ("org-notes"
-           :base-directory "~/org/notes"
-           :base-extension "org"
-           :publishing-directory "~/notes-html/"
-           :recursive nil
-           :publishing-function org-html-publish-to-html
-           :html-extension "html"
-           :with-toc nil)))
+          ("ajpkim-assets"
+           :base-directory "~/org/ajpkim.com/assets/"
+           :base-extension "css\\|scss\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3"
+           :publishing-directory "~/ajpkim.com/assets/"
+           :recursive t
+           :publishing-function org-publish-attachment)
+
+        ("ajpkim.com" :components ("ajpkim-blog" "ajpkim-pages"  "ajpkim-assets"))))
 #+end_src
 ** Agenda
 :PROPERTIES:
@@ -628,7 +660,10 @@
            :prepend t)
           ("t" "Today task" entry (file "~/org/inbox.org")
            "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a>>\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
-           :prepend t)))
+           :prepend t)
+          ("w" "Work" entry (file+headline "~/org/cabcs.org" "Inbox")
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
+           )))
 
 
 
@@ -677,24 +712,12 @@
 - Can use =C-c C-c= and single key selection (in expert mode) to add tags quickly.
 #+begin_src emacs-lisp
   (setq org-tag-alist
-        '(
-          ;; Type of thing
-          ("read" . ?r)
+        '(("read" . ?r)
           ("fav" . ?v)
           ("learn" . ?l)
           ("quick" . ?q)
           ("prog" . p)
           ("seed" . s)))
-
-
-
-          ;; Anki tags for anki-editor and exporting
-          ;; ("anki")  ;; Helpful to filter out anki cards for tag searches
-          ;; ("linux" . ?l)
-          ;; ("ML" . ?m)
-          ;; ("unix" . ?u)
-          ;; ;; Courses (still Anki)
-          ;; ("MIT6036")))
 
   (setq org-fast-tag-selection-single-key (quote expert))
 #+end_src
@@ -1073,7 +1096,50 @@ Default settings
   (use-package org-bullets
     :ensure t
     :after org
-    :hook (org-mode . org-bullets-mode))
+    :hook (org-mode . org-bullets-mode)
+    :config
+    (setq org-bullets-bullet-list '("✫" "☀" "❂" "❀" "◌" "✶" "✸" "✹" "✺" "◌")))
+
+  ;; ⑴
+  ;; ⑵
+  ;; ⑶
+  ;; ⑷
+  ;; ⑸
+  ;; ⑹
+  ;; ⑺
+  ;; ⑻
+  ;; ⑼
+  ;; ⑽
+  ;; ⑾
+
+  ;; ⓵
+  ;; ⓶
+  ;; ⓷
+  ;; ⓸
+  ;; ⓹
+  ;; ⓺
+  ;; ⓻
+  ;; ⓼
+  ;; ⓽
+  ;; ⓾
+
+  ;; ✹
+  ;; ✺
+  ;; ✻
+  ;; ✼
+  ;; ✽
+  ;; ✾
+  ;; ✿
+
+  ;; ❀
+  ;; ❁
+  ;; ❂
+  ;; ❃
+
+  ;; ❅
+  ;; ❆
+  ;; ❇
+  ;; ❈
 #+END_SRC
 ** LaTeX
 :PROPERTIES:
@@ -1332,9 +1398,10 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
   (use-package olivetti
     :ensure t
     :config
-    ;; (setq-default olivetti-body-width 75)
+    (setq-default olivetti-body-width 80)
     :bind
-    ("C-c o" . olivetti-mode))
+    ("C-c o" . olivetti-mode)
+    ("C-c h o" . olivetti-set-width))
 #+end_src
 * multiple-cursors
 :PROPERTIES:
@@ -1474,6 +1541,9 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 :CUSTOM_ID: Languages
 :END:
 ** Language Server Protocol
+:PROPERTIES:
+:ID:       aa2a59e1-89b3-4878-8c18-e4c8544036e0
+:END:
 #+begin_src elisp
   (use-package lsp-mode
     :ensure t
@@ -1520,6 +1590,9 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 
 #+end_src
 ** C#
+:PROPERTIES:
+:ID:       8538bd2f-d7b9-4929-ae34-5ef7f3e6a008
+:END:
 #+begin_src elisp
 
   ;;;; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
@@ -1668,6 +1741,9 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
           ))
 #+end_src
 * Unity
+:PROPERTIES:
+:ID:       032b2afa-4509-4bab-ae2f-626730dc5ca9
+:END:
 #+begin_src elisp
   (add-to-list 'load-path "~/.emacs.d/external-lisp/unity.el")
   (require 'unity)
@@ -1792,7 +1868,7 @@ Functions for creating and updating weekly file with template data and daily jou
       (newline 2)
       (dolist (entry journal-files)
         (if (file-exists-p entry)
-            (insert (extract-entry-subtree entry))))
+            (insert (extract-entry-subtree entry) "\n")))
       (org-toggle-narrow-to-subtree)
       (save-buffer)))
 #+end_src

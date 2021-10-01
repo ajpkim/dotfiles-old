@@ -7,6 +7,8 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+alias cdls='cd && ls'
+
 # Dotfile management
 alias dotfiles='/usr/bin/git --git-dir=/home/ajpkim/.dotfiles --work-tree=$HOME'
 
@@ -36,3 +38,4 @@ alias acer-left='xrandr --output DP-1 --mode 1920x1080 --left-of eDP-1'
 ### Scripts
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
 alias on-monitors='. ~/scripts/turn-on-monitors.sh'
+alias lg-mon='xrandr --output HDMI-1 --mode 3840x2160  --right-of eDP-1'
