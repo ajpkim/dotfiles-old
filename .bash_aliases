@@ -39,3 +39,6 @@ alias acer-left='xrandr --output DP-1 --mode 1920x1080 --left-of eDP-1'
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
 alias on-monitors='. ~/scripts/turn-on-monitors.sh'
 alias lg-mon='xrandr --output HDMI-1 --mode 3840x2160  --right-of eDP-1'
+
+### General
+alias de='find . -name "*~" -type f -delete'

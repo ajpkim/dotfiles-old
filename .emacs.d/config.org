@@ -33,6 +33,9 @@
         x-select-enable-primary t)
 #+END_SRC
 ** Buffer/window management
+:PROPERTIES:
+:ID:       db8ee34e-1803-48e5-ba06-ec7dfb772e63
+:END:
 #+begin_src emacs-lisp
   ;; Modifying window layout
   (global-set-key (kbd "C-c h <left>") 'shrink-window-horizontally)
@@ -46,6 +49,12 @@
 
   (global-set-key (kbd "<C-s-up>") 'ivy-push-view)
   (global-set-key (kbd "<C-s-down>") 'ivy-switch-view)
+
+
+  ;; (setq scroll-preserve-screen-position 1)
+  ;; (global-set-key (kbd "") kbd C-u 1 C-V
+  ;; 		kbd C-u 1 M-v
+
 #+end_src
 ** Modeline
 :PROPERTIES:
@@ -151,6 +160,13 @@
 
 #+end_src
 
+** Basic hooks
+:PROPERTIES:
+:ID:       bce4abd4-2ef8-4fa9-8fad-165f9c2c218b
+:END:
+#+begin_src emacs-lisp
+
+#+end_src
 * Autosave and backups
 :PROPERTIES:
 :CUSTOM_ID: Autosave-and-backups
@@ -399,6 +415,9 @@
 :CUSTOM_ID: Publish
 :END:
 #+begin_src emacs-lisp
+  (use-package simple-httpd
+    :ensure t)
+
   (require 'ox-publish)
 
   (setq org-publish-project-alist
@@ -426,8 +445,10 @@
            :html-head "<link rel='stylesheet' type='text/css' href='../assets/css/styles.css'/>
   <script id='MathJax-script' async src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'></script>"
            :html-head-extra nil
-           :html-preamble v)
-
+           :html-preamble "<nav>
+  <a href=\"/\">Alex Kim</a>
+  </nav>
+  <div> id=\"Updated: %C</div>")
           ("ajpkim-assets"
            :base-directory "~/org/ajpkim.com/assets/"
            :base-extension "css\\|scss\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3"
@@ -436,6 +457,154 @@
            :publishing-function org-publish-attachment)
 
         ("ajpkim.com" :components ("ajpkim-blog" "ajpkim-pages"  "ajpkim-assets"))))
+#+end_src
+
+*** new [2021-10-03 Sun 19:28]
+:PROPERTIES:
+:ID:       54da4218-c765-4344-9ab1-b6bd05954f3c
+:END:
+
+#+begin_src emacs-lisp
+
+  ;; ;; https://emacs-orgmode.gnu.narkive.com/YDCVeiVv/tag-search-and-invalid-face-error-from-htmlize-buffer
+  ;; (eval-after-load "htmlize"
+  ;; '(progn
+  ;; (defadvice htmlize-faces-in-buffer (after org-no-nil-faces
+  ;; activate)
+  ;; "Make sure there are no nil faces"
+  ;; (setq ad-return-value (delq nil ad-return-value)))))
+
+
+  ;; ;; Load the publishing system
+  ;; (require 'ox-publish)
+  ;; (require 'ox-html)
+
+
+
+  ;; ;;;; Helper functions
+
+  ;; ;; src: https://www.taingram.org/blog/org-mode-blog.html
+  ;; (setq org-export-global-macros
+  ;;       '(("timestamp" . "@@html:<span class=\"timestamp\">[$1]</span>@@")))
+
+  ;; (defun my/org-sitemap-date-entry-format (entry style project)
+  ;;   "Format ENTRY in org-publish PROJECT Sitemap format ENTRY ENTRY STYLE format that includes date."
+  ;;   (let ((filename (org-publish-find-title entry project)))
+  ;;     (if (= (length filename) 0)
+  ;;         (format "*%s*" entry)
+  ;;       (format "{{{timestamp(%s)}}} [[file:%s][%s]]"
+  ;;               (format-time-string "%Y-%m-%d"
+  ;;                                   (org-publish-find-date entry project))
+  ;;               entry
+  ;;               filename))))
+
+  ;; ;; Prettify timestamp export format
+  ;; ;; src: https://stackoverflow.com/questions/23297422/org-mode-timestamp-format-when-exported
+  ;; (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
+  ;;   "removes relevant brackets from a timestamp"
+  ;;   (cond
+  ;;    ((org-export-derived-backend-p backend 'latex)
+  ;;     (replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
+  ;;    ((org-export-derived-backend-p backend 'html)
+  ;;     (replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
+
+  ;; (eval-after-load 'ox '(add-to-list
+  ;;                        'org-export-filter-timestamp-functions
+  ;;                        'org-export-filter-timestamp-remove-brackets))
+
+
+  ;; ;;;; Setup Org publishing configurations
+
+  ;; ;; Customize the HTML output
+  ;; (setq org-src-fontify-natively t
+  ;;       org-html-head-include-scripts nil
+  ;;       org-html-head-include-default-style nil
+  ;;       org-html-html5-fancy t
+  ;;       org-html-doc-type "HTML5"
+  ;;       org-html-mathjax-template ""
+  ;;       org-html-validation-link nil
+  ;;       org-html-postamble ""
+  ;;       org-html-preamble "<nav>
+  ;; <a href=\"/index.html\">Home</a>
+  ;; <a href=\"/about.html\">About</a>
+  ;; <a href=\"/blog/index.html\">Blog</a>
+  ;; <a href=\"/projects/index.html\">Projects</a>
+  ;; <a href=\"/links.html\">Links</a>
+  ;; </nav>"
+  ;;       org-export-time-stamp-file nil
+  ;;       org-export-headline-levels 10
+  ;;       org-export-with-section-numbers nil
+  ;;       org-export-with-toc nil
+  ;;       org-export-with-tags nil
+  ;;       org-export-with-timestamps t
+  ;;       org-export-date-timestamp-format "%Y-%m-%d"
+  ;;       org-export-with-broken-links 'mark
+  ;;       org-export-with-author t
+  ;;       )
+
+
+  ;; (setq org-publish-project-alist
+  ;;       '(
+  ;;         ("ajpkim-blog"
+  ;;          :base-directory "~/org/ajpkim.com/blog/"
+  ;;          :base-extension "org"
+  ;;          :publishing-directory "~/ajpkim.com/blog/"
+  ;;          :recursive t
+  ;;          :publishing-function org-html-publish-to-html
+  ;;          :html-extension "html"
+  ;;          :body-only nil
+  ;;          :html-head "<link rel='stylesheet' type='text/css' href='../assets/css/styles.css'/>
+  ;; <link rel='stylesheet' type='text/css' href='../assets/css/modus-vivendi.css'/>
+  ;; <script id='MathJax-script' async src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'></script>"
+  ;;          :html-head-extra "<style> a {color: #eceff4; text-decoration: underline #acdbff 2px;} </style>"  ;; underlined style links
+
+  ;;          :auto-sitemap t
+  ;;          :sitemap-title "Blog Posts"
+  ;;          :sitemap-filename "index.org"
+  ;;          :sitemap-sort-files anti-chronologically
+  ;;          :sitemap-format-entry my/org-sitemap-date-entry-format
+  ;;          )
+
+  ;;         ("ajpkim-projects"
+  ;;          :base-directory "~/org/ajpkim.com/projects/"
+  ;;          :base-extension "org"
+  ;;          :publishing-directory "~/ajpkim.com/projects/"
+  ;;          :recursive t
+  ;;          :publishing-function org-html-publish-to-html
+  ;;          :html-extension "html"
+  ;;          :body-only nil
+  ;;          :html-head "<link rel='stylesheet' type='text/css' href='../assets/css/styles.css'/>
+  ;; <script id='MathJax-script' async src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'></script>"
+  ;;          :html-head-extra "<style> a {color: #eceff4; text-decoration: underline #acdbff 2px;} </style>"  ;; underlined style links
+
+  ;;          :auto-sitemap t
+  ;;          :sitemap-title "Projects"
+  ;;          :sitemap-filename "index.org"
+  ;;          :sitemap-sort-files anti-chronologically)
+
+  ;;         ("ajpkim-pages"
+  ;;          :base-directory "~/org/ajpkim.com/"
+  ;;          :base-extension "org"
+  ;;          :publishing-directory "~/ajpkim.com/"
+  ;;           :recursive t
+  ;;          :publishing-function org-html-publish-to-html
+  ;;          :html-extension "html"
+  ;;          :body-only nil
+  ;;          :html-head "<link rel='stylesheet' type='text/css' href='../assets/css/styles.css'/>
+  ;; <script id='MathJax-script' async src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'></script>"
+  ;;          :html-head-extra nil)
+
+  ;;         ("ajpkim-assets"
+  ;;          :base-directory "~/org/ajpkim.com/assets/"
+  ;;          :base-extension "css\\|scss\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ttf"
+  ;;          :publishing-directory "~/ajpkim.com/assets/"
+  ;;          :recursive t
+  ;;          :publishing-function org-publish-attachment)
+
+  ;;         ("ajpkim.com" :components ("ajpkim-blog" "ajpkim-pages"  "ajpkim-assets"))))
+
+
+
 #+end_src
 ** Agenda
 :PROPERTIES:
@@ -645,10 +814,13 @@
           ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
            "%?"
            :tree-type 'daily)
+          ("e" "Events" entry (file+headline "~/org/self.org" "Events")
+           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%a\n"
+           :prepend: t)
           ("f" "File link" entry (file "~/org/inbox.org")
            "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n%a\n"
            :prepend t)
-          ("e" "Email" entry (file "~/org/inbox.org")
+          ("E" "Email" entry (file "~/org/inbox.org")
            "* TODO %a (%:fromname)  :email:\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
            :prepend t
            :immediate-finish t)
@@ -1432,10 +1604,12 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :global nil
     (if my-focus-mode
         (progn
+          (blink-cursor-mode -1)
           (olivetti-mode 1)
           (my-scroll-center-cursor-mode 1)
           (setq mode-line-format nil))
       (progn
+        (blink-cursor-mode 1)
         (olivetti-mode -1)
         (my-scroll-center-cursor-mode -1)
         (setq mode-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position
