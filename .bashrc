@@ -23,11 +23,8 @@ LPURPLE='\[\033[01;35m\]'
 LCYAN='\[\033[01;36m\]'
 WHITE='\[\033[01;37m\]'
 
-if [ $HOSTNAME == "arch-swift3" ] || [ $HOSTNAME == "arch-macair15" ]; then
-    export PS1="[ $LBLUE\w $CLEAR]\`if [ \$? = 0 ]; then echo ' $LYELLOW\n\$ '; else echo '$LRED\n\$ '; fi\`$CLEAR"
-else
-    export PS1='(\A) \u@\h: \w \$ '
-fi
+
+export PS1="[ $LBLUE\w $CLEAR]\`if [ \$? = 0 ]; then echo ' $LYELLOW\n\$ '; else echo '$LRED\n\$ '; fi\`$CLEAR"
 
 # Don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth
@@ -67,7 +64,4 @@ SCRIPTS="~/scripts"
 # Remap Caps Lock to Control
 setxkbmap -layout us -option ctrl:nocaps
 
-eval "$(rbenv init -)"
-
 echo "Yo0o0o :)"
-
