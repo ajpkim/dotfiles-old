@@ -28,6 +28,7 @@
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   (global-hl-line-mode)
+  (set-face-attribute 'default nil :height 130)  ;; control default size
   ;; Allow Emacs to access content from clipboard.
   (setq x-select-enable-clipboard t
         x-select-enable-primary t)
@@ -1919,13 +1920,13 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 :ID:       032b2afa-4509-4bab-ae2f-626730dc5ca9
 :END:
 #+begin_src elisp
-  (add-to-list 'load-path "~/.emacs.d/external-lisp/unity.el")
-  (require 'unity)
-  (use-package unity
-    :ensure nil
-    :hook
-    (after-init-hook . #'unity-build-code-shim)
-    (after-init-hook . #'unity-setup))
+  ;; (add-to-list 'load-path "~/.emacs.d/external-lisp/unity.el")
+  ;; (require 'unity)
+  ;; (use-package unity
+  ;;   :ensure nil
+  ;;   :hook
+  ;;   (after-init-hook . #'unity-build-code-shim)
+  ;;   (after-init-hook . #'unity-setup))
 #+end_src
 * avy
 :PROPERTIES:

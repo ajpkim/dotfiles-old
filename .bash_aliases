@@ -7,6 +7,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+## Common stuff
 alias cdls='cd && ls'
 
 # Dotfile management

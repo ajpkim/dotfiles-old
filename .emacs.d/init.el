@@ -43,7 +43,7 @@
       nil)
      ("v" "Active tasks" alltodo "ACTIVE" nil)))
  '(org-agenda-files
-   '("~/org/self.org" "~/org/poker.org" "~/org/inbox.org" "~/org/interwebs.org" "~/org/development.org" "~/org/library.org" "~/org/anki-exports.org" "~/org/anki.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-10-20.org"))
+   '("~/org/self.org" "~/org/poker.org" "~/org/inbox.org" "~/org/interwebs.org" "~/org/development.org" "~/org/library.org" "~/org/anki-exports.org" "~/org/anki.org" "~/org/learn.org" "~/org/habits.org" "~/.emacs.d/config.org" "/home/ajpkim/org/journal/2021-11-11.org"))
  '(package-selected-packages
    '(simple-httpd ox-hugo lsp-ivy csharp-mode lsp-mode org-mime pass pinentry org-pomodoro magit elfeed ein company-quickhelp company-anaconda anaconda-mode company geiser-mit geiser pastelmac-theme clues-theme afternoon-theme sicp anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
  '(pos-tip-background-color "#414E63")
