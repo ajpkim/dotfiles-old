@@ -64,4 +64,8 @@ SCRIPTS="~/scripts"
 # Remap Caps Lock to Control
 setxkbmap -layout us -option ctrl:nocaps
 
+# Add gopls to path (go tooling for lsp mode)
+export GOPATH="$(go env GOPATH)"
+export PATH="${PATH}:${GOPATH}/bin"
+
 echo "Yo0o0o :)"

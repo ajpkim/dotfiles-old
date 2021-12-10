@@ -28,7 +28,9 @@
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   (global-hl-line-mode)
+  (setq scroll-preserve-screen-position t)  ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Scrolling.html#index-scroll_002dpreserve_002dscreen_002dposition
   (set-face-attribute 'default nil :height 130)  ;; control default size
+
   ;; Allow Emacs to access content from clipboard.
   (setq x-select-enable-clipboard t
         x-select-enable-primary t)
@@ -76,6 +78,10 @@
     :ensure t
     :init
     (rainbow-mode 1))
+
+  ;; package for rainbow parens
+  (use-package rainbow-delimiters
+    :ensure t)
 #+END_SRC
 ** beacon
 :PROPERTIES:
@@ -262,6 +268,8 @@
   (global-set-key (kbd "C-c h r") 'replace-string)
   (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
   (global-set-key (kbd "C-c h l") 'display-line-numbers-mode)
+
+  (global-set-key (kbd "<drag-mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
 #+end_src
 * etc. hooks
 :PROPERTIES:
@@ -910,6 +918,7 @@
      (haskell    . t)
      (python     . t)
      (sql        . t)
+     (go        . t)
      (latex      . t)
      (js         . t)
      (shell      . t)
@@ -1237,7 +1246,7 @@ Default settings
 :CUSTOM_ID: Images-allow-for-resizing-with-imagemagick
 :END:
 #+begin_src emacs-lisp
-  (setq org-image-actual-width nil)
+  (setq org-image-actual-width 800)  ;; nice default
 #+end_src
 ** Hyphens to dots
 :PROPERTIES:
@@ -1736,6 +1745,16 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
     :ensure t
     :commands lsp-ivy-workspace-symbol)
 #+end_src
+** Latex
+#+begin_src emacs-lisp
+  (defun my/insert-latex-delims (arg)
+    (interactive "P")
+    (if arg
+        (insert "\\[\\]")
+      (insert "\\(\\)"))
+    (backward-char)
+    (backward-char))
+#+end_src
 ** Python
 :PROPERTIES:
 :CUSTOM_ID: Python
@@ -1748,6 +1767,25 @@ Src:[[https://yiufung.net/post/anki-org/][blog]], [[https://github.com/yiufung/d
 #+begin_src elisp
   (use-package ein
     :ensure t)
+#+end_src
+** Go
+:PROPERTIES:
+:ID:       fcf76827-a6b5-4c14-b284-b45239baf2c9
+:END:
+#+begin_src emacs-lisp
+  (use-package ob-go
+    :ensure t)
+
+  (require 'lsp-mode)
+  (add-hook 'go-mode-hook #'lsp-deferred)
+
+  ;; Set up before-save hooks to format buffer and add/delete imports.
+  ;; Make sure you don't have other gofmt/goimports hooks enabled.
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
 #+end_src
 ** Scheme
 :PROPERTIES:

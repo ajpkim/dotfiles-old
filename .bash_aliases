@@ -33,10 +33,11 @@ alias py='python3'
 alias acer-right='xrandr --output DP-1 --mode 1920x1080 --right-of eDP1'
 alias acer-left='xrandr --output DP-1 --mode 1920x1080 --left-of eDP1'
 
-### Scripts
+### Displays
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
 alias on-monitors='. ~/scripts/turn-on-monitors.sh'
 alias lg-mon='xrandr --output HDMI1 --mode 3840x2160  --right-of eDP1'
+
 
 ### General
 alias de='find . -name "*~" -type f -delete'
