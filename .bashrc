@@ -23,7 +23,6 @@ LPURPLE='\[\033[01;35m\]'
 LCYAN='\[\033[01;36m\]'
 WHITE='\[\033[01;37m\]'
 
-
 export PS1="[ $LBLUE\w $CLEAR]\`if [ \$? = 0 ]; then echo ' $LYELLOW\n\$ '; else echo '$LRED\n\$ '; fi\`$CLEAR"
 
 # Don't put duplicate lines or lines starting with space in the history.
@@ -45,10 +44,6 @@ export CHIME='/usr/share/sounds/freedesktop/stereo/complete.oga'
 
 ### Shell vars
 TERMINAL=alacritty
-# Brightness on Acer Swift3 is 0-187
-BRIGHTNESS_FILE_SWIFT=/sys/class/backlight/intel_backlight/brightness
-# Brightness on macair is 0-100
-BRIGHTNESS_FILE_MACAIR15=/sys/class/backlight/acpi_video0/brightness
 
 ### Aliases
 if [ -f ~/.bash_aliases ]; then
