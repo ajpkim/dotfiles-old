@@ -19,6 +19,9 @@
   ;; control default size
   (set-face-attribute 'default nil :height 130)
 
+  ;; Modeline
+  (setq column-number-mode t)
+
   ;; Packages for visual clarity
   (use-package beacon
     :ensure t
@@ -33,12 +36,12 @@
   (use-package rainbow-delimiters
     :ensure t)
 
+  ;; QoL
   (use-package which-key
     :ensure t
     :init
     (which-key-mode))
 
-  ;; QoL
   (setq x-select-enable-clipboard t
         x-select-enable-primary t)
 
@@ -115,10 +118,6 @@
   (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
   (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
 #+end_src
-** Modeline
-#+begin_src elisp
-  (setq column-number-mode t)
-#+end_src
 ** Olivetti
 #+begin_src elisp
   (use-package olivetti
@@ -130,22 +129,17 @@
     ("C-c h o" . olivetti-set-width))
 #+end_src
 * Navigation
-** avy
 #+begin_src elisp
   (use-package avy
     :ensure t
     :bind
     ("M-s" . avy-goto-char))
-#+end_src
-** ace-window
-#+begin_src elisp
+
   (use-package ace-window
     :ensure t
     :config (setq aw-keys `(?a ?s ?d ?f ?j ?k ?l))
     :bind ("C-x o" . ace-window))
-#+end_src
-** File shortcuts
-#+begin_src elisp
+
   (defun my/file-shortcut (file)
     (interactive)
     (if (file-exists-p file)
@@ -157,9 +151,8 @@
                   (lambda () (interactive) (my/file-shortcut "~/org/inbox.org")))
   (global-set-key (kbd "C-c f l")
                   (lambda () (interactive) (my/file-shortcut "~/org/links.org")))
-#+end_src
-** Make cursor follow window splits
-#+BEGIN_SRC emacs-lisp
+
+  ;; Make cursor follow to new windows
   (defun split-and-follow-horizontally ()
     (interactive)
     (split-window-below)
@@ -175,19 +168,8 @@
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
 * Editing helpers
-** Quick keybindings
 #+begin_src elisp
-  (global-set-key (kbd "C-c h r") 'replace-string)
-  (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
-  (global-set-key (kbd "C-c h l") 'display-line-numbers-mode)
-  (global-set-key (kbd "C-c h a") 'insert-raquo)
-
-  ;; gforce mouse specific
-  (global-set-key (kbd "<drag-mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
-#+end_src
-
-** Quick Funcs
-#+begin_src elisp
+  ;; Simple functions
   (defun insert-raquo ()
     "Use this to signal my personal voice when notetaking etc."
     (interactive)
@@ -205,9 +187,7 @@
     (interactive "*P\nr")
     (sort-regexp-fields reverse "\\w+" "\\&" beg end))
 
-#+end_src
-** drag-stuff
-#+begin_src elisp
+  ;; External packages
   (use-package drag-stuff
     :ensure t
     :config
@@ -217,9 +197,7 @@
     :bind
     (("M-p" . drag-stuff-up)
      ("M-n" . drag-stuff-down)))
-#+end_src
-** multiple-cursors
-#+begin_src elisp
+
   (use-package multiple-cursors
     :ensure t
     :config
@@ -228,6 +206,14 @@
     (global-set-key (kbd "C-c m b") 'mc/mark-previous-like-this)
     (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
     (define-key mc/keymap (kbd "<return>") nil))  ;; Allows us to insert new-line with <RET> and still disable multiple-cursor mode with C-g
+
+  ;; Quick keybindings
+  (global-set-key (kbd "C-c h r") 'replace-string)
+  (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
+  (global-set-key (kbd "C-c h l") 'display-line-numbers-mode)
+  (global-set-key (kbd "C-c h a") 'insert-raquo)
+  ;; gforce mouse specific
+  (global-set-key (kbd "<drag-mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
 #+end_src
 * Editing and display minor modes
 - See [[https://protesilaos.com/codelog/2020-07-16-emacs-focused-editing/][Prot "Focused editing"]]
@@ -348,8 +334,8 @@
 
   ;; Prettify leading chars
   (font-lock-add-keywords `org-mode
-                            `(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
+                          `(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
 
   ;; Archiving
   (defun my/org-archive-done-tasks-file ()
@@ -367,9 +353,8 @@
        (org-archive-subtree)
        (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
      "/DONE" 'tree))
-#+end_src
-** Agenda
-#+begin_src elisp
+
+  ;; Agenda
   (setq org-agenda-span 5
         org-agenda-start-on-weekday nil
         org-agenda-skip-deadline-if-done t
@@ -380,12 +365,10 @@
         org-agenda-window-setup 'current-window
         ;; org-agenda-start-with-log-mode t ;; '(clock)
         )
-
   ;; Can hide specific tags in agenda view (or all)
   (setq org-agenda-hide-tags-regexp ".")
-#+end_src
-** Capture
-#+begin_src elisp
+
+  ;; Capture
   (setq org-capture-templates
         '(
           ;; Anki templates
@@ -413,9 +396,8 @@
            "* %? %^g\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
            :prepend t)
           ))
-#+end_src
-** TODOs
-#+begin_src elisp
+
+  ;; TODO
   (setq org-todo-keywords
         '((sequence "PROJECT(P)" "ACTIVE(a)" "TODO(t)" "HOLD(h)" "SOMEDAY(s)" "|" "PASS(p)" "DONE(d)")))
 
@@ -433,9 +415,8 @@
 
   (setq org-log-done 'time)
   (setq org-log-into-drawer "LOGBOOK")
-#+end_src
-** Babel
-#+begin_src elisp
+
+  ;; Babel
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
@@ -447,10 +428,38 @@
      (js         . t)
      (shell      . t)
      (scheme     . t)))
-
-#+end_src
-** IDs
+       #+end_src
+** Export and IDs
 #+begin_src elisp
+  (require 'ox-html)
+  (use-package htmlize
+    :ensure t
+    :config
+    (setq org-html-htmlize-output-type 'css))
+
+    ;;; Clean html export
+  (setq org-html-head-include-scripts nil
+        org-html-head-include-default-style nil
+        org-export-headline-levels 10
+        org-html-mathjax-template ""
+        org-html-postamble nil
+        org-export-with-section-numbers nil
+        org-export-with-toc nil
+        org-export-with-tags nil
+        org-html-html5-fancy t
+        org-html-doc-type "HTML5"
+        )
+
+  ;; https://orgmode.org/manual/Bare-HTML.html#Bare-HTML
+  (setq org-html-head ""
+        org-html-head-extra ""
+        org-html-head-include-default-style nil
+        org-html-head-include-scripts nil
+        org-html-preamble nil
+        org-html-postamble nil
+        org-html-use-infojs nil)
+
+  ;; IDs
   (defun my/org-get-headline-based-ids (&rest _)
     "Source: https://alhassy.github.io/AlBasmala.html#Ensuring-Useful-HTML-Anchors
       All non-alphanumeric characters are cleverly replaced with ‘-’.
@@ -506,68 +515,8 @@
     (interactive)
     (org-map-entries (lambda () (my/org-uuid-custom-id-get (point) 'create))))
 #+end_src
-** Export
-:PROPERTIES:
-:ID:       1b270d93-fc3b-4026-88b5-c33d979f9cfa
-:CUSTOM_ID: Export
-:END:
-#+begin_src emacs-lisp
-  (require 'ox-html)
-  (use-package htmlize
-    :ensure t
-    :config
-    (setq org-html-htmlize-output-type 'css))
-
-  ;;; Clean html export
-  (setq org-html-head-include-scripts nil
-        org-html-head-include-default-style nil
-        org-export-headline-levels 10
-        org-html-mathjax-template ""
-        org-html-postamble nil
-        org-export-with-section-numbers nil
-        org-export-with-toc nil
-        org-export-with-tags nil
-        org-html-html5-fancy t
-        org-html-doc-type "HTML5"
-        )
-
-  ;; https://orgmode.org/manual/Bare-HTML.html#Bare-HTML
-  (setq org-html-head ""
-        org-html-head-extra ""
-        org-html-head-include-default-style nil
-        org-html-head-include-scripts nil
-        org-html-preamble nil
-        org-html-postamble nil
-        org-html-use-infojs nil)
-#+end_src
-** org-bullets
+** Packages
 #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :ensure t
-    :after org
-    :hook (org-mode . org-bullets-mode)
-    :config
-    (setq org-bullets-bullet-list '("✫" "☀" "❂" "❀" "◌" "✶" "✸" "✹" "✺" "◌")))
-
-  ;; ✹
-  ;; ✺
-  ;; ✻
-  ;; ✼
-  ;; ✽
-  ;; ✾
-  ;; ✿
-  ;; ❀
-  ;; ❁
-  ;; ❂
-  ;; ❃
-  ;; ❅
-  ;; ❆
-  ;; ❇
-  ;; ❈
-#+END_SRC
-
-** org-roam
-#+begin_src elisp
   (use-package org-roam
     :ensure t
     :init
@@ -587,9 +536,7 @@
     ,,#+setupfile: ~/org/assets/org-export-setup-files/org-html-default-n1.org
     ,,#+filetags:")
            :unnarrowed t)))
-#+end_src
-** org-journal
-#+begin_src emacs-lisp
+
   (use-package org-journal
     :ensure t
     :defer t
@@ -625,19 +572,40 @@
     (unless (eq org-journal-file-type 'daily)
       (org-narrow-to-subtree))
     (goto-char (point-max)))
-#+end_src
 
-** toc-org
-#+begin_src elisp
   (use-package toc-org
     :ensure t
     :config
     (setq toc-org-max-depth 3
           toc-org-hrefify-default "org"))  ;; Options are org or gh (github)
+
+  (use-package org-bullets
+    :ensure t
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :config
+    (setq org-bullets-bullet-list '("✫" "☀" "❂" "❀" "◌" "✶" "✸" "✹" "✺" "◌")))
+
+  ;; ✹
+  ;; ✺
+  ;; ✻
+  ;; ✼
+  ;; ✽
+  ;; ✾
+  ;; ✿
+  ;; ❀
+  ;; ❁
+  ;; ❂
+  ;; ❃
+  ;; ❅
+  ;; ❆
+  ;; ❇
+  ;; ❈
+
 #+end_src
 * Programming helpers
-** Auto-complete (company)
 #+begin_src elisp
+  ;; Auto-complete
   (use-package company
     :ensure t
     :config
@@ -647,17 +615,12 @@
           company-selection-wrap-around t)
     :init
     (add-hook 'prog-mode-hook 'company-mode))
-#+end_src
-** Magit
-#+begin_src elisp
+
+  ;; Git porcelain
   (use-package magit
     :ensure t)
-#+end_src
-** LSP
-:PROPERTIES:
-:ID:       aa2a59e1-89b3-4878-8c18-e4c8544036e0
-:END:
-#+begin_src elisp
+
+  ;; Auto-complete backend (Language Server Protocol)
   (use-package lsp-mode
     :ensure t
     :commands (lsp lsp-deferred)
@@ -669,14 +632,13 @@
     (lsp-mode . lsp-enable-which-key-integration)
     (csharp-mode . lsp))
 
-
   (use-package lsp-ivy
     :ensure t
     :commands lsp-ivy-workspace-symbol)
 #+end_src
 * Programming languages
-** Latex
 #+begin_src emacs-lisp
+  ;; Latex
   (defun my/insert-latex-delims (arg)
     (interactive "P")
     (if arg
@@ -684,9 +646,8 @@
       (insert "\\(\\)"))
     (backward-char)
     (backward-char))
-#+end_src
-** Python
-#+begin_src elisp
+
+  ;; Python
   (use-package anaconda-mode
     :ensure t
     :config
@@ -699,12 +660,11 @@
     :config
     (add-to-list 'company-backends 'company-anaconda))
 
-  ;; Jupyter
+  ;; Jupyter notebooks
   (use-package ein
     :ensure t)
-#+end_src
-** Go
-#+begin_src emacs-lisp
+
+  ;; Go
   (use-package ob-go
     :ensure t)
 
@@ -718,9 +678,7 @@
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
   (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
-#+end_src
-** Scheme
-#+begin_src emacs-lisp
+  ;; Scheme
   (require 'xscheme)
 
   (use-package geiser
@@ -729,11 +687,8 @@
   (use-package geiser-mit
     :ensure t)
 
-#+end_src
-** C#
-#+begin_src elisp
-
-  ;;;; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
+  ;; C#
+    ;;;; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
   ;; (defun my/csharp-mode-hook ()
   ;;   (setq-local lsp-auto-guess-root t)
   ;;   (lsp))
@@ -756,16 +711,13 @@
 #+end_src
 * Security
 ** gpg
-*** pinentry
 #+begin_src elisp
   (use-package pinentry
     :ensure t
     :config
     (setf epa-pinentry-mode 'loopback)
     (pinentry-start))
-#+end_src
-*** pass
-#+begin_src elisp
+
   (use-package pass
     :ensure t
     :config
