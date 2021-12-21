@@ -38,5 +38,4 @@ fi
 
 picom &
 exec emacs --daemon &
-exec i3 &
-exec alacritty
+exec i3

@@ -4,6 +4,9 @@
 
 * Minimal and functional UI
 ** Base
+:PROPERTIES:
+:ID:       f67c7e58-6d4a-4ba3-a13e-f00b4cefc79f
+:END:
 #+begin_src emacs-lisp
   ;; Minimal functional UI
   (setq inhibit-startup-message t)
@@ -57,68 +60,80 @@
 #+end_src
 
 ** Themes
-
 *** Modus themes
+:PROPERTIES:
+:ID:       1013493d-2960-40b6-a457-958171170583
+:END:
 #+begin_src elisp
-  (use-package modus-themes
-    :ensure
-    :init
-    ;; Add all your customizations prior to loading the themes
-    (setq modus-themes-slanted-constructs t
-          modus-themes-bold-constructs nil
-          modus-themes-region 'no-extend
-          modus-themes-org-habit 'simplified)
-    ;; Load the theme files before enabling a theme
-    (modus-themes-load-themes)
-    :config
-    ;; Load the theme of your choice:
-    (modus-themes-load-vivendi) ;; OR (modus-themes-load-operandi)
-    :bind ("<f5>" . modus-themes-toggle))
+  ;; (use-package modus-themes
+  ;;   :ensure
+  ;;   :init
+  ;;   ;; Add all your customizations prior to loading the themes
+  ;;   (setq modus-themes-slanted-constructs t
+  ;;         modus-themes-bold-constructs nil
+  ;;         modus-themes-region 'no-extend
+  ;;         modus-themes-org-habit 'simplified)
+  ;;   ;; Load the theme files before enabling a theme
+  ;;   (modus-themes-load-themes)
+  ;;   :config
+  ;;   ;; Load the theme of your choice:
+  ;;   (modus-themes-load-vivendi) ;; OR (modus-themes-load-operandi)
+  ;;   :bind ("<f5>" . modus-themes-toggle))
 
-  (define-minor-mode my/modus-themes-tinted
-    "Tweak some Modus themes colors."
-    :init-value nil
-    :global t
-    (if my/modus-themes-tinted
-        (setq modus-themes-operandi-color-overrides
-              '((bg-main . "#fefcf4")
-                (bg-dim . "#faf6ef")
-                (bg-alt . "#f7efe5")
-                (bg-hl-line . "#f4f0e3")
-                (bg-active . "#e8dfd1")
-                (bg-inactive . "#f6ece5")
-                (bg-region . "#c6bab1")
-                (bg-header . "#ede3e0")
-                (bg-tab-bar . "#dcd3d3")
-                (bg-tab-active . "#fdf6eb")
-                (bg-tab-inactive . "#c8bab8")
-                (fg-unfocused . "#55556f"))
-              modus-themes-vivendi-color-overrides
-              '(
-                ;; (bg-main . "#100b17")  ; makes emacs in terminal all light blue bg
-                ;; (bg-main . "#2e3440")  ; nord-0
-                ;; (bg-main . "#3b4252")  ; nord-1
-                (bg-dim . "#161129")
-                (bg-alt . "#1e1e1e")  ; original  "#181732" bad in terminal
-                (bg-hl-line . "#191628")
-                (bg-active . "#282e46")
-                (bg-inactive . "#1a1e39")
-                (bg-region . "#393a53")
-                (bg-header . "#202037")
-                (bg-tab-bar . "#262b41")
-                (bg-tab-active . "#120f18")
-                (bg-tab-inactive . "#3a3a5a")
-                (fg-unfocused . "#9a9aab")))
-      (setq modus-themes-operandi-color-overrides nil
-            modus-themes-vivendi-color-overrides nil)))
+  ;; (define-minor-mode my/modus-themes-tinted
+  ;;   "Tweak some Modus themes colors."
+  ;;   :init-value nil
+  ;;   :global t
+  ;;   (if my/modus-themes-tinted
+  ;;       (setq modus-themes-operandi-color-overrides
+  ;;             '((bg-main . "#fefcf4")
+  ;;               (bg-dim . "#faf6ef")
+  ;;               (bg-alt . "#f7efe5")
+  ;;               (bg-hl-line . "#f4f0e3")
+  ;;               (bg-active . "#e8dfd1")
+  ;;               (bg-inactive . "#f6ece5")
+  ;;               (bg-region . "#c6bab1")
+  ;;               (bg-header . "#ede3e0")
+  ;;               (bg-tab-bar . "#dcd3d3")
+  ;;               (bg-tab-active . "#fdf6eb")
+  ;;               (bg-tab-inactive . "#c8bab8")
+  ;;               (fg-unfocused . "#55556f"))
+  ;;             modus-themes-vivendi-color-overrides
+  ;;             '(
+  ;;               ;; (bg-main . "#100b17")  ; makes emacs in terminal all light blue bg
+  ;;               ;; (bg-main . "#2e3440")  ; nord-0
+  ;;               ;; (bg-main . "#3b4252")  ; nord-1
+  ;;               (bg-dim . "#161129")
+  ;;               (bg-alt . "#1e1e1e")  ; original  "#181732" bad in terminal
+  ;;               (bg-hl-line . "#191628")
+  ;;               (bg-active . "#282e46")
+  ;;               (bg-inactive . "#1a1e39")
+  ;;               (bg-region . "#393a53")
+  ;;               (bg-header . "#202037")
+  ;;               (bg-tab-bar . "#262b41")
+  ;;               (bg-tab-active . "#120f18")
+  ;;               (bg-tab-inactive . "#3a3a5a")
+  ;;               (fg-unfocused . "#9a9aab")))
+  ;;     (setq modus-themes-operandi-color-overrides nil
+  ;;           modus-themes-vivendi-color-overrides nil)))
 
-  ;;; Toggle my/modus-themes-tinted and reload config for using terminal
-
-
-  (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
-  (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
+  ;; (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
+  ;; (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
 #+end_src
+*** Deeper Blue
+#+begin_src emacs-lisp
+  (if (display-graphic-p) (load-theme 'deeper-blue t))
+
+  ;; (when window-system
+  ;;   (load-theme 'deeper-blue t))
+
+  (set-face-attribute 'fringe nil :background "#00000000")  ;; Make window fringes transparent
+#+end_src
+
 ** Olivetti
+:PROPERTIES:
+:ID:       abd1cfbe-bcd1-4fbe-a7c1-7f9bec5b30af
+:END:
 #+begin_src elisp
   (use-package olivetti
     :ensure t
@@ -129,6 +144,9 @@
     ("C-c h o" . olivetti-set-width))
 #+end_src
 * Navigation
+:PROPERTIES:
+:ID:       ccbdce54-bb59-42c4-924d-9ab03ee60d1f
+:END:
 #+begin_src elisp
   (use-package avy
     :ensure t
@@ -147,10 +165,18 @@
             (find-file file)
           (find-file-other-frame file))))
 
+  (global-set-key (kbd "C-c f a")
+                  (lambda () (interactive) (my/file-shortcut "~/org/alex.org")))
+  (global-set-key (kbd "C-c f A")
+                  (lambda () (interactive) (my/file-shortcut "~/org/anki.org")))
   (global-set-key (kbd "C-c f i")
                   (lambda () (interactive) (my/file-shortcut "~/org/inbox.org")))
   (global-set-key (kbd "C-c f l")
                   (lambda () (interactive) (my/file-shortcut "~/org/links.org")))
+  (global-set-key (kbd "C-c f r")
+                  (lambda () (interactive) (my/file-shortcut "~/org/read-watch-listen.org")))
+  (global-set-key (kbd "C-c f t")
+                  (lambda () (interactive) (my/file-shortcut "~/org/tech.org")))
 
   ;; Make cursor follow to new windows
   (defun split-and-follow-horizontally ()
@@ -168,6 +194,9 @@
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
 #+END_SRC
 * Editing helpers
+:PROPERTIES:
+:ID:       06d333c2-7538-46b8-837d-df3f94725e46
+:END:
 #+begin_src elisp
   ;; Simple functions
   (defun insert-raquo ()
@@ -216,13 +245,16 @@
   (global-set-key (kbd "<drag-mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
 #+end_src
 * Editing and display minor modes
+:PROPERTIES:
+:ID:       61f6587d-7ab3-4423-b777-eda2ee5f19a1
+:END:
 - See [[https://protesilaos.com/codelog/2020-07-16-emacs-focused-editing/][Prot "Focused editing"]]
 - [[https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs][Source (blog)]]
 #+begin_src elisp
   ;; Modeline
   ;; src: https://bzg.fr/en/emacs-hide-mode-line
   (defvar-local hidden-mode-line-mode nil)
-  (define-minor-mode hidden-mode-line-mode
+  (define-minor-mode my/hidden-mode-line-mode
     "Minor mode to hide the mode-line in the current buffer."
     :init-value nil
     :global t
@@ -241,8 +273,8 @@
                hidden-mode-line-mode)
       (run-with-idle-timer
        0 nil 'message
-       (concat "Hidden Mode Line Mode enabled.  "
-               "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+       (concat "My Hidden Mode Line Mode enabled.  "
+               "Use M-x my/hidden-mode-line-mode to make the mode-line appear as before."))))
 
   (define-minor-mode my/scroll-center-cursor-mode
     "Toggle center cursor scrolling behavior"
@@ -282,6 +314,9 @@
 #+end_src
 * Orgmode
 ** Base
+:PROPERTIES:
+:ID:       7290fa14-2dc3-43f1-bea3-66d562b4e250
+:END:
 #+begin_src elisp
   (use-package org
     :config
@@ -290,7 +325,7 @@
           org-hide-emphasis-markers t
           org-startup-with-inline-images t
           org-image-actual-width 800  ;; adjust as nec.
-          org-startup-with-latex-preview t
+          org-startup-with-latex-preview nil  ;; SLOW
           org-format-latex-options (plist-put org-format-latex-options :scale 2)
           org-pretty-entities nil
           org-startup-folded t
@@ -301,15 +336,6 @@
           org-refile-targets '((org-agenda-files :todo . "PROJECT"))
           org-refile-use-outline-path 'file
           org-outline-path-complete-in-steps nil
-          ;; Tags
-          org-tag-alist
-          '(("read" . ?r)
-            ("fav" . ?v)
-            ("learn" . ?l)
-            ("quick" . ?q)
-            ("prog" . p)
-            ("seed" . s))
-          org-fast-tag-selection-single-key (quote expert)
           )
     :bind
     (("C-c l" . org-store-link)
@@ -354,82 +380,125 @@
        (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
      "/DONE" 'tree))
 
-  ;; Agenda
-  (setq org-agenda-span 5
-        org-agenda-start-on-weekday nil
-        org-agenda-skip-deadline-if-done t
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-todo-ignore-deadlines nil
-        org-agenda-todo-ignore-scheduled nil
-        org-deadline-warning-days 3
-        org-agenda-window-setup 'current-window
-        ;; org-agenda-start-with-log-mode t ;; '(clock)
-        )
-  ;; Can hide specific tags in agenda view (or all)
-  (setq org-agenda-hide-tags-regexp ".")
-
-  ;; Capture
-  (setq org-capture-templates
+  ;; Tags
+  (setq org-fast-tag-selection-single-key 'expert
+        org-tag-alist
         '(
-          ;; Anki templates
-          ("a" "Anki")
-          ("aa" "Anki basic"
-           entry
-           (file+headline org-my-anki-file "On Deck")
-           "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
-          ("ac" "Anki cloze"
-           entry
-           (file+headline org-my-anki-file "On Deck")
-           "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
-          ("at" "Anki Type"
-           entry
-           (file+headline org-my-anki-file "On Deck")
-           "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
-
-          ("c" "Task" entry (file "~/org/inbox.org")
-           "* TODO %?\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
-           :prepend t)
-          ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
-           "%?"
-           :tree-type 'daily)
-          ("l" "Link" entry (file "~/org/links.org")
-           "* %? %^g\n:PROPERTIES:\n:ID: %(shell-command-to-string \"uuidgen\"):CREATED: %U\n:END:\n"
-           :prepend t)
+          (:startgroup . nil)
+          ("read" . ?r) ("view" . ?v) ("listen" . ?l)
+          (:endgroup . nil)
+          (:startgroup . nil)
+          ("write" . ?w) ("prog" . ?p) ("zettle" . ?z)
+          (:endgroup . nil)
+          ("ak" . ?a)
+          ("admin" . ?d)
+          ("blog" . ?b)
+          ("ff" . ?f)  ;; family & friends
+          ("quick" . ?q)
+          ("study" . ?s)
+          ("wip" . ?W)
+          ("fav" . ?v)
           ))
 
-  ;; TODO
-  (setq org-todo-keywords
-        '((sequence "PROJECT(P)" "ACTIVE(a)" "TODO(t)" "HOLD(h)" "SOMEDAY(s)" "|" "PASS(p)" "DONE(d)")))
+   ;; Agenda
+   (setq org-agenda-span 5
+         org-agenda-start-on-weekday nil
+         org-agenda-skip-deadline-if-done t
+         org-agenda-skip-scheduled-if-done t
+         org-agenda-todo-ignore-deadlines nil
+         org-agenda-todo-ignore-scheduled nil
+         org-deadline-warning-days 3
+         org-agenda-window-setup 'current-window
+         ;; org-agenda-start-with-log-mode t ;; '(clock)
+         )
 
-  ;; #ffff66 is the yellow I like
-  ;; #79a8ff is a nice royal blue
-  (setq org-todo-keyword-faces
+
+   ;; Can hide specific tags in agenda view (or all)
+   ;; (setq org-agenda-hide-tags-regexp ".")
+
+
+  (setq org-agenda-custom-commands
         '(
-          ("PROJECT" . (:foreground "#ffbbff" :weight bold))
-          ("ACTIVE" . (:foreground "#44ddff" :weight bold))
-          ("TODO" . (:foreground "#f0ffff" :weight bold))
-          ("HOLD" . (:foreground "#dfaa8e" :weight bold))
-          ("SOMEDAY" . (:foreground "#acfff0" :weight bold))
-          ("PASS" . (:foreground "#ff3d40" :weight bold))
-          ("DONE" . (:foreground "#19ffaf" :weight bold))))
+          ("w" "Now"
+           ((todo "ACTIVE"
+                  ((org-agenda-overriding-header "Active Tasks\n")))
 
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer "LOGBOOK")
 
-  ;; Babel
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (haskell    . t)
-     (python     . t)
-     (sql        . t)
-     (go        . t)
-     (latex      . t)
-     (js         . t)
-     (shell      . t)
-     (scheme     . t)))
+              ((org-agenda-skip-entry-if 'regexp ":read:")))
+
+           )))
+
+   ;; Capture
+   (setq org-capture-templates
+         '(
+           ;; Anki templates
+           ("a" "Anki")
+           ("aa" "Anki basic"
+            entry
+            (file+headline org-my-anki-file "New Cards")
+            "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+           ("ac" "Anki cloze"
+            entry
+            (file+headline org-my-anki-file "New Cards")
+            "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
+           ("at" "Anki Type"
+            entry
+            (file+headline org-my-anki-file "New Cards")
+            "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+
+           ("c" "Task" entry (file "~/org/inbox.org")
+            "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+            :prepend t)
+           ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
+            "%?"
+            :tree-type 'daily)
+           ("e" "Emacs" entry (file "~/org/inbox.org")
+            "* TODO %? :emacs:\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+            :prepend t)
+           ("i" "Idea" entry (file+olp+datetree "~/org/ideas.org")
+            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+            :tree-type 'daily)
+           ("l" "Link" entry (file "~/org/links.org")
+            "* %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+            :prepend t)
+           ))
+
+   ;; TODO
+   (setq org-todo-keywords
+         '((sequence "PROJECT(P)" "ACTIVE(a)" "TODO(t)" "HOLD(h)" "SOMEDAY(s)" "|" "PASS(p)" "DONE(d)")))
+
+   ;; #ffff66 is the yellow I like
+   ;; #79a8ff is a nice royal blue
+   (setq org-todo-keyword-faces
+         '(
+           ("PROJECT" . (:foreground "#ffbbff" :weight bold))
+           ("ACTIVE" . (:foreground "#44ddff" :weight bold))
+           ("TODO" . (:foreground "#f0ffff" :weight bold))
+           ("HOLD" . (:foreground "#dfaa8e" :weight bold))
+           ("SOMEDAY" . (:foreground "#acfff0" :weight bold))
+           ("PASS" . (:foreground "#ff3d40" :weight bold))
+           ("DONE" . (:foreground "#19ffaf" :weight bold))))
+
+   (setq org-log-done 'time)
+   (setq org-log-into-drawer "LOGBOOK")
+
+   ;; Babel
+   (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((emacs-lisp . t)
+      (haskell    . t)
+      (python     . t)
+      (sql        . t)
+      (go        . t)
+      (latex      . t)
+      (js         . t)
+      (shell      . t)
+      (scheme     . t)))
        #+end_src
 ** Export and IDs
+:PROPERTIES:
+:ID:       fbeb5454-6331-41ea-a519-915f8169b6ae
+:END:
 #+begin_src elisp
   (require 'ox-html)
   (use-package htmlize
@@ -516,6 +585,9 @@
     (org-map-entries (lambda () (my/org-uuid-custom-id-get (point) 'create))))
 #+end_src
 ** Packages
+:PROPERTIES:
+:ID:       ec36048d-f405-44c5-a9c5-a3a43b034aee
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package org-roam
     :ensure t
@@ -533,8 +605,8 @@
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?" :if-new
            (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}
-    ,,#+setupfile: ~/org/assets/org-export-setup-files/org-html-default-n1.org
-    ,,#+filetags:")
+  ,#+setupfile: ~/org/assets/org-export-setup-files/org-html-default-n1.org
+  ,#+filetags:")
            :unnarrowed t)))
 
   (use-package org-journal
@@ -604,6 +676,9 @@
 
 #+end_src
 * Programming helpers
+:PROPERTIES:
+:ID:       fcb83663-1337-4a09-b67f-32d0969c195e
+:END:
 #+begin_src elisp
   ;; Auto-complete
   (use-package company
@@ -637,6 +712,9 @@
     :commands lsp-ivy-workspace-symbol)
 #+end_src
 * Programming languages
+:PROPERTIES:
+:ID:       ba0c1d92-34aa-45c0-8a82-b48e15ca1dc9
+:END:
 #+begin_src emacs-lisp
   ;; Latex
   (defun my/insert-latex-delims (arg)
@@ -667,6 +745,9 @@
   ;; Go
   (use-package ob-go
     :ensure t)
+
+  (add-hook 'go-mode-hook (lambda () (setq tab-width 4)))
+
 
   (require 'lsp-mode)
   (add-hook 'go-mode-hook #'lsp-deferred)
@@ -700,6 +781,9 @@
     :mode "\\.cs\\'")
 #+end_src
 * Search completion framework
+:PROPERTIES:
+:ID:       f3d03695-07fe-47c8-861a-d76a5d56eaf4
+:END:
 #+begin_src elisp
   (use-package counsel  ;; Brings in ivy and swiper as dependencies
     :ensure t
@@ -711,6 +795,9 @@
 #+end_src
 * Security
 ** gpg
+:PROPERTIES:
+:ID:       10dfc7f1-5f80-4d68-96e8-abfffbcf76d1
+:END:
 #+begin_src elisp
   (use-package pinentry
     :ensure t
@@ -725,6 +812,9 @@
 #+end_src
 * RSS
 ** elfeed
+:PROPERTIES:
+:ID:       7af47ed9-c4bd-4240-8766-6ae1958f96dd
+:END:
 #+begin_src elisp
   (use-package elfeed
     :ensure t
@@ -789,6 +879,9 @@
 #+end_src
 * SRS
 ** anki
+:PROPERTIES:
+:ID:       2ec5ce60-ab56-452c-bb64-9193cee7fe3a
+:END:
 Sources:
 - [[https://yiufung.net/post/anki-org/][blog]]
 - [[https://github.com/yiufung/dot-emacs/blob/master/init.el][yiufung init.el]]
@@ -933,7 +1026,21 @@ Sources:
   (use-package org-mime
     :ensure t)
 #+end_src
+* IRC
+:PROPERTIES:
+:ID:       bc85cda4-1d18-43fc-82a2-27ea968c2317
+:END:
+#+begin_src emacs-lisp
+  (setq erc-server "irc.libera.chat"
+        erc-nick "ajpkim"
+        erc-user-full-name "Alex Kim"
+        erc-kill-buffer-on-part t)
+
+#+end_src
 * Config edit and reload
+:PROPERTIES:
+:ID:       32aac737-eb26-4279-846d-90596941babf
+:END:
 #+begin_src emacs-lisp
   (defun config-visit ()
     (interactive)
