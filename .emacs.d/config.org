@@ -20,7 +20,7 @@
   (global-hl-line-mode t)
 
   ;; control default size
-  (set-face-attribute 'default nil :height 130)
+  (set-face-attribute 'default nil :height 150)
 
   ;; Modeline
   (setq column-number-mode t)
@@ -121,6 +121,9 @@
   ;; (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
 #+end_src
 *** Deeper Blue
+:PROPERTIES:
+:ID:       487b98d1-60d8-42ba-bc66-aef381ace31f
+:END:
 #+begin_src emacs-lisp
   (if (display-graphic-p) (load-theme 'deeper-blue t))
 
@@ -1034,7 +1037,32 @@ Sources:
   (setq erc-server "irc.libera.chat"
         erc-nick "ajpkim"
         erc-user-full-name "Alex Kim"
-        erc-kill-buffer-on-part t)
+        erc-kill-buffer-on-part t
+        erc-fill-column 100  ;; can always override via Olivetti
+
+        erc-fill-function 'erc-fill-static
+        erc-fill-static-center 15
+
+        erc-hide-list '("JOIN" "PART" "QUIT" "MODE" "AWAY")
+        ;; erc-track-exclude  ;; turn off notifications for specific channels
+        erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
+        erc-track-visibility nil
+        ;; erc-keywords  ;; will highlight keywords in chats
+        )
+
+  ;; Uniquely color different nicks in chat
+  (use-package erc-hl-nicks
+    :ensure t
+    :after erc
+    :config
+    (add-to-list 'erc-modules 'hl-nicks))
+
+  (use-package erc-image
+    :ensure t
+    :after erc
+    :config
+    (setq erc-image-inline-rescale 200)
+    (add-to-list 'erc-modules 'image))
 
 #+end_src
 * Config edit and reload

@@ -285,10 +285,12 @@ bindsym $mod+Shift+x exec ~/scripts/i3lock-multimonitor.sh
 bindsym $mod+Control+e exec emacsclient --create-frame
 bindsym $mod+Control+c exec emacsclient --create-frame --no-wait -e "(org-capture)"
 bindsym $mod+Control+f exec firefox
-bindsym $mod+F5 exec virtualbox
-bindsym $mod+F6 exec firefox youtube.com
+bindsym $mod+Control+y exec firefox youtube.com
+bindsym $mod+Control+a exec anki
+bindsym $mod+comma exec picom-trans -c -5
+bindsym $mod+period exec picom-trans -c +5
 bindsym $mod+Print exec flameshot gui
-bindsym $mod+F1 exec anki
+
 
 # General
 focus_follows_mouse no
