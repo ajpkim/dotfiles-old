@@ -168,18 +168,10 @@
             (find-file file)
           (find-file-other-frame file))))
 
-  (global-set-key (kbd "C-c f a")
-                  (lambda () (interactive) (my/file-shortcut "~/org/alex.org")))
-  (global-set-key (kbd "C-c f A")
-                  (lambda () (interactive) (my/file-shortcut "~/org/anki.org")))
-  (global-set-key (kbd "C-c f i")
-                  (lambda () (interactive) (my/file-shortcut "~/org/inbox.org")))
+  (global-set-key (kbd "C-c f c")
+                  (lambda () (interactive) (my/file-shortcut "~/org/cabcs.org")))
   (global-set-key (kbd "C-c f l")
                   (lambda () (interactive) (my/file-shortcut "~/org/links.org")))
-  (global-set-key (kbd "C-c f r")
-                  (lambda () (interactive) (my/file-shortcut "~/org/read-watch-listen.org")))
-  (global-set-key (kbd "C-c f t")
-                  (lambda () (interactive) (my/file-shortcut "~/org/tech.org")))
 
   ;; Make cursor follow to new windows
   (defun split-and-follow-horizontally ()
@@ -449,18 +441,9 @@
             (file+headline org-my-anki-file "New Cards")
             "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
 
-           ("c" "Task" entry (file "~/org/inbox.org")
+           ("c" "Task" entry (file+headline "~/org/cabcs.org" "Inbox")
             "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
             :prepend t)
-           ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
-            "%?"
-            :tree-type 'daily)
-           ("e" "Emacs" entry (file "~/org/inbox.org")
-            "* TODO %? :emacs:\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-            :prepend t)
-           ("i" "Idea" entry (file+olp+datetree "~/org/ideas.org")
-            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-            :tree-type 'daily)
            ("l" "Link" entry (file "~/org/links.org")
             "* %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
             :prepend t)
