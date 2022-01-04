@@ -75,9 +75,9 @@
       ((agenda "" nil)
        (alltodo "" nil))
       nil)
-     ("v" "Active tasks" alltodo "ACTIVE" nil)))
+     ("v" "Active tasks" alltodo "ACTIVE" nil)) t)
  '(org-agenda-files
-   '("~/org/links.org" "~/org/cabcs.org" "/home/cabcs/org/journal/2021-12-23.org"))
+   '("~/org/links.org" "~/org/cabcs.org" "/home/cabcs/org/journal/2022-01-04.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
    '(erc-image erc-hl-nicks rainbow-delimiters ob-go go-mode simple-httpd ox-hugo lsp-ivy csharp-mode lsp-mode org-mime pass pinentry org-pomodoro magit elfeed ein company-quickhelp company-anaconda anaconda-mode company geiser-mit geiser pastelmac-theme clues-theme afternoon-theme sicp anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))

@@ -1,0 +1,7 @@
+#+TITLE Alex's web blocklists
+
+Improve search quality by blocking specific sites from appearing in web searches.
+
+* Resources
+
+- [[https://github.com/jhchabran/code-search-blacklist/blob/main/uBlacklist.txt][jhchabran dev list]]

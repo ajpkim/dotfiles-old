@@ -383,12 +383,10 @@
           ("read" . ?r) ("view" . ?v) ("listen" . ?l)
           (:endgroup . nil)
           (:startgroup . nil)
-          ("write" . ?w) ("prog" . ?p) ("zettle" . ?z)
+          ("write" . ?w) ("prog" . ?p) ("zettle" . ?z) ("data" . ?d) ("test" . ?t) ("collab" . ?c) ("materials" . ?m)
           (:endgroup . nil)
           ("ak" . ?a)
           ("admin" . ?d)
-          ("blog" . ?b)
-          ("ff" . ?f)  ;; family & friends
           ("quick" . ?q)
           ("study" . ?s)
           ("wip" . ?W)
