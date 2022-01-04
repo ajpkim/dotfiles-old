@@ -117,18 +117,17 @@
   ;;     (setq modus-themes-operandi-color-overrides nil
   ;;           modus-themes-vivendi-color-overrides nil)))
 
-  ;; (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
-  ;; (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
+  ;; ;; (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
+  ;; ;; (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
+
+  ;; ;; (modus-themes-load-vivendi)
 #+end_src
 *** Deeper Blue
 :PROPERTIES:
 :ID:       487b98d1-60d8-42ba-bc66-aef381ace31f
 :END:
 #+begin_src emacs-lisp
-  (if (display-graphic-p) (load-theme 'deeper-blue t))
-
-  ;; (when window-system
-  ;;   (load-theme 'deeper-blue t))
+  (load-theme 'deeper-blue t)
 
   (set-face-attribute 'fringe nil :background "#00000000")  ;; Make window fringes transparent
 #+end_src
@@ -396,6 +395,7 @@
           ("ak" . ?a)
           ("admin" . ?d)
           ("blog" . ?b)
+          ("comp" . ?c)
           ("ff" . ?f)  ;; family & friends
           ("quick" . ?q)
           ("study" . ?s)
@@ -439,15 +439,15 @@
            ("aa" "Anki basic"
             entry
             (file+headline org-my-anki-file "New Cards")
-            "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+            "* %U %^g \n:PROPERTIES:\n:CREATED: %U\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
            ("ac" "Anki cloze"
             entry
             (file+headline org-my-anki-file "New Cards")
-            "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
+            "* %U  %^g \n:PROPERTIES:\n:CREATED: %U\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
            ("at" "Anki Type"
             entry
             (file+headline org-my-anki-file "New Cards")
-            "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+            "* %U  %^g\n:PROPERTIES:\n:CREATED: %U\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
 
            ("c" "Task" entry (file "~/org/inbox.org")
             "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
@@ -455,14 +455,14 @@
            ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
             "%?"
             :tree-type 'daily)
-           ("e" "Emacs" entry (file "~/org/inbox.org")
-            "* TODO %? :emacs:\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           ("f" "Current File Link" entry (file "~/org/inbox.org")
+            "* TODO %? %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
             :prepend t)
-           ("i" "Idea" entry (file+olp+datetree "~/org/ideas.org")
-            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-            :tree-type 'daily)
            ("l" "Link" entry (file "~/org/links.org")
-            "* %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+            :prepend t)
+           ("x" "Read, Watch, Listen" entry (file+headline "~/org/read-watch-listen.org" "Read, Watch, Listen")
+            "* TODO %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
             :prepend t)
            ))
 
@@ -608,7 +608,7 @@
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?" :if-new
            (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}
-  ,#+setupfile: ~/org/assets/org-export-setup-files/org-html-default-n1.org
+  ,#+setupfile: ~/org/assets/org-export/org-html-default.org
   ,#+filetags:")
            :unnarrowed t)))
 
@@ -713,6 +713,9 @@
   (use-package lsp-ivy
     :ensure t
     :commands lsp-ivy-workspace-symbol)
+
+  (use-package csv-mode
+    :ensure t)
 #+end_src
 * Programming languages
 :PROPERTIES:
