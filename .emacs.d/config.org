@@ -683,6 +683,8 @@
 :ID:       fcb83663-1337-4a09-b67f-32d0969c195e
 :END:
 #+begin_src elisp
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
   ;; Auto-complete
   (use-package company
     :ensure t
