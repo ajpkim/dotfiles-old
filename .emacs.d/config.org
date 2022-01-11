@@ -694,6 +694,9 @@
   (use-package lsp-ivy
     :ensure t
     :commands lsp-ivy-workspace-symbol)
+
+  (use-package csv-mode
+    :ensure t)
 #+end_src
 * Programming languages
 :PROPERTIES:
