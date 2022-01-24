@@ -23,7 +23,14 @@ LPURPLE='\[\033[01;35m\]'
 LCYAN='\[\033[01;36m\]'
 WHITE='\[\033[01;37m\]'
 
-export PS1="[ $LBLUE\w $CLEAR]\`if [ \$? = 0 ]; then echo ' $LYELLOW\n\$ '; else echo '$LRED\n\$ '; fi\`$CLEAR"
+
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+export PS1="[$LBLUE\w$LGREEN \$(parse_git_branch)$CLEAR]\`if [ \$? = 0 ]; then echo ' $LYELLOW\n\$ '; else echo '$LRED\n\$ '; fi\`$CLEAR"
+
+
 
 # Don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth
@@ -41,6 +48,7 @@ shopt -s checkwinsize
 
 ### Vars
 export CHIME='/usr/share/sounds/freedesktop/stereo/complete.oga'
+export BRIGHTNESS='/sys/class/backlight/intel_backlight/brightness'
 
 ### Shell vars
 TERMINAL=alacritty
