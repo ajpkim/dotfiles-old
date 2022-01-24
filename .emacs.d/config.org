@@ -589,8 +589,8 @@
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?" :if-new
            (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}
-  ,#+setupfile: ~/org/assets/org-export-setup-files/org-html-default-n1.org
-  ,#+filetags:")
+  ,#+setupfile: ~/org/assets/org-export/org-html-default.org
+  ,#+filetags: cabcs")
            :unnarrowed t)))
 
   (use-package org-journal

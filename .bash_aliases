@@ -31,6 +31,7 @@ alias ke='emacsclient -e "(kill-emacs)"'
 alias lynx='lynx -accept_all_cookies'
 alias py='python3'
 alias ipy='ipython'
+alias jp='jupyter-notebook'
 
 ## Displays
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
