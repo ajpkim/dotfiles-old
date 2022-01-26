@@ -1,6 +1,3 @@
-## Common use
-alias org='cd ~/org'
-
 ## ls aliases
 alias ls='ls --color=auto'
 alias ll='ls -alF'
@@ -9,21 +6,21 @@ alias l='ls -CF'
 
 ## Common stuff
 alias cdls='cd && ls'
+alias org='cd ~/org'
 alias de='find . -name "*~" -type f -delete'
 
 ## Dotfile management
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 
 ## Utilities
+alias bt='bluetoothctl'
+alias xcc='xclip -selection clipboard'
+alias ve='source venv/bin/activate'
 alias chime='paplay $CHIME'  # defined in .bashrc
 alias logout='pkill -KILL -u $USER'
 
-## Tools
-alias xcc='xclip -selection clipboard'
-alias ss='flameshot gui'
-alias ve='source venv/bin/activate'
-
 ## Applications
+alias ss='flameshot gui'
 alias ff='firefox'
 alias e='emacsclient --create-frame'
 alias et='emacsclient -nw'

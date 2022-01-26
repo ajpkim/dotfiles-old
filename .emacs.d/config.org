@@ -117,11 +117,13 @@
       (setq modus-themes-operandi-color-overrides nil
             modus-themes-vivendi-color-overrides nil)))
 
+  (modus-themes-load-vivendi)
+
   (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
   (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
 
   (set-face-attribute 'line-number nil :background "#00000000")  ;; line number background is too distinct
-  (modus-themes-load-vivendi)
+
 #+end_src
 *** Deeper Blue
 :PROPERTIES:
@@ -237,7 +239,8 @@
   ;; Quick keybindings
   (global-set-key (kbd "C-c h r") 'replace-string)
   (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
-  (global-set-key (kbd "C-c h l") 'display-line-numbers-mode)
+  (global-set-key (kbd "C-c h n") 'display-line-numbers-mode)
+  (global-set-key (kbd "C-c h l") 'my/insert-latex-delims)
   (global-set-key (kbd "C-c h a") 'insert-raquo)
   ;; gforce mouse specific
   (global-set-key (kbd "<drag-mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
@@ -324,7 +327,7 @@
           org-startup-with-inline-images t
           org-image-actual-width 800  ;; adjust as nec.
           org-startup-with-latex-preview nil  ;; SLOW
-          org-format-latex-options (plist-put org-format-latex-options :scale 2)
+          org-format-latex-options (plist-put org-format-latex-options :scale 3.5)
           org-pretty-entities nil
           org-startup-folded t
           org-extend-today-until 2
