@@ -66,12 +66,12 @@
 :END:
 #+begin_src elisp
   (use-package modus-themes
-    :ensure
+    :ensure t
     :init
     ;; Add all your customizations prior to loading the themes
     (setq modus-themes-slanted-constructs t
           modus-themes-bold-constructs nil
-          modus-themes-region 'no-extend
+          ;; modus-themes-region 'no-extend
           modus-themes-org-habit 'simplified)
     ;; Load the theme files before enabling a theme
     (modus-themes-load-themes)
@@ -120,8 +120,9 @@
   (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
   (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
 
-  (set-face-attribute 'line-number nil :background "#00000000")  ;; line number background is too distinct
-  (modus-themes-load-vivendi)
+  (set-face-attribute 'line-number nil :background "#000000")  ;; line number background is too distinct
+
+  ;; (modus-themes-load-vivendi)
 #+end_src
 *** Deeper Blue
 :PROPERTIES:
@@ -331,7 +332,7 @@
           org-image-actual-width 800  ;; adjust as nec.
           org-startup-with-latex-preview nil  ;; SLOW
           org-format-latex-options (plist-put org-format-latex-options :scale 3.5)
-          org-pretty-entities t
+          org-pretty-entities nil
           org-startup-folded t
           org-extend-today-until 2
           org-archive-location "~/org/archives/%s_archive::"
@@ -395,9 +396,9 @@
           ("write" . ?w) ("prog" . ?p) ("zettle" . ?z)
           (:endgroup . nil)
           ("ak" . ?a)
-          ("admin" . ?d)
           ("blog" . ?b)
           ("comp" . ?c)
+          ("design" . ?d)
           ("ff" . ?f)  ;; family & friends
           ("quick" . ?q)
           ("study" . ?s)

@@ -4,6 +4,9 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+## git aliases
+alias gl1='git log --oneline'
+
 ## Common stuff
 alias cdls='cd && ls'
 alias org='cd ~/org'
