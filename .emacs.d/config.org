@@ -518,6 +518,9 @@
         org-html-postamble nil
         org-html-use-infojs nil)
 
+  (require 'ox-md)
+  (add-to-list 'org-export-backends 'md)
+
   ;; IDs
   (defun my/org-get-headline-based-ids (&rest _)
     "Source: https://alhassy.github.io/AlBasmala.html#Ensuring-Useful-HTML-Anchors
@@ -704,6 +707,12 @@
     :commands lsp-ivy-workspace-symbol)
 
   (use-package csv-mode
+    :ensure t)
+
+  (use-package markdown-toc
+    :ensure t)
+
+  (use-package edit-indirect
     :ensure t)
 #+end_src
 * Programming languages
