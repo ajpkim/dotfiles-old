@@ -118,10 +118,10 @@ ws-icon-9 = 10;
 ;
 ;
 
-
 label-mode-padding = 2
 label-mode-foreground = #000
 label-mode-background = ${colors.primary}
+; label-mode-background = #232
 
 ; focused = Active workspace on focused monitor
 label-focused = %icon%

@@ -77,7 +77,7 @@
       nil)
      ("v" "Active tasks" alltodo "ACTIVE" nil)))
  '(org-agenda-files
-   '("~/org/notes/20211221212136-time_tracker.org" "~/org/anki.org" "~/org/alex.org" "~/org/read-watch-listen.org" "/home/ajpkim/org/inbox.org" "/home/ajpkim/org/journal/2022-02-10.org"))
+   '("~/org/notes/20220328215959-org_mode_custom_agenda_views.org" "~/org/read-watch-listen.org" "/home/ajpkim/org/inbox.org" "/home/ajpkim/org/journal/2022-03-28.org"))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
    '(csv-mode erc-image erc-hl-nicks rainbow-delimiters ob-go go-mode simple-httpd ox-hugo lsp-ivy csharp-mode lsp-mode org-mime pass pinentry org-pomodoro magit elfeed ein company-quickhelp company-anaconda anaconda-mode company geiser-mit geiser pastelmac-theme clues-theme afternoon-theme sicp anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
