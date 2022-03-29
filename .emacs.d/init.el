@@ -44,7 +44,7 @@
       nil)
      ("v" "Active tasks" alltodo "ACTIVE" nil)))
  '(org-agenda-files
-   '("~/org/links.org" "~/org/cabcs.org" "/home/cabcs/org/journal/2022-03-08.org"))
+   '("~/org/study.org" "~/org/links.org" "~/org/cabcs.org" "/home/cabcs/org/journal/2022-03-29.org"))
  '(package-selected-packages
    '(markdown-toc edit-indirect csv-mode erc-image erc-hl-nicks rainbow-delimiters ob-go go-mode simple-httpd ox-hugo lsp-ivy csharp-mode lsp-mode org-mime pass pinentry org-pomodoro magit elfeed ein company-quickhelp company-anaconda anaconda-mode company geiser-mit geiser pastelmac-theme clues-theme afternoon-theme sicp anki-editor multiple-cursors counsel ivy smartparens olivetti modus-themes org-journal org-roam toc-org htmlize org-drill drag-stuff ace-window rainbow-mode avy org-bullets beacon dracula-theme which-key use-package))
  '(pos-tip-background-color "#414E63")
