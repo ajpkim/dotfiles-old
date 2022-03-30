@@ -393,6 +393,138 @@
                           `(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
 
+
+  ;; Agenda
+  (setq org-agenda-span 5
+        org-agenda-start-on-weekday nil
+        org-agenda-skip-deadline-if-done t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-todo-ignore-deadlines nil
+        org-agenda-todo-ignore-scheduled nil
+        org-deadline-warning-days 3
+        org-agenda-window-setup 'current-window
+        org-agenda-prefix-format "%-10:T"  ;; Since I use tags over files
+        ;; org-agenda-start-with-log-mode t ;; '(clock)
+        )
+
+  (setq org-agenda-custom-commands
+        '(
+          ("h" "High priority"
+           ((tags-todo "+PRIORITY=\"A\""
+                       ((org-agenda-overriding-header "High Priority\n")
+                        (org-agenda-sorting-strategy '(tag-up todo-state-up priority-down))
+                        (org-agenda-hide-tags-regexp "*")
+                        ))))
+          ("u" "Unscheduled"
+           ((todo ""
+                  ((org-agenda-files '("~/org/inbox.org"))
+                   (org-agenda-overriding-header "Unscheduled TODOs\n")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                   (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
+                   ))))
+
+          ;; Tag based views
+          ("ta" "AK Tasks"
+           ((tags "ak"
+                  ((org-agenda-overriding-header "AK Tasks\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("tc" "Computing"
+           ((tags "comp"
+                  ((org-agenda-overriding-header "Computing Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("tb" "ajpkim.com"
+           ((tags "blog"
+                  ((org-agenda-overriding-header "ajpkim.com Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("te" "Emacs"
+           ((tags "emacs"
+                  ((org-agenda-overriding-header "Emacs Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("ti" "Ideas"
+           ((tags "idea"
+                  ((org-agenda-overriding-header "Ideas\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("tm" "Money"
+           ((tags "money"
+                  ((org-agenda-overriding-header "Money Matters\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("tp" "Programming"
+           ((tags "prog"
+                  ((org-agenda-overriding-header "Programming Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("tr" "Reading"
+           ((tags "read"
+                  ((org-agenda-overriding-header "Reading\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("ts" "Study"
+           ((tags "study"
+                  ((org-agenda-overriding-header "Studying\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("tw" "Writing"
+           ((tags "write"
+                  ((org-agenda-overriding-header "Writing Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ))
+
+  ;; Example from https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+  ;; (setq org-agenda-custom-commands
+  ;;       '(("P" "Printed agenda"
+  ;;          ((agenda "" ((org-agenda-span 7)                      ;; overview of appointments
+  ;;                       (org-agenda-start-on-weekday nil)         ;; calendar begins today
+  ;;                       (org-agenda-repeating-timestamp-show-all t)
+  ;;                       (org-agenda-entry-types '(:timestamp :sexp))))
+  ;;           (agenda "" ((org-agenda-span 1)                      ; daily agenda
+  ;;                       (org-deadline-warning-days 7)            ; 7 day advanced warning for deadlines
+  ;;                       (org-agenda-todo-keyword-format "[ ]")
+  ;;                       (org-agenda-scheduled-leaders '("" ""))
+  ;;                       (org-agenda-prefix-format "%t%s")))
+  ;;           (todo "TODO"                                          ;; todos sorted by context
+  ;;                 ((org-agenda-prefix-format "[ ] %T: ")
+  ;;                  (org-agenda-sorting-strategy '(tag-up priority-down))
+  ;;                  (org-agenda-todo-keyword-format "")
+  ;;                  (org-agenda-overriding-header "\nTasks by Context\n------------------\n"))))
+  ;;          ((org-agenda-with-colors nil)
+  ;;           (org-agenda-compact-blocks t)
+  ;;           (org-agenda-remove-tags t)
+  ;;           (ps-number-of-columns 2)
+  ;;            (ps-landscape-mode t))
+  ;;          ("~/agenda.ps"))
+  ;;         ;; other commands go here
+  ;;         ))
+
+  ;; Test agenda views
+  ;; (add-to-list 'org-agenda-custom-commands
+  ;;              '("W" "Weekly review"
+  ;;                agenda ""
+  ;;                ((org-agenda-start-day "-14d")
+  ;;                 (org-agenda-span 14)
+  ;;                 (org-agenda-start-on-weekday 1)
+  ;;                 (org-agenda-start-with-log-mode t)
+  ;; 		(org-agenda-archives-mode t)
+  ;;                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE ")))))
+
+
+
   ;; Archiving
   (defun my/org-archive-done-tasks-file ()
     (interactive)
@@ -410,6 +542,24 @@
        (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
      "/DONE" 'tree))
 
+  ;; Babel
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (haskell    . t)
+     (python     . t)
+     (sql        . t)
+     (go        . t)
+     (latex      . t)
+     (js         . t)
+     (shell      . t)
+     (scheme     . t)))
+       #+end_src
+** Tags, Capture, TODO
+:PROPERTIES:
+:ID:       50c19694-a173-4f8e-a562-a4ae3b35874c
+:END:
+#+begin_src emacs-lisp
   ;; Tags
   (setq org-fast-tag-selection-single-key 'expert
         org-tag-alist
@@ -431,77 +581,6 @@
           ("quick" . ?q)
           ("study" . ?s)
           ))
-
-  ;; Agenda
-  (setq org-agenda-span 5
-        org-agenda-start-on-weekday nil
-        org-agenda-skip-deadline-if-done t
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-todo-ignore-deadlines nil
-        org-agenda-todo-ignore-scheduled nil
-        org-deadline-warning-days 3
-        org-agenda-window-setup 'current-window
-        ;; org-agenda-start-with-log-mode t ;; '(clock)
-        )
-
-
-  (setq org-agenda-custom-commands
-        '(
-          ;; Tag based views
-          ("ta" "AK Tasks"
-           ((tags "ak"
-                  ((org-agenda-overriding-header "AK Tasks\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("tc" "Computing"
-           ((tags "comp"
-                  ((org-agenda-overriding-header "Computing Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("tb" "ajpkim.com"
-           ((tags "blog"
-                  ((org-agenda-overriding-header "ajpkim.com Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("te" "Emacs"
-           ((tags "emacs"
-                  ((org-agenda-overriding-header "Emacs Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("ti" "Ideas"
-           ((tags "idea"
-                  ((org-agenda-overriding-header "Ideas\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("tm" "Money"
-           ((tags "money"
-                  ((org-agenda-overriding-header "Money Matters\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("tp" "Programming"
-           ((tags "prog"
-                  ((org-agenda-overriding-header "Programming Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("tr" "Reading"
-           ((tags "read"
-                  ((org-agenda-overriding-header "Reading\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("ts" "Study"
-           ((tags "study"
-                  ((org-agenda-overriding-header "Studying\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ("tw" "Writing"
-           ((tags "write"
-                  ((org-agenda-overriding-header "Writing Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   ))))
-          ))
-
-
-
 
   ;; Capture
   (setq org-capture-templates
@@ -564,20 +643,7 @@
 
   (setq org-log-done 'time)
   (setq org-log-into-drawer "LOGBOOK")
-
-  ;; Babel
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (haskell    . t)
-     (python     . t)
-     (sql        . t)
-     (go        . t)
-     (latex      . t)
-     (js         . t)
-     (shell      . t)
-     (scheme     . t)))
-       #+end_src
+#+end_src
 ** Export and IDs
 :PROPERTIES:
 :ID:       fbeb5454-6331-41ea-a519-915f8169b6ae
@@ -739,8 +805,9 @@
     :after org
     :hook (org-mode . org-bullets-mode)
     :config
-    (setq org-bullets-bullet-list '("✫" "☀" "❂" "❀" "◌" "✶" "✸" "✹" "✺" "◌")))
+    (setq org-bullets-bullet-list '("✦" "✧" "✯" "✭" "✫")))
 
+  ;; ("★" "☀" "❂" "❀" "◌" "✶" "✸" "✹" "✺" "◌")))
   ;; ✹
   ;; ✺
   ;; ✻
@@ -756,7 +823,6 @@
   ;; ❆
   ;; ❇
   ;; ❈
-
 #+end_src
 * Programming helpers
 :PROPERTIES:
