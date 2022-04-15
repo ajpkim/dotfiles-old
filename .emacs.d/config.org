@@ -361,7 +361,7 @@
           org-startup-folded t
           org-extend-today-until 2
           org-archive-location "~/org/archives/%s_archive::"
-          org-id-link-to-org-use-id t
+          org-id-link-to-org-use-id 'create-if-interactive
           ;; Refile
           org-refile-targets '((org-agenda-files :todo . "PROJECT"))
           org-refile-use-outline-path 'file
@@ -422,6 +422,11 @@
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                    (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
                    ))))
+          ("c" "Computing Config"
+           ((tags-todo "comp|emacs"
+                       ((org-agenda-overriding-header "Computing Config\n")
+                        (org-agenda-sorting-strategy '(tag-up todo-state-up priority-down))
+                        ))))
 
           ;; Tag based views
           ("ta" "AK Tasks"
