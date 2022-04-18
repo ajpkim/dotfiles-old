@@ -71,7 +71,7 @@
     ;; Add all your customizations prior to loading the themes
     (setq modus-themes-slanted-constructs t
           modus-themes-bold-constructs nil
-          modus-themes-region 'no-extend
+          modus-themes-region '(no-extend)
           modus-themes-org-habit 'simplified)
     ;; Load the theme files before enabling a theme
     (modus-themes-load-themes)
@@ -120,9 +120,12 @@
   (modus-themes-load-vivendi)
 
   (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
+  (set-face-attribute 'org-scheduled-previously nil :foreground "#bb3385")
   (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
+  (set-face-attribute 'org-scheduled nil :foreground "#c4c3d0")
+  (set-face-attribute 'org-agenda-clocking nil :foreground "#44ddff" :background "#000")
 
-  (set-face-attribute 'line-number nil :background "#00000000")  ;; line number background is too distinct
+  (set-face-attribute 'line-number nil :background "#000000")  ;; line number background is too distinct
 
 #+end_src
 *** Deeper Blue
@@ -135,7 +138,7 @@
   ;; ;; (when window-system
   ;; ;;   (load-theme 'deeper-blue t))
 
-  ;; (set-face-attribute 'fringe nil :background "#00000000")  ;; Make window fringes transparent
+  ;; (set-face-attribute 'fringe nil :background "#000000")  ;; Make window fringes transparent
 #+end_src
 
 ** Olivetti
@@ -363,7 +366,7 @@
           org-id-link-to-org-use-id t
           ;; Refile
           org-refile-targets '((org-agenda-files :todo . "PROJECT"))
-          org-refile-use-outline-path 'file
+          org-refile-use-outline-path nil
           org-outline-path-complete-in-steps nil
           )
     :bind
@@ -392,6 +395,15 @@
                           `(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
 
+  ;; Clocking
+  ;; Use a function to decide what to change the state to.
+  (setq org-clock-in-switch-to-state #'my/switch-task-on-clock-start)
+
+  (defun my/switch-task-on-clock-start (task-state)
+    "Change a task to 'ACTIVE' when TASK-STATE is 'TODO'."
+    (if (string= task-state "TODO")
+        "ACTIVE"
+      task-state))
   ;; Archiving
   (defun my/org-archive-done-tasks-file ()
     (interactive)
@@ -498,123 +510,118 @@
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                    ))))
            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-           ;; Tags
-           ("ta" "AK Tasks"
-            ((tags "ak"
-                   ((org-agenda-overriding-header "AK Tasks\n")
-                    (org-agenda-sorting-strategy '(todo-state-up))
-                    ))))
-           ("td" "Data"
-            ((tags "data"
-                   ((org-agenda-overriding-header "Data Inbox\n")
-                    (org-agenda-sorting-strategy '(todo-state-up))
-                    ))))
-           ("te" "Emacs"
-            ((tags "emacs"
-                   ((org-agenda-overriding-header "Emacs Inbox\n")
-                    (org-agenda-sorting-strategy '(todo-state-up))
-                    ))))
-           ("ti" "Ideas"
-            ((tags "idea"
-                   ((org-agenda-overriding-header "Ideas\n")
-                    (org-agenda-sorting-strategy '(todo-state-up))
-                    ))))
-           ("tp" "Programming"
-            ((tags "prog"
-                   ((org-agenda-overriding-header "Programming Inbox\n")
-                    (org-agenda-sorting-strategy '(todo-state-up))
-                    ))))
-           ("tr" "Reading"
-            ((tags "read"
-                   ((org-agenda-overriding-header "Reading\n")
-                    (org-agenda-sorting-strategy '(todo-state-up))
-                    ))))
-           ("ts" "Study"
-            ((tags "study"
-                   ((org-agenda-overriding-header "Studying\n")
-                    (org-agenda-sorting-strategy '(todo-state-up))
-                    ))))
-           ("tw" "Writing"
-            ((tags "write"
-                   ((org-agenda-overriding-header "Writing Inbox\n")
-                    (org-agenda-sorting-strategy '(todo-state-up))
-                    ))))
-           ))
+          ;; Tags
+          ("ta" "AK Tasks"
+           ((tags "ak"
+                  ((org-agenda-overriding-header "AK Tasks\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   ))))
+          ("td" "Data"
+           ((tags "data"
+                  ((org-agenda-overriding-header "Data Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   ))))
+          ("te" "Emacs"
+           ((tags "emacs"
+                  ((org-agenda-overriding-header "Emacs Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   ))))
+          ("ti" "Ideas"
+           ((tags "idea"
+                  ((org-agenda-overriding-header "Ideas\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   ))))
+          ("tp" "Programming"
+           ((tags "prog"
+                  ((org-agenda-overriding-header "Programming Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   ))))
+          ("tr" "Reading"
+           ((tags "read"
+                  ((org-agenda-overriding-header "Reading\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   ))))
+          ("ts" "Study"
+           ((tags "study"
+                  ((org-agenda-overriding-header "Studying\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   ))))
+          ("tw" "Writing"
+           ((tags "write"
+                  ((org-agenda-overriding-header "Writing Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   ))))
+          ))
 
-        ;; Capture
-        (setq org-capture-templates
-              '(
-                ;; Anki templates
-                ("a" "Anki")
-                ("aa" "Anki basic"
-                 entry
-                 (file+headline org-my-anki-file "New Cards")
-                 "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
-                ("ac" "Anki cloze"
-                 entry
-                 (file+headline org-my-anki-file "New Cards")
-                 "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
-                ("at" "Anki Type"
-                 entry
-                 (file+headline org-my-anki-file "New Cards")
-                 "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+  ;; Capture
+  (setq org-capture-templates
+        '(
+          ;; Anki templates
+          ("a" "Anki")
+          ("aa" "Anki basic"
+           entry
+           (file+headline org-my-anki-file "New Cards")
+           "* %U %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Basic\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
+          ("ac" "Anki cloze"
+           entry
+           (file+headline org-my-anki-file "New Cards")
+           "* %U  %^g \n:PROPERTIES:\n:ANKI_NOTE_TYPE: Cloze\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Text\n%?\n** Extra\n\n")
+          ("at" "Anki Type"
+           entry
+           (file+headline org-my-anki-file "New Cards")
+           "* %U  %^g\n:PROPERTIES:\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
 
-                ("b" "Current project buffer task" entry (file+headline buffer-name "Tasks")
-                 "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-                 :prepend t)
-                ("c" "Task" entry (file+headline "~/org/cabcs.org" "Inbox")
-                 "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-                 :prepend t)
-                ("f" "Current File Link" entry (file "~/org/inbox.org")
-                 "* TODO %? %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-                 :prepend t)
-                ("l" "Link" entry (file "~/org/links.org")
-                 "* %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-                 :prepend t)
-                ("m" "Meeting" entry (file+olp+datetree "~/org/meetings.org")
-                 "p* %U %?"
-                 :tree-type 'daily)
-                ("s" "Study" entry (file "~/org/study.org")
-                 "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-                 :prepend t)
-                ))
 
-        ;; TODO
-        (setq org-todo-keywords
-              '((sequence "PROJECT(P)" "ACTIVE(a)" "TODO(t)" "LATER(l)" "WAIT(w)" "SOMEDAY(s)" "|" "PASS(p)" "DONE(d)")))
+          ("c" "Task" entry (file "~/org/cabcs.org")
+           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           :prepend t)
+          ("f" "Current File Link" entry (file "~/org/inbox.org")
+           "* TODO %? %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           :prepend t)
+          ("l" "Link" entry (file "~/org/links.org")
+           "* %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           :prepend t)
+          ("m" "Meeting" entry (file+olp+datetree "~/org/meetings.org")
+           "* %U %?"
+           :tree-type 'daily)
+          ))
 
-        ;; #ffff66
-        ;; #79a8ff
-        ;; #f0ffff
-        ;; #ffbbff
-        ;; #f79a46
-        ;; #dfaa8e
-        (setq org-todo-keyword-faces
-              '(
-                ("PROJECT" . (:foreground "#f0ffff" :weight bold))
-                ("ACTIVE" . (:foreground "#44ddff" :weight bold))
-                ("TODO" . (:foreground "#ffff62" :weight bold))
-                ("LATER" . (:foreground "#ffb366" :weight bold))
-                ("WAIT" . (:foreground "#ffccbc" :weight bold))
-                ("SOMEDAY" . (:foreground "#acfff0" :weight bold))
-                ("PASS" . (:foreground "#ff3d40" :weight bold))
-                ("DONE" . (:foreground "#19ffaf" :weight bold))))
+  ;; TODO
+  (setq org-todo-keywords
+        '((sequence "PROJECT(P)" "ACTIVE(a)" "TODO(t)" "LATER(l)" "WAIT(w)" "SOMEDAY(s)" "|" "PASS(p)" "DONE(d)")))
 
-        (setq org-log-done 'time)
-        (setq org-log-into-drawer "LOGBOOK")
+  ;; #ffff66
+  ;; #79a8ff
+  ;; #f0ffff
+  ;; #ffbbff
+  ;; #f79a46
+  ;; #dfaa8e
+    (setq org-todo-keyword-faces
+          '(
+            ("PROJECT" . (:foreground "#adbce6" :weight bold))
+            ("ACTIVE" . (:foreground "#44ddff" :weight bold))
+            ("TODO" . (:foreground "#ffbbff" :weight bold))
+            ("LATER" . (:foreground "##c4aead" :weight bold))
+            ("WAIT" . (:foreground "#ffccbc" :weight bold))
+            ("SOMEDAY" . (:foreground "#d3d3d3" :weight bold))
+            ("PASS" . (:foreground "#ff3d40" :weight bold))
+            ("DONE" . (:foreground "#19ffaf" :weight bold))))
 
-        ;; Babel
-        (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((emacs-lisp . t)
-           (haskell    . t)
-           (python     . t)
-           (sql        . t)
-           (go        . t)
-           (latex      . t)
-           (js         . t)
-           (shell      . t)
-           (scheme     . t)))
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer "LOGBOOK")
+
+  ;; Babel
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (haskell    . t)
+     (python     . t)
+     (sql        . t)
+     (go        . t)
+     (latex      . t)
+     (js         . t)
+     (shell      . t)
+     (scheme     . t)))
        #+end_src
 ** Export and IDs
 :PROPERTIES:
@@ -724,14 +731,74 @@
      ("C-c n f" . org-roam-node-find)
      ("C-c n i" . org-roam-node-insert))
     :config
+    (cl-defmethod org-roam-node-type ((node org-roam-node))
+      "Return the TYPE of NODE."
+      (condition-case nil
+          (file-name-nondirectory
+           (directory-file-name
+            (file-name-directory
+             (file-relative-name (org-roam-node-file node) org-roam-directory))))
+        (error "")))
+    (setq org-roam-node-display-template
+          (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
     (org-roam-setup))
 
   (setq org-roam-capture-templates
-        '(("d" "default" plain "%?" :if-new
-           (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}
-  ,#+setupfile: ~/org/assets/org-export/org-html-default.org
-  ,#+filetags: cabcs")
+        '(("m" "main" plain "%?"
+           :if-new (file+head "main/${slug}.org" "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("r" "reference" plain "%?"
+           :if-new (file+head "reference/${title}.org" "#+title: ${title}\n")
+           :immediate-finish t
            :unnarrowed t)))
+
+  (defun my/tag-new-node-as-draft ()
+    (org-roam-tag-add '("draft")))
+  (add-hook 'org-roam-capture-new-node-hook #'my/tag-new-node-as-draft)
+
+  (defun my/org-roam-node-from-cite (keys-entries)
+    (interactive (list (citar-select-ref :multiple nil :rebuild-cache t)))
+    (let ((title (citar--format-entry-no-widths (cdr keys-entries)
+                                                "${author editor} :: ${title}")))
+      (org-roam-capture- :templates
+                         '(("r" "reference" plain "%?" :if-new
+                            (file+head "reference/${citekey}.org"
+                                       ":PROPERTIES:
+    :ROAM_REFS: [cite:@${citekey}]
+    :END:
+    ,,#+title: ${title}\n")
+                            :immediate-finish t
+                            :unnarrowed t))
+                         :info (list :citekey (car keys-entries))
+                         :node (org-roam-node-create :title title)
+                         :props '(:finalize find-file))))
+
+  (global-set-key (kbd "C-c n r") 'my/org-roam-node-from-cite)
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Citation tools
+  (use-package citeproc
+    :ensure t)
+
+  (use-package citar
+    :ensure t
+    :bind (("C-c b" . citar-insert-citation)
+           :map minibuffer-local-map
+           ("M-b" . citar-insert-preset))
+    :custom
+  (citar-bibliography '("~/org/notes/bib/sources.bib"
+                          "~/org/notes/bib/gcar.bib"
+                          "~/org/notes/bib/aitr.bib"
+                          )))
+
+  (require 'oc-basic)
+  (require 'oc-csl)
+  (require 'oc-basic)
+  (require 'oc-biblatex)
+  (setq org-cite-export-processors '((t csl)))  ;; can add a 3rd arg for a specific style file
+  (set-face-attribute 'org-cite nil :foreground "#00cc99")
+  (set-face-attribute 'org-cite-key nil :foreground "#00cc99")
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   (use-package org-journal
     :ensure t
