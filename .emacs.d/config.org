@@ -117,8 +117,11 @@
       (setq modus-themes-operandi-color-overrides nil
             modus-themes-vivendi-color-overrides nil)))
 
-  (set-face-attribute 'org-scheduled-previously nil :foreground "#ffa500")
+  (set-face-attribute 'org-scheduled-previously nil :foreground "#bb3385")
   (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
+  (set-face-attribute 'org-scheduled nil :foreground "#c4c3d0")
+  (set-face-attribute 'org-agenda-clocking nil :foreground "#44ddff" :background "#000")
+
 
   (set-face-attribute 'line-number nil :background "#000000")  ;; line number background is too distinct
 
@@ -131,7 +134,7 @@
 #+begin_src emacs-lisp
   ;; (load-theme 'deeper-blue t)
 
-  (set-face-attribute 'fringe nil :background "#00000000")  ;; Make window fringes transparent
+  (set-face-attribute 'fringe nil :background "#000000")  ;; Make window fringes transparent
 #+end_src
 
 ** Olivetti
@@ -165,22 +168,28 @@
   (defun my/file-shortcut (file)
     (interactive)
     (if (file-exists-p file)
-        (if (equal current-prefix-arg nil)  ;; no C-u
+        (if (equal current-prefix-arg nil)
             (find-file file)
           (find-file-other-frame file))))
 
   (global-set-key (kbd "C-c f a")
-                  (lambda () (interactive) (my/file-shortcut "~/org/alex.org")))
-  (global-set-key (kbd "C-c f A")
                   (lambda () (interactive) (my/file-shortcut "~/org/anki.org")))
+  (global-set-key (kbd "C-c f c")
+                  (lambda () (interactive) (my/file-shortcut "~/org/code.org")))
+  (global-set-key (kbd "C-c f m")
+                  (lambda () (interactive) (my/file-shortcut "~/org/career.org")))
   (global-set-key (kbd "C-c f i")
                   (lambda () (interactive) (my/file-shortcut "~/org/inbox.org")))
   (global-set-key (kbd "C-c f l")
-                  (lambda () (interactive) (my/file-shortcut "~/org/links.org")))
+                  (lambda () (interactive) (my/file-shortcut "~/org/learn.org")))
+  (global-set-key (kbd "C-c f n")
+                  (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
+  (global-set-key (kbd "C-c f p")
+                  (lambda () (interactive) (my/file-shortcut "~/org/personal.org")))
   (global-set-key (kbd "C-c f r")
                   (lambda () (interactive) (my/file-shortcut "~/org/read-watch-listen.org")))
-  (global-set-key (kbd "C-c f t")
-                  (lambda () (interactive) (my/file-shortcut "~/org/tech.org")))
+  (global-set-key (kbd "C-c f w")
+                  (lambda () (interactive) (my/file-shortcut "~/org/web.org")))
 
   ;; Make cursor follow to new windows
   (defun split-and-follow-horizontally ()
@@ -364,7 +373,7 @@
           org-id-link-to-org-use-id 'create-if-interactive
           ;; Refile
           org-refile-targets '((org-agenda-files :todo . "PROJECT"))
-          org-refile-use-outline-path 'file
+          org-refile-use-outline-path nil
           org-outline-path-complete-in-steps nil
           )
     :bind
@@ -394,6 +403,17 @@
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
 
 
+  ;; Clocking
+  ;; Use a function to decide what to change the state to.
+  (setq org-clock-in-switch-to-state #'my/switch-task-on-clock-start)
+
+  (defun my/switch-task-on-clock-start (task-state)
+    "Change a task to 'ACTIVE' when TASK-STATE is 'TODO'."
+    (if (string= task-state "TODO")
+        "ACTIVE"
+        task-state))
+
+
   ;; Agenda
   (setq org-agenda-span 5
         org-agenda-start-on-weekday nil
@@ -403,7 +423,7 @@
         org-agenda-todo-ignore-scheduled nil
         org-deadline-warning-days 3
         org-agenda-window-setup 'current-window
-        org-agenda-prefix-format "%-10:T"  ;; Since I use tags over files
+        org-agenda-prefix-format " %i %-12:c%?-12t% s"  ;; Since I use tags over files
         ;; org-agenda-start-with-log-mode t ;; '(clock)
         )
 
@@ -605,9 +625,6 @@
            (file+headline org-my-anki-file "New Cards")
            "* %U  %^g\n:PROPERTIES:\n:CREATED: %U\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
 
-          ("b" "Current project buffer task" entry (file+headline buffer-name "Tasks")
-           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-           :prepend t)
           ("c" "Task" entry (file "~/org/inbox.org")
            "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
@@ -617,11 +634,14 @@
           ("f" "Current File Link" entry (file "~/org/inbox.org")
            "* TODO %? %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
-          ("l" "Link" entry (file "~/org/links.org")
+          ("w" "Web" entry (file "~/org/web.org")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
           ("x" "Read, Watch, Listen" entry (file+headline "~/org/read-watch-listen.org" "Read, Watch, Listen")
            "* TODO %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           :prepend t)
+          ("z" "Zettle Inbox" entry (file "~/org/notes/inbox.org")
+           "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
           ))
 
@@ -637,12 +657,12 @@
   ;; #dfaa8e
   (setq org-todo-keyword-faces
         '(
-          ("PROJECT" . (:foreground "#f0ffff" :weight bold))
+          ("PROJECT" . (:foreground "#adbce6" :weight bold))
           ("ACTIVE" . (:foreground "#44ddff" :weight bold))
-          ("TODO" . (:foreground "#ffff62" :weight bold))
-          ("LATER" . (:foreground "#ffb366" :weight bold))
+          ("TODO" . (:foreground "#ffbbff" :weight bold))
+          ("LATER" . (:foreground "##c4aead" :weight bold))
           ("WAIT" . (:foreground "#ffccbc" :weight bold))
-          ("SOMEDAY" . (:foreground "#acfff0" :weight bold))
+          ("SOMEDAY" . (:foreground "#d3d3d3" :weight bold))
           ("PASS" . (:foreground "#ff3d40" :weight bold))
           ("DONE" . (:foreground "#19ffaf" :weight bold))))
 
@@ -754,15 +774,70 @@
      ("C-c n f" . org-roam-node-find)
      ("C-c n i" . org-roam-node-insert))
     :config
+    (cl-defmethod org-roam-node-type ((node org-roam-node))
+    "Return the TYPE of NODE."
+    (condition-case nil
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory
+           (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (error "")))
+    (setq org-roam-node-display-template
+        (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
     (org-roam-setup))
 
   (setq org-roam-capture-templates
-        '(("d" "default" plain "%?" :if-new
-           (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}
-  ,#+setupfile: ~/org/assets/org-export/org-html-default.org
-  ,#+filetags:")
+        '(("m" "main" plain "%?"
+           :if-new (file+head "main/${slug}.org" "#+title: ${title}\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("r" "reference" plain "%?"
+           :if-new (file+head "reference/${title}.org" "#+title: ${title}\n")
+           :immediate-finish t
            :unnarrowed t)))
 
+  (defun my/tag-new-node-as-draft ()
+    (org-roam-tag-add '("draft")))
+  (add-hook 'org-roam-capture-new-node-hook #'my/tag-new-node-as-draft)
+
+  (defun my/org-roam-node-from-cite (keys-entries)
+      (interactive (list (citar-select-ref :multiple nil :rebuild-cache t)))
+      (let ((title (citar--format-entry-no-widths (cdr keys-entries)
+                                                  "${author editor} :: ${title}")))
+        (org-roam-capture- :templates
+                           '(("r" "reference" plain "%?" :if-new
+                              (file+head "reference/${citekey}.org"
+                                         ":PROPERTIES:
+  :ROAM_REFS: [cite:@${citekey}]
+  :END:
+  ,#+title: ${title}\n")
+                              :immediate-finish t
+                              :unnarrowed t))
+                           :info (list :citekey (car keys-entries))
+                           :node (org-roam-node-create :title title)
+                           :props '(:finalize find-file))))
+
+  (global-set-key (kbd "C-c n r") 'my/org-roam-node-from-cite)
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Citation tools
+  (use-package citeproc
+    :ensure t)
+
+  (use-package citar
+    :bind (("C-c b" . citar-insert-citation)
+           :map minibuffer-local-map
+           ("M-b" . citar-insert-preset))
+    :custom
+    (citar-bibliography '("~/org/notes/sources.bib")))
+
+  (require 'oc-basic)
+  (require 'oc-csl)
+  (require 'oc-basic)
+  (require 'oc-biblatex)
+  (setq org-cite-export-processors '((t csl)))  ;; can add a 3rd arg for a specific style file
+  (set-face-attribute 'org-cite nil :foreground "#00cc99")
+  (set-face-attribute 'org-cite-key nil :foreground "#00cc99")
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (use-package org-journal
     :ensure t
     :defer t
