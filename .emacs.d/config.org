@@ -8,6 +8,14 @@
 :ID:       f67c7e58-6d4a-4ba3-a13e-f00b4cefc79f
 :END:
 #+begin_src emacs-lisp
+  ;; Update packages automatically
+  ;; (use-package auto-package-update
+  ;;   :ensure t
+  ;;   :config
+  ;;   (setq auto-package-update-delete-old-versions t)
+  ;;   (setq auto-package-update-hide-results t)
+  ;;   (auto-package-update-maybe))
+
   ;; Minimal functional UI
   (setq inhibit-startup-message t)
   (setq visible-bell t)
@@ -22,7 +30,16 @@
   ;; control default size
   (set-face-attribute 'default nil :height 150)
 
-  ;; Modeline
+  ;; Modeline... Doom not working (way too big and size is inconsistent)
+  ;; (use-package doom-modeline
+  ;;   :ensure t
+  ;;   :init (doom-modeline-mode 1)
+  ;;   ;; :custom-face
+  ;;   ;; (mode-line ((t (:height 0.5))))
+  ;;   ;; (mode-line-inactive ((t (:height 0.95))))
+  ;;   :custom
+  ;;   ((doom-modeline-height 15)))
+
   (setq column-number-mode t)
 
   ;; Packages for visual clarity
@@ -37,13 +54,26 @@
     (rainbow-mode 1))
 
   (use-package rainbow-delimiters
-    :ensure t)
+    :ensure t
+    :init
+    (rainbow-delimiters-mode 1))
 
-  ;; QoL
   (use-package which-key
     :ensure t
     :init
-    (which-key-mode))
+    (which-key-mode 1))
+
+  (use-package helpful
+    :ensure t
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ;; counsel commands are preferred over base helpful commands bc of baked in ivy power of counsel
+    (([remap describe-function] . counsel-describe-function)
+     ([remap describe-command] . helpful-command)
+     ([remap describe-variable] . counsel-describe-variable)
+     ([remap describe-key] . helpful-key)))
 
   (setq x-select-enable-clipboard t
         x-select-enable-primary t)
@@ -383,7 +413,7 @@
      ("C-x n t" . org-toggle-narrow-to-subtree))
     :hook
     (org-mode . visual-line-mode)
-    (org-mode . variable-pitch-mode)
+    ;; (org-mode . variable-pitch-mode)
     (org-mode . olivetti-mode))
 
   (require 'org-tempo)
@@ -904,6 +934,20 @@
   ;; ❇
   ;; ❈
 #+end_src
+* Projects
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    ;; :diminish projectile-mode
+    ;; :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    (when (file-directory-p "~/code")
+      (setq projectile-project-search-path '("~/code")))
+    (setq projectile-switch-project-action #'projectile-dired))
+#+end_src
 * Programming helpers
 :PROPERTIES:
 :ID:       fcb83663-1337-4a09-b67f-32d0969c195e
@@ -1021,11 +1065,19 @@
 #+begin_src elisp
   (use-package counsel  ;; Brings in ivy and swiper as dependencies
     :ensure t
+    :bind
+    (("M-x" . counsel-M-x)
+     ("C-x b" . counsel-ibuffer)
+     ("C-x C-f" . counsel-find-file))
+    :init
+    (ivy-mode 1)
     :config
     (setq ivy-use-virtual-buffers t
           ivy-count-format "%d/%d "))
 
-  (ivy-mode 1)
+  (use-package ivy-rich
+    :ensure t
+    :init (ivy-rich-mode 1))
 #+end_src
 * Security
 ** gpg
