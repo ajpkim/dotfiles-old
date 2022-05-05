@@ -1,3 +1,7 @@
+## cd aliases
+alias ebpy='cd ~/code/ebay-trading/src/py'
+alias eb='cd ~/code/ebay-trading/'
+
 ## ls aliases
 alias ls='ls --color=auto'
 alias ll='ls -alF'
@@ -36,5 +40,5 @@ alias jp='jupyter-notebook'
 ## Displays
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
 alias on-monitors='. ~/scripts/turn-on-monitors.sh'
-alias lg-mon='xrandr --output HDMI1 --mode 3840x2160  --right-of eDP1'
-alias hdmi1-nodpi='xrandr --output eDP1 --auto --output HDMI1 --auto --scale 2x2 --right-of eDP1'
+alias lg-mon='xrandr --output HDMI1 --mode 3840x2160  --right-of eDP1 --set audio off'
+alias hdmi1-nodpi='xrandr --output eDP1 --auto --output HDMI1 --auto --scale 2x2 --right-of eDP1  --set audio off'

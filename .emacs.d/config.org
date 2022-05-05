@@ -56,7 +56,7 @@
   (use-package rainbow-delimiters
     :ensure t
     :init
-    (rainbow-delimiters-mode 1))
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
   (use-package which-key
     :ensure t
@@ -206,7 +206,7 @@
                   (lambda () (interactive) (my/file-shortcut "~/org/anki.org")))
   (global-set-key (kbd "C-c f c")
                   (lambda () (interactive) (my/file-shortcut "~/org/code.org")))
-  (global-set-key (kbd "C-c f m")
+  (global-set-key (kbd "C-c f C")
                   (lambda () (interactive) (my/file-shortcut "~/org/career.org")))
   (global-set-key (kbd "C-c f i")
                   (lambda () (interactive) (my/file-shortcut "~/org/inbox.org")))
@@ -667,7 +667,7 @@
           ("w" "Web" entry (file "~/org/web.org")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
-          ("x" "Read, Watch, Listen" entry (file+headline "~/org/read-watch-listen.org" "Read, Watch, Listen")
+          ("x" "Read, Watch, Listen" entry (file "~/org/read-watch-listen.org")
            "* TODO %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
           ("z" "Zettle Inbox" entry (file "~/org/notes/inbox.org")
@@ -677,7 +677,7 @@
 
   ;; TODO
   (setq org-todo-keywords
-        '((sequence "PROJECT(P)" "ACTIVE(a)" "TODO(t)" "LATER(l)" "WAIT(w)" "SOMEDAY(s)" "|" "PASS(p)" "DONE(d)")))
+        '((sequence "TODO(t)" "ACTIVE(a)" "LATER(l)" "WAIT(w)" "SOMEDAY(s)" "PROJECT(P)" "|" "PASS(p)" "DONE(d)")))
 
   ;; #ffff66
   ;; #79a8ff
@@ -687,12 +687,12 @@
   ;; #dfaa8e
   (setq org-todo-keyword-faces
         '(
-          ("PROJECT" . (:foreground "#adbce6" :weight bold))
-          ("ACTIVE" . (:foreground "#44ddff" :weight bold))
           ("TODO" . (:foreground "#ffbbff" :weight bold))
+          ("ACTIVE" . (:foreground "#44ddff" :weight bold))
           ("LATER" . (:foreground "##c4aead" :weight bold))
           ("WAIT" . (:foreground "#ffccbc" :weight bold))
           ("SOMEDAY" . (:foreground "#d3d3d3" :weight bold))
+          ("PROJECT" . (:foreground "#adbce6" :weight bold))
           ("PASS" . (:foreground "#ff3d40" :weight bold))
           ("DONE" . (:foreground "#19ffaf" :weight bold))))
 
@@ -813,16 +813,20 @@
            (file-relative-name (org-roam-node-file node) org-roam-directory))))
       (error "")))
     (setq org-roam-node-display-template
-        (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+        (concat "${type:10} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
     (org-roam-setup))
 
   (setq org-roam-capture-templates
         '(("m" "main" plain "%?"
-           :if-new (file+head "main/${slug}.org" "#+title: ${title}\n")
+           :if-new (file+head "main/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)
           ("r" "reference" plain "%?"
-           :if-new (file+head "reference/${title}.org" "#+title: ${title}\n")
+           :if-new (file+head "reference/${slug}.org" "#+title: ${title}\n#+created: %U\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("s" "source" plain "%?"
+           :if-new (file+head "source/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)))
 
@@ -833,21 +837,21 @@
   (defun my/org-roam-node-from-cite (keys-entries)
       (interactive (list (citar-select-ref :multiple nil :rebuild-cache t)))
       (let ((title (citar--format-entry-no-widths (cdr keys-entries)
-                                                  "${author editor} :: ${title}")))
+                                                  "${author year editor} :: ${title}")))
         (org-roam-capture- :templates
-                           '(("r" "reference" plain "%?" :if-new
-                              (file+head "reference/${citekey}.org"
+                           '(("s" "sournce" plain "%?" :if-new
+                              (file+head "source/${citekey}.org"
                                          ":PROPERTIES:
   :ROAM_REFS: [cite:@${citekey}]
   :END:
-  ,#+title: ${title}\n")
+  ,#+title: ${title}\n#+created: %U\n")
                               :immediate-finish t
                               :unnarrowed t))
                            :info (list :citekey (car keys-entries))
                            :node (org-roam-node-create :title title)
                            :props '(:finalize find-file))))
 
-  (global-set-key (kbd "C-c n r") 'my/org-roam-node-from-cite)
+  (global-set-key (kbd "C-c n s") 'my/org-roam-node-from-cite)
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Citation tools
   (use-package citeproc
