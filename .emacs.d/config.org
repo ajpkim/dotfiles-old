@@ -211,15 +211,11 @@
   (global-set-key (kbd "C-c f i")
                   (lambda () (interactive) (my/file-shortcut "~/org/inbox.org")))
   (global-set-key (kbd "C-c f l")
-                  (lambda () (interactive) (my/file-shortcut "~/org/learn.org")))
+                  (lambda () (interactive) (my/file-shortcut "~/org/links.org")))
   (global-set-key (kbd "C-c f n")
                   (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
   (global-set-key (kbd "C-c f p")
                   (lambda () (interactive) (my/file-shortcut "~/org/personal.org")))
-  (global-set-key (kbd "C-c f r")
-                  (lambda () (interactive) (my/file-shortcut "~/org/read-watch-listen.org")))
-  (global-set-key (kbd "C-c f w")
-                  (lambda () (interactive) (my/file-shortcut "~/org/web.org")))
 
   ;; Make cursor follow to new windows
   (defun split-and-follow-horizontally ()
@@ -241,25 +237,31 @@
 :ID:       06d333c2-7538-46b8-837d-df3f94725e46
 :END:
 #+begin_src elisp
-  ;; Simple functions
+  ;; Simple symbol insertion functions
+  (defun insert-inverted-exclamation-point ()
+    (interactive)
+    (insert "¡"))
+
+  (defun insert-inverted-question-mark ()
+    (interactive)
+    (insert "¿"))
+
   (defun insert-raquo ()
     (interactive)
-    (insert "»"))
+    (insert "» "))
 
   (defun insert-dots-glyph ()
     "Use this to signal my personal voice when notetaking etc."
     (interactive)
-    (insert "܀"))
+    (insert "܀ "))
 
   (defun insert-right-arrow ()
-    "Use this to signal my personal voice when notetaking etc."
     (interactive)
-    (insert "→"))
+    (insert "→ "))
 
   (defun insert-down-right-arrow ()
-    "Use this to signal my personal voice when notetaking etc."
     (interactive)
-    (insert "↪"))
+    (insert "↪ "))
 
   (defun copy-and-comment-region (beg end &optional arg)
     "Copy region as kill and comment-out the copied text.
@@ -299,6 +301,9 @@
     (global-set-key (kbd "C-c m n") 'mc/mark-next-like-this)
     (global-set-key (kbd "C-c m b") 'mc/mark-previous-like-this)
     (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
+    (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
+    (global-set-key (kbd "C-c m r") 'mc/mark-all-in-region)
+    (global-set-key (kbd "C-c m R") 'mc/mark-all-in-region-regexp)
     (define-key mc/keymap (kbd "<return>") nil))  ;; Allows us to insert new-line with <RET> and still disable multiple-cursor mode with C-g
 
   ;; Quick keybindings
@@ -310,6 +315,8 @@
   (global-set-key (kbd "C-c h a") 'insert-dots-glyph)
   (global-set-key (kbd "C-c h R") 'insert-right-arrow)
   (global-set-key (kbd "C-c h D") 'insert-down-right-arrow)
+  (global-set-key (kbd "C-c h !") 'insert-inverted-exclamation-point)
+  (global-set-key (kbd "C-c h ?") 'insert-inverted-question-mark)
   ;; gforce mouse specific
   (global-set-key (kbd "<drag-mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
 #+end_src
@@ -664,11 +671,11 @@
           ("f" "Current File Link" entry (file "~/org/inbox.org")
            "* TODO %? %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
-          ("w" "Web" entry (file "~/org/web.org")
+          ("l" "Links" entry (file "~/org/links.org")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
-          ("x" "Read, Watch, Listen" entry (file "~/org/read-watch-listen.org")
-           "* TODO %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+          ("s" "Shelf" entry (file+headline "~/org/personal.org" "Shelf")
+           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
           ("z" "Zettle Inbox" entry (file "~/org/notes/inbox.org")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
@@ -677,7 +684,7 @@
 
   ;; TODO
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "ACTIVE(a)" "LATER(l)" "WAIT(w)" "SOMEDAY(s)" "PROJECT(P)" "|" "PASS(p)" "DONE(d)")))
+        '((sequence  "TODO(t)" "ACTIVE(a)" "LATER(l)" "WAIT(w)" "SOMEDAY(s)" "PROJECT(P)" "|" "PASS(p)" "DONE(d)")))
 
   ;; #ffff66
   ;; #79a8ff
@@ -813,7 +820,7 @@
            (file-relative-name (org-roam-node-file node) org-roam-directory))))
       (error "")))
     (setq org-roam-node-display-template
-        (concat "${type:10} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+        (concat "${type:10} ${title:*} " (propertize "${tags:25}" 'face 'org-tag)))
     (org-roam-setup))
 
   (setq org-roam-capture-templates
@@ -833,7 +840,7 @@
   (defun my/tag-new-node-as-draft ()
     (org-roam-tag-add '("draft")))
   (add-hook 'org-roam-capture-new-node-hook #'my/tag-new-node-as-draft)
-
+  ;; THIS IS THE ROOT OF THE ISSUES with citar-select-ref
   (defun my/org-roam-node-from-cite (keys-entries)
       (interactive (list (citar-select-ref :multiple nil :rebuild-cache t)))
       (let ((title (citar--format-entry-no-widths (cdr keys-entries)
@@ -858,6 +865,7 @@
     :ensure t)
 
   (use-package citar
+    :ensure t
     :bind (("C-c b" . citar-insert-citation)
            :map minibuffer-local-map
            ("M-b" . citar-insert-preset))

@@ -1,6 +1,8 @@
 ## cd aliases
 alias ebpy='cd ~/code/ebay-trading/src/py'
 alias eb='cd ~/code/ebay-trading/'
+alias ebd='cd ~/code/ebay-trading/data/'
+alias ebdts='cd ~/code/ebay-trading/data/thinkpad/sold'
 
 ## ls aliases
 alias ls='ls --color=auto'
@@ -9,12 +11,17 @@ alias la='ls -A'
 alias l='ls -CF'
 
 ## git aliases
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log'
 alias gl1='git log --oneline'
 
 ## Common stuff
 alias cdls='cd && ls'
 alias org='cd ~/org'
-alias de='find . -name "*~" -type f -delete'
+alias de='find . -name "*~" -type f -delete'  # Remove emacs backups
 
 ## Dotfile management
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
@@ -42,3 +49,12 @@ alias off-monitors='. ~/scripts/turn-off-monitors.sh'
 alias on-monitors='. ~/scripts/turn-on-monitors.sh'
 alias lg-mon='xrandr --output HDMI1 --mode 3840x2160  --right-of eDP1 --set audio off'
 alias hdmi1-nodpi='xrandr --output eDP1 --auto --output HDMI1 --auto --scale 2x2 --right-of eDP1  --set audio off'
+
+## Scripts
+alias chimes='. ~/scripts/chimes.sh'
+alias lines='. ~/scripts/lines.sh'
+alias timer='. ~/scripts/timer.sh'
+alias stopwatch='. ~/scripts/stopwatch.sh'
+
+## Self processes
+alias tt=". ~/scripts/track-time.sh"
