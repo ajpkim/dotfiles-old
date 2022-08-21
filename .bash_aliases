@@ -1,8 +1,6 @@
 ## cd aliases
-alias ebpy='cd ~/code/ebay-trading/src/py'
-alias eb='cd ~/code/ebay-trading/'
-alias ebd='cd ~/code/ebay-trading/data/'
-alias ebdts='cd ~/code/ebay-trading/data/thinkpad/sold'
+alias besopke='cd ~/repos/BespokeSynth/ignore/build/Source/BespokeSynth_artefacts/Release && ./BespokeSynth'
+
 
 ## ls aliases
 alias ls='ls --color=auto'
@@ -15,6 +13,7 @@ alias gs='git status'
 alias ga='git add'
 alias gc='git commit'
 alias gp='git push'
+alias gp-ak-gh='git push ak-git && git push github'
 alias gl='git log'
 alias gl1='git log --oneline'
 

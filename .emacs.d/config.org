@@ -222,6 +222,8 @@
   (global-set-key (kbd "C-c f p")
                   (lambda () (interactive) (my/file-shortcut "~/org/personal.org")))
   (global-set-key (kbd "C-c f w")
+                    (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
+  (global-set-key (kbd "C-c f W")
                   (lambda () (interactive) (my/file-shortcut (get-week-file))))
 
   ;; Make cursor follow to new windows
@@ -324,6 +326,8 @@
   (global-set-key (kbd "C-c h D") 'insert-down-right-arrow)
   (global-set-key (kbd "C-c h !") 'insert-inverted-exclamation-point)
   (global-set-key (kbd "C-c h ?") 'insert-inverted-question-mark)
+  (global-set-key (kbd "C-c h y") 'yank-from-kill-ring)
+
   ;; gforce mouse specific
   (global-set-key (kbd "<drag-mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
 #+end_src
@@ -684,7 +688,7 @@
           ("s" "Shelf" entry (file+headline "~/org/personal.org" "Shelf")
            "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
-          ("z" "Zettle Inbox" entry (file "~/org/notes/inbox.org")
+          ("w" "Writing Inbox" entry (file "~/org/notes/inbox.org")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
           ))
@@ -835,11 +839,11 @@
            :if-new (file+head "main/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)
-          ("r" "reference" plain "%?"
+          ("r" "ref" plain "%?"
            :if-new (file+head "reference/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)
-          ("s" "source" plain "%?"
+          ("s" "src" plain "%?"
            :if-new (file+head "source/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)))
@@ -847,23 +851,24 @@
   (defun my/tag-new-node-as-draft ()
     (org-roam-tag-add '("draft")))
   (add-hook 'org-roam-capture-new-node-hook #'my/tag-new-node-as-draft)
-  ;; THIS IS THE ROOT OF THE ISSUES with citar-select-ref
-  (defun my/org-roam-node-from-cite (keys-entries)
-      (interactive (list (citar-select-ref :multiple nil :rebuild-cache t)))
-      (let ((title (citar--format-entry-no-widths (cdr keys-entries)
-                                                  "${author year editor} :: ${title}")))
-        (org-roam-capture- :templates
-                           '(("s" "sournce" plain "%?" :if-new
-                              (file+head "source/${citekey}.org"
-                                         ":PROPERTIES:
+
+  (defun my/org-roam-node-from-cite (citation)
+    (interactive (list (citar-select-ref)))
+    (let ((title (citar-format--entry "${author} :: ${title}"
+                                      citation)))
+      (insert title)
+      (org-roam-capture- :templates
+                         '(("s" "sournce" plain "%?" :if-new
+                            (file+head "source/${citekey}.org"
+                                       ":PROPERTIES:
   :ROAM_REFS: [cite:@${citekey}]
   :END:
   ,#+title: ${title}\n#+created: %U\n")
-                              :immediate-finish t
-                              :unnarrowed t))
-                           :info (list :citekey (car keys-entries))
-                           :node (org-roam-node-create :title title)
-                           :props '(:finalize find-file))))
+                            :immediate-finish t
+                            :unnarrowed t))
+                         :info (list :citekey citation)
+                         :node (org-roam-node-create :title title)
+                         :props '(:finalize find-file))))
 
   (global-set-key (kbd "C-c n s") 'my/org-roam-node-from-cite)
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -871,6 +876,7 @@
   (use-package citeproc
     :ensure t)
 
+  (require 'citar)
   (use-package citar
     :ensure t
     :bind (("C-c b" . citar-insert-citation)
@@ -883,7 +889,8 @@
   (require 'oc-csl)
   (require 'oc-basic)
   (require 'oc-biblatex)
-  (setq org-cite-export-processors '((t csl)))  ;; can add a 3rd arg for a specific style file
+  (setq org-cite-export-processors '((t csl))  ;; can add a 3rd arg for a specific style file
+        org-cite-global-bibliography '("~/org/notes/sources.bib"))
   (set-face-attribute 'org-cite nil :foreground "#00cc99")
   (set-face-attribute 'org-cite-key nil :foreground "#00cc99")
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

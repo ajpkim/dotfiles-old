@@ -69,3 +69,7 @@ export GOPATH="$(go env GOPATH)"
 export PATH="${PATH}:${GOPATH}/bin"
 
 echo "Yo0o0o :)"
+
+# Testing fix for desktop apps
+export GDK_SCALE=2
+export GDK_DPI_SCALE=0.5
