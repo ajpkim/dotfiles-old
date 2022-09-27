@@ -2,49 +2,24 @@
 #+STARTUP: overview
 #+SETUPFILE: ~/org/assets/org-export/org-html-default.org
 
-* Load
-#+begin_src elisp
-  (load-file "~/code/elisp/week-planviews.el")
-#+end_src
 * Minimal and functional UI
-** Base
-:PROPERTIES:
-:ID:       f67c7e58-6d4a-4ba3-a13e-f00b4cefc79f
-:END:
 #+begin_src emacs-lisp
-  ;; Update packages automatically
-  ;; (use-package auto-package-update
-  ;;   :ensure t
-  ;;   :config
-  ;;   (setq auto-package-update-delete-old-versions t)
-  ;;   (setq auto-package-update-hide-results t)
-  ;;   (auto-package-update-maybe))
+  (setq inhibit-startup-message t
+        visible-bell t
+        scroll-conservatively 100
+        scroll-preserve-screen-position t  ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Scrolling.html#index-scroll_002dpreserve_002dscreen_002dposition
+        global-hl-line-mode t
+        column-number-mode t
+        x-select-enable-clipboard t
+        x-select-enable-primary t)
 
-  ;; Minimal functional UI
-  (setq inhibit-startup-message t)
-  (setq visible-bell t)
   (blink-cursor-mode 1)
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
-  (setq scroll-conservatively 100)
-  (setq scroll-preserve-screen-position t)  ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Scrolling.html#index-scroll_002dpreserve_002dscreen_002dposition
-  (global-hl-line-mode t)
 
-  ;; control default size
-  (set-face-attribute 'default nil :height 150)
-
-  ;; Modeline... Doom not working (way too big and size is inconsistent)
-  ;; (use-package doom-modeline
-  ;;   :ensure t
-  ;;   :init (doom-modeline-mode 1)
-  ;;   ;; :custom-face
-  ;;   ;; (mode-line ((t (:height 0.5))))
-  ;;   ;; (mode-line-inactive ((t (:height 0.95))))
-  ;;   :custom
-  ;;   ((doom-modeline-height 15)))
-
-  (setq column-number-mode t)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (set-face-attribute 'default nil :height 150)  ;; control default size
 
   ;; Packages for visual clarity
   (use-package beacon
@@ -61,7 +36,26 @@
     :ensure t
     :init
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+#+end_src
 
+* Backups, saving, and reloading
+#+begin_src emacs-lisp
+  ;; Remove whitespace
+  (add-hook 'before-save-hook
+            'delete-trailing-whitespace)
+
+  ;; Revert (reload) buffers always
+  (global-auto-revert-mode t)
+
+  ;; Set autosave and backup locations
+  (setq backup-directory-alist
+        `((".*" . "~/emacs-backups/")))
+  (setq auto-save-file-name-transforms
+        `((".*" "~/emacs-backups/" t)))
+#+end_src
+
+* which-key and helpful
+#+begin_src emacs-lisp
   (use-package which-key
     :ensure t
     :init
@@ -78,26 +72,21 @@
      ([remap describe-command] . helpful-command)
      ([remap describe-variable] . counsel-describe-variable)
      ([remap describe-key] . helpful-key)))
-
-  (setq x-select-enable-clipboard t
-        x-select-enable-primary t)
-
-  (add-hook 'before-save-hook
-            'delete-trailing-whitespace)
-  (global-auto-revert-mode t)
-
-  ;; Set autosave and backup locations
-  (setq backup-directory-alist
-        `((".*" . "~/emacs-backups/")))
-  (setq auto-save-file-name-transforms
-        `((".*" "~/emacs-backups/" t)))
 #+end_src
 
-** Themes
+* Modeline
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1)
+    :custom-face
+    (mode-line ((t (:height 0.5))))
+    (mode-line-inactive ((t (:height 0.95))))
+    :custom
+    ((doom-modeline-height 15)))
+#+end_src
+* Theme tweaks
 *** Modus themes
-:PROPERTIES:
-:ID:       1013493d-2960-40b6-a457-958171170583
-:END:
 #+begin_src elisp
   (use-package modus-themes
     :ensure t
@@ -164,19 +153,13 @@
   ;; (modus-themes-load-vivendi)
 #+end_src
 *** Deeper Blue
-:PROPERTIES:
-:ID:       487b98d1-60d8-42ba-bc66-aef381ace31f
-:END:
 #+begin_src emacs-lisp
   ;; (load-theme 'deeper-blue t)
 
   (set-face-attribute 'fringe nil :background "#000000")  ;; Make window fringes transparent
 #+end_src
 
-** Olivetti
-:PROPERTIES:
-:ID:       abd1cfbe-bcd1-4fbe-a7c1-7f9bec5b30af
-:END:
+* olivetti
 #+begin_src elisp
   (use-package olivetti
     :ensure t
@@ -186,11 +169,29 @@
     ("C-c o" . olivetti-mode)
     ("C-c h o" . olivetti-set-width))
 #+end_src
-* Navigation
-:PROPERTIES:
-:ID:       ccbdce54-bb59-42c4-924d-9ab03ee60d1f
-:END:
-#+begin_src elisp
+* Search completion framework (ivy, counsel, swiper)
+#+begin_src emacs-lisp
+  (use-package counsel  ;; Brings in ivy and swiper as dependencies
+    :ensure t
+    :bind
+    (("M-x" . counsel-M-x)
+     ("C-x b" . counsel-ibuffer)
+     ("C-x C-f" . counsel-find-file))
+    :init
+    (ivy-mode 1)
+    :config
+    (setq ivy-use-virtual-buffers t
+          ivy-count-format "%d/%d "))
+
+  (use-package ivy-rich
+    :ensure t
+    :init (ivy-rich-mode 1))
+
+  (use-package ivy-posframe
+    :ensure t)
+#+end_src
+* avy, ace-window
+#+begin_src emacs-lisp
   (use-package avy
     :ensure t
     :bind
@@ -200,7 +201,9 @@
     :ensure t
     :config (setq aw-keys `(?a ?s ?d ?f ?j ?k ?l))
     :bind ("C-x o" . ace-window))
-
+#+END_SRC
+* Buffer shortcuts
+#+begin_src emacs-lisp
   (defun my/file-shortcut (file)
     (interactive)
     (if (file-exists-p file)
@@ -225,10 +228,12 @@
   (global-set-key (kbd "C-c f p")
                   (lambda () (interactive) (my/file-shortcut "~/org/personal.org")))
   (global-set-key (kbd "C-c f w")
-                    (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
+                  (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
   (global-set-key (kbd "C-c f W")
                   (lambda () (interactive) (my/file-shortcut (get-week-file))))
-
+#+end_src
+* Window splitting tweaks
+#+begin_src emacs-lisp
   ;; Make cursor follow to new windows
   (defun split-and-follow-horizontally ()
     (interactive)
@@ -243,12 +248,9 @@
     (balance-windows)
     (other-window 1))
   (global-set-key (kbd "C-x 3") `split-and-follow-vertically)
-#+END_SRC
-* Editing helpers
-:PROPERTIES:
-:ID:       06d333c2-7538-46b8-837d-df3f94725e46
-:END:
-#+begin_src elisp
+#+end_src
+* Editing and symbol insertion keys
+#+begin_src emacs-lisp
   ;; Simple symbol insertion functions
   (defun insert-inverted-exclamation-point ()
     (interactive)
@@ -275,6 +277,14 @@
     (interactive)
     (insert "↪ "))
 
+  (defun insert-latex-delims (arg)
+    (interactive "P")
+    (if arg
+        (insert "\\[\\]")
+      (insert "\\(\\)"))
+    (backward-char)
+    (backward-char))
+
   (defun copy-and-comment-region (beg end &optional arg)
     "Copy region as kill and comment-out the copied text.
   See `comment-region' for behavior of a prefix arg."
@@ -295,7 +305,25 @@
     (interactive "*P\nr")
     (sort-regexp-fields reverse "\\w+" "\\&" beg end))
 
-  ;; External packages
+  ;; Quick keybindings
+  (global-set-key (kbd "C-c h r") 'replace-string)
+  (global-set-key (kbd "C-c h l") 'insert-latex-delims)
+  (global-set-key (kbd "C-c h ;") 'copy-and-comment-region)
+  (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
+  (global-set-key (kbd "C-c h n") 'display-line-numbers-mode)
+  (global-set-key (kbd "C-c h a") 'insert-dots-glyph)
+  (global-set-key (kbd "C-c h R") 'insert-right-arrow)
+  (global-set-key (kbd "C-c h D") 'insert-down-right-arrow)
+  (global-set-key (kbd "C-c h !") 'insert-inverted-exclamation-point)
+  (global-set-key (kbd "C-c h ?") 'insert-inverted-question-mark)
+  (global-set-key (kbd "C-c h y") 'yank-from-kill-ring)
+
+  ;; gforce mouse specific
+  (global-set-key (kbd "<mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
+#+end_src
+
+* drag-stuff
+#+begin_src emacs-lisp
   (use-package drag-stuff
     :ensure t
     :config
@@ -305,7 +333,9 @@
     :bind
     (("M-p" . drag-stuff-up)
      ("M-n" . drag-stuff-down)))
-
+#+end_src
+* multiple-cursors
+#+begin_src emacs-lisp
   (use-package multiple-cursors
     :ensure t
     :config
@@ -318,26 +348,8 @@
     (global-set-key (kbd "C-c m R") 'mc/mark-all-in-region-regexp)
     (define-key mc/keymap (kbd "<return>") nil))  ;; Allows us to insert new-line with <RET> and still disable multiple-cursor mode with C-g
 
-  ;; Quick keybindings
-  (global-set-key (kbd "C-c h r") 'replace-string)
-  (global-set-key (kbd "C-c h l") 'my/insert-latex-delims)
-  (global-set-key (kbd "C-c h ;") 'copy-and-comment-region)
-  (global-set-key (kbd "C-c h v") 'variable-pitch-mode)
-  (global-set-key (kbd "C-c h n") 'display-line-numbers-mode)
-  (global-set-key (kbd "C-c h a") 'insert-dots-glyph)
-  (global-set-key (kbd "C-c h R") 'insert-right-arrow)
-  (global-set-key (kbd "C-c h D") 'insert-down-right-arrow)
-  (global-set-key (kbd "C-c h !") 'insert-inverted-exclamation-point)
-  (global-set-key (kbd "C-c h ?") 'insert-inverted-question-mark)
-  (global-set-key (kbd "C-c h y") 'yank-from-kill-ring)
-
-  ;; gforce mouse specific
-  (global-set-key (kbd "<drag-mouse-9>") 'display-line-numbers-mode)  ;; make this something useful and for 8
 #+end_src
-* Editing and display minor modes
-:PROPERTIES:
-:ID:       61f6587d-7ab3-4423-b777-eda2ee5f19a1
-:END:
+* Focus, center-scroll, and hidden-modeline minor modes
 - See [[https://protesilaos.com/codelog/2020-07-16-emacs-focused-editing/][Prot "Focused editing"]]
 - [[https://two-wrongs.com/centered-cursor-mode-in-vanilla-emacs][Source (blog)]]
 #+begin_src elisp
@@ -398,20 +410,10 @@
         (setq mode-line-format
               '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position (vc-mode vc-mode) "  " ...)))))
 
-
   (global-set-key (kbd "C-c h m") 'my/hidden-mode-line-mode)
   (global-set-key (kbd "C-c z") 'my/focus-mode)
 #+end_src
-* Calendar
-#+begin_src emacs-lisp
-
-#+end_src
-
 * Orgmode
-** Base
-:PROPERTIES:
-:ID:       7290fa14-2dc3-43f1-bea3-66d562b4e250
-:END:
 #+begin_src elisp
   (use-package org
     :config
@@ -427,7 +429,6 @@
           org-extend-today-until 2
           org-archive-location "~/org/archives/%s_archive::"
           org-id-link-to-org-use-id 'create-if-interactive
-          ;; Refile
           org-refile-targets '((org-agenda-files :todo . "PROJECT"))
           org-refile-use-outline-path nil
           org-outline-path-complete-in-steps nil
@@ -439,11 +440,11 @@
      ("C-x n t" . org-toggle-narrow-to-subtree))
     :hook
     (org-mode . visual-line-mode)
-    ;; (org-mode . variable-pitch-mode)
     (org-mode . olivetti-mode))
 
   (require 'org-tempo)
-  ;; Assign these so that I can toggle variable-pitch-mode and have sensible fixed width still
+
+  ;; Setup Org faces for variable-pitch-mode e.g. tables, and code blocks
   ;; https://github.com/daviwil/emacs-from-scratch/blob/c55d0f5e309f7ed8ffa3c00bc35c75937a5184e4/init.el
   (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
   (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
@@ -458,195 +459,7 @@
                           `(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "·"))))))
 
-
-  ;; Clocking
-  ;; Use a function to decide what to change the state to.
-  (setq org-clock-in-switch-to-state #'my/switch-task-on-clock-start)
-
-  (defun my/switch-task-on-clock-start (task-state)
-    "Change a task to 'ACTIVE' when TASK-STATE is 'TODO'."
-    (if (string= task-state "TODO")
-        "ACTIVE"
-      task-state))
-
-  ;; Agenda
-  (setq org-agenda-span 5
-        org-agenda-start-on-weekday nil
-        org-agenda-skip-deadline-if-done t
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-todo-ignore-deadlines nil
-        org-agenda-todo-ignore-scheduled nil
-        org-deadline-warning-days 3
-        org-agenda-window-setup 'current-window
-        org-agenda-prefix-format " %i %-12:c%?-12t% s"  ;; Since I use tags over files
-        ;; org-agenda-start-with-log-mode t ;; '(clock)
-        )
-
-  (set-face-attribute 'org-agenda-calendar-event nil :foreground "#d6b0ff")
-
-  (setq org-agenda-custom-commands
-        '(
-          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-          ("E" "Events and Deadlines" agenda ""
-           ((org-agenda-overriding-header "Week Events and Deadlines\n")
-            (org-agenda-span 30)
-            (org-agenda-start-on-weekday 1)
-            (org-agenda-time-grid nil)
-            (org-agenda-repeating-timestamp-show-all nil)
-
-            (org-agenda-entry-types '(:timestamp :sexp :deadline))))
-
-          ("d" "Today's Agenda"
-           ;; ((agenda
-           ((agenda "Today's Tasks" ((org-agenda-span 1)))
-            ;; limits the agenda display to a single day
-
-            (tags "CATEGORY=\"mysite\"")
-            (tags "CATEGORY=\"money\"")))
-
-          ;; ((org-agenda-compact-blocks t))) ;; options set here apply to the entire block
-          ;; ...other commands here
-
-          ("W" "Weekly Review"
-           ((todo ""
-                  ((org-agenda-files '("~/org/inbox.org"))
-                   (org-agenda-overriding-header "Unprocessed TODOs\n")
-
-                   (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
-                   (org-agenda-prefix-format "")
-                   ))
-            ;; (agenda "" ((org-agenda-span 7))); review upcoming deadlines and appointments
-            (todo "ACTIVE"
-                  ((org-agenda-overriding-header "Review Active Tasks\n")
-                   (org-agenda-sorting-strategy '(priority-down))))
-            (tags-todo "+TODO=\"PROJECT\"+LEVEL=1"  ;; review top level projects
-                       ((org-agenda-overriding-header "Review Projects\n")
-                        (org-agenda-prefix-format "")))
-            ))
-
-          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-          ("u" "Unprocessed"
-           ((todo ""
-                  ((org-agenda-files '("~/org/inbox.org"))
-                   (org-agenda-overriding-header "Unprocessed TODOs\n")
-                   ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                   (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ;; Category based views
-          ("cc" "Computing"
-           ((tags-todo "CATEGORY=\"computing\"+TODO=\"TODO\""
-                       ((org-agenda-overriding-header "Computing Inbox\n")
-                        (org-agenda-sorting-strategy '(todo-state-up priority-down))
-                        (org-agenda-prefix-format "")
-                        ))))
-          ("cb" "ajpkim.com"
-           ((tags "CATEGORY=\"mysite\""
-                  ((org-agenda-overriding-header "ajpkim.com Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ("ci" "Ideas"
-           ((tags "CATEGORY=\"ideas\""
-                  ((org-agenda-overriding-header "Ideas\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ("cm" "Money"
-           ((tags "CATEGORY=\"money\""
-                  ((org-agenda-overriding-header "Money Matters\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ("cp" "Programming"
-           ((tags "CATEGORY=\"prog\""
-                  ((org-agenda-overriding-header "Programming Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ("cs" "Shelf"
-           ((tags "CATEGORY=\"shelf\""
-                  ((org-agenda-overriding-header "Shelf Stuff\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ))
-
-  ;; Example from https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
-  ;; (setq org-agenda-custom-commands
-  ;;       '(("P" "Printed agenda"
-  ;;          ((agenda "" ((org-agenda-span 7)                      ;; overview of appointments
-  ;;                       (org-agenda-start-on-weekday nil)         ;; calendar begins today
-  ;;                       (org-agenda-repeating-timestamp-show-all t)
-  ;;                       (org-agenda-entry-types '(:timestamp :sexp))))
-  ;;           (agenda "" ((org-agenda-span 1)                      ; daily agenda
-  ;;                       (org-deadline-warning-days 7)            ; 7 day advanced warning for deadlines
-  ;;                       (org-agenda-todo-keyword-format "[ ]")
-  ;;                       (org-agenda-scheduled-leaders '("" ""))
-  ;;                       (org-agenda-prefix-format "%t%s")))
-  ;;           (todo "TODO"                                          ;; todos sorted by context
-  ;;                 ((org-agenda-prefix-format "[ ] %T: ")
-  ;;                  (org-agenda-sorting-strategy '(tag-up priority-down))
-  ;;                  (org-agenda-todo-keyword-format "")
-  ;;                  (org-agenda-overriding-header "\nTasks by Context\n------------------\n"))))
-  ;;          ((org-agenda-with-colors nil)
-  ;;           (org-agenda-compact-blocks t)
-  ;;           (org-agenda-remove-tags t)
-  ;;           (ps-number-of-columns 2)
-  ;;            (ps-landscape-mode t))
-  ;;          ("~/agenda.ps"))
-  ;;         ;; other commands go here
-  ;;         ))
-
-  ;; Test agenda views
-  ;; (add-to-list 'org-agenda-custom-commands
-  ;;              '("W" "Weekly review"
-  ;;                agenda ""
-  ;;                ((org-agenda-start-day "-14d")
-  ;;                 (org-agenda-span 14)
-  ;;                 (org-agenda-start-on-weekday 1)
-  ;;                 (org-agenda-start-with-log-mode t)
-  ;; 		(org-agenda-archives-mode t)
-  ;;                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE ")))))
-
-
-
-  ;; Archiving
-  (defun my/org-archive-done-tasks-file ()
-    (interactive)
-    (org-map-entries
-     (lambda ()
-       (org-archive-subtree)
-       (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
-     "/DONE" 'file))
-
-  (defun my/org-archive-done-tasks-tree ()
-    (interactive)
-    (org-map-entries
-     (lambda ()
-       (org-archive-subtree)
-       (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
-     "/DONE" 'tree))
-
-  ;; Babel
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (haskell    . t)
-     (python     . t)
-     (sql        . t)
-     (go        . t)
-     (latex      . t)
-     (js         . t)
-     (shell      . t)
-     (scheme     . t)))
-       #+end_src
-** Tags, Capture, TODO
-:PROPERTIES:
-:ID:       50c19694-a173-4f8e-a562-a4ae3b35874c
-:END:
-#+begin_src emacs-lisp
-  ;; Capture
+  ;; org-capture
   (setq org-capture-templates
         '(
           ;; Anki templates
@@ -716,12 +529,136 @@
 
   (setq org-log-done 'time)
   (setq org-log-into-drawer "LOGBOOK")
-#+end_src
-** Export and IDs
-:PROPERTIES:
-:ID:       fbeb5454-6331-41ea-a519-915f8169b6ae
-:END:
-#+begin_src elisp
+
+  ;; org-agenda
+  (setq org-agenda-span 5
+        org-agenda-start-on-weekday nil
+        org-agenda-skip-deadline-if-done t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-todo-ignore-deadlines nil
+        org-agenda-todo-ignore-scheduled nil
+        org-deadline-warning-days 3
+        org-agenda-window-setup 'current-window
+        org-agenda-prefix-format " %i %-12:c%?-12t% s"
+        )
+
+  (set-face-attribute 'org-agenda-calendar-event nil :foreground "#d6b0ff")
+
+  (setq org-agenda-custom-commands
+        '(
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("E" "Events and Deadlines" agenda ""
+           ((org-agenda-overriding-header "Week Events and Deadlines\n")
+            (org-agenda-span 30)
+            (org-agenda-start-on-weekday 1)
+            (org-agenda-time-grid nil)
+            (org-agenda-repeating-timestamp-show-all nil)
+
+            (org-agenda-entry-types '(:timestamp :sexp :deadline))))
+
+          ("d" "Today's Agenda"
+           ;; ((agenda
+           ((agenda "Today's Tasks" ((org-agenda-span 1)))
+            ;; limits the agenda display to a single day
+          ;; ((org-agenda-compact-blocks t))) ;; options set here apply to the entire block
+          ;; ...other commands here
+
+          ("W" "Weekly Review"
+           ((todo ""
+                  ((org-agenda-files '("~/org/inbox.org"))
+                   (org-agenda-overriding-header "Unprocessed TODOs\n")
+
+                   (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
+                   (org-agenda-prefix-format "")
+                   ))
+            ;; (agenda "" ((org-agenda-span 7))); review upcoming deadlines and appointments
+            (todo "ACTIVE"
+                  ((org-agenda-overriding-header "Review Active Tasks\n")
+                   (org-agenda-sorting-strategy '(priority-down))))
+            (tags-todo "+TODO=\"PROJECT\"+LEVEL=1"  ;; review top level projects
+                       ((org-agenda-overriding-header "Review Projects\n")
+                        (org-agenda-prefix-format "")))
+            ))
+
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("u" "Unprocessed"
+           ((todo ""
+                  ((org-agenda-files '("~/org/inbox.org"))
+                   (org-agenda-overriding-header "Unprocessed TODOs\n")
+                   ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                   (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ;; Category based views
+          ("cc" "Computing"
+           ((tags-todo "CATEGORY=\"computing\"+TODO=\"TODO\""
+                       ((org-agenda-overriding-header "Computing Inbox\n")
+                        (org-agenda-sorting-strategy '(todo-state-up priority-down))
+                        (org-agenda-prefix-format "")
+                        ))))
+          ("cb" "ajpkim.com"
+           ((tags "CATEGORY=\"mysite\""
+                  ((org-agenda-overriding-header "ajpkim.com Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("ci" "Ideas"
+           ((tags "CATEGORY=\"ideas\""
+                  ((org-agenda-overriding-header "Ideas\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("cm" "Money"
+           ((tags "CATEGORY=\"money\""
+                  ((org-agenda-overriding-header "Money Matters\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("cp" "Programming"
+           ((tags "CATEGORY=\"prog\""
+                  ((org-agenda-overriding-header "Programming Inbox\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ("cs" "Shelf"
+           ((tags "CATEGORY=\"shelf\""
+                  ((org-agenda-overriding-header "Shelf Stuff\n")
+                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-prefix-format "")
+                   ))))
+          ))))
+
+  ;; Archiving
+  (defun my/org-archive-done-tasks-file ()
+    (interactive)
+    (org-map-entries
+     (lambda ()
+       (org-archive-subtree)
+       (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
+     "/DONE" 'file))
+
+  (defun my/org-archive-done-tasks-tree ()
+    (interactive)
+    (org-map-entries
+     (lambda ()
+       (org-archive-subtree)
+       (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
+     "/DONE" 'tree))
+
+  ;; Babel
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (haskell    . t)
+     (python     . t)
+     (sql        . t)
+     (go        . t)
+     (latex      . t)
+     (js         . t)
+     (shell      . t)
+     (scheme     . t)))
+
+  ;; Exporting
   (require 'ox-html)
   (use-package htmlize
     :ensure t
@@ -806,10 +743,7 @@
     (interactive)
     (org-map-entries (lambda () (my/org-uuid-custom-id-get (point) 'create))))
 #+end_src
-** Packages
-:PROPERTIES:
-:ID:       ec36048d-f405-44c5-a9c5-a3a43b034aee
-:END:
+** org-roam
 #+BEGIN_SRC emacs-lisp
   (use-package org-roam
     :ensure t
@@ -823,15 +757,15 @@
      ("C-c n i" . org-roam-node-insert))
     :config
     (cl-defmethod org-roam-node-type ((node org-roam-node))
-    "Return the TYPE of NODE."
-    (condition-case nil
-        (file-name-nondirectory
-         (directory-file-name
-          (file-name-directory
-           (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (error "")))
+      "Return the TYPE of NODE."
+      (condition-case nil
+          (file-name-nondirectory
+           (directory-file-name
+            (file-name-directory
+             (file-relative-name (org-roam-node-file node) org-roam-directory))))
+        (error "")))
     (setq org-roam-node-display-template
-        (concat "${type:10} ${title:*} " (propertize "${tags:25}" 'face 'org-tag)))
+          (concat "${type:10} ${title:*} " (propertize "${tags:25}" 'face 'org-tag)))
     (org-roam-setup))
 
   (setq org-roam-capture-templates
@@ -872,9 +806,9 @@
                          '(("s" "source" plain "%?" :if-new
                             (file+head "ref/${citekey}.org"
                                        ":PROPERTIES:
-  :ROAM_REFS: [cite:@${citekey}]
-  :END:
-  ,#+title: ${title}\n#+created: %U\n")
+    :ROAM_REFS: [cite:@${citekey}]
+    :END:
+    ,#+title: ${title}\n#+created: %U\n")
                             :immediate-finish t
                             :unnarrowed t))
                          :info (list :citekey citation)
@@ -883,7 +817,7 @@
 
   (global-set-key (kbd "C-c n s") 'my/org-roam-node-from-cite)
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; org-roam-ui
   (use-package org-roam-ui
     :ensure t
     :after org-roam
@@ -893,8 +827,9 @@
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; Citation tools
+#+end_src
+** Citation tools
+#+begin_src emacs-lisp
   (use-package citeproc
     :ensure t)
 
@@ -915,7 +850,9 @@
         org-cite-global-bibliography '("~/org/notes/refs.bib"))
   (set-face-attribute 'org-cite nil :foreground "#00cc99")
   (set-face-attribute 'org-cite-key nil :foreground "#00cc99")
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+** org-journal
+#+begin_src emacs-lisp
   (use-package org-journal
     :ensure t
     :defer t
@@ -940,7 +877,7 @@
 
   (defcustom org-journal-find-file 'find-file
     "The function to use when opening an entry.
-  Set this to `find-file' if you don't want org-journal to split your window."
+    Set this to `find-file' if you don't want org-journal to split your window."
     :type 'function)
 
   (defun org-journal-find-location ()
@@ -951,7 +888,9 @@
     (unless (eq org-journal-file-type 'daily)
       (org-narrow-to-subtree))
     (goto-char (point-max)))
-
+#+end_src
+** toc-org and org-bullets
+#+begin_src emacs-lisp
   (use-package toc-org
     :ensure t
     :config
@@ -982,42 +921,76 @@
   ;; ❇
   ;; ❈
 #+end_src
-* Projects
+* Languages
+** Python
 #+begin_src emacs-lisp
-  (use-package projectile
-    :ensure t
-    ;; :diminish projectile-mode
-    ;; :config (projectile-mode)
-    :custom ((projectile-completion-system 'ivy))
-    :bind-keymap
-    ("C-c p" . projectile-command-map)
-    :init
-    (when (file-directory-p "~/code")
-      (setq projectile-project-search-path '("~/code")))
-    (setq projectile-switch-project-action #'projectile-dired))
-#+end_src
-* Programming helpers
-:PROPERTIES:
-:ID:       fcb83663-1337-4a09-b67f-32d0969c195e
-:END:
-#+begin_src elisp
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-
-  ;; Auto-complete
-  (use-package company
+  (use-package anaconda-mode
     :ensure t
     :config
-    (setq company-idle-delay 0
-          company-show-numbers t
-          company-minimum-prefix-length 2
-          company-selection-wrap-around t)
-    :init
-    (add-hook 'prog-mode-hook 'company-mode))
+    (add-hook 'python-mode-hook 'anaconda-mode))
 
-  ;; Git porcelain
-  (use-package magit
+  (use-package company-anaconda
+    :ensure t
+    :init (require 'rx)
+    :after (company)
+    :config
+    (add-to-list 'company-backends 'company-anaconda))
+
+  (add-hook 'python-mode-hook (lambda () (setq tab-width 4)))
+  ;; Jupyter notebooks
+  (use-package ein
     :ensure t)
 
+#+end_src
+** Lisps
+#+begin_src emacs-lisp
+  (require 'xscheme)  ;; Scheme
+
+  (use-package geiser
+    :ensure t)
+
+  (use-package geiser-mit
+    :ensure t)
+
+#+end_src
+** Go
+#+begin_src emacs-lisp
+  (use-package ob-go
+    :ensure t)
+
+  (add-hook 'go-mode-hook (lambda () (setq tab-width 4)))
+
+  (require 'lsp-mode)
+  (add-hook 'go-mode-hook #'lsp-deferred)
+
+  ;; Set up before-save hooks to format buffer and add/delete imports.
+  ;; Make sure you don't have other gofmt/goimports hooks enabled.
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+#+end_src
+** C#
+#+begin_src emacs-lisp
+  ;;;; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
+  ;; (defun my/csharp-mode-hook ()
+  ;;   (setq-local lsp-auto-guess-root t)
+  ;;   (lsp))
+
+  (setenv "FrameworkPathOverride" "/lib/mono/4.5")  ; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
+
+  (use-package csharp-mode
+    :ensure t
+    :mode "\\.cs\\'")
+
+#+end_src
+** CSV
+#+begin_src elisp
+  (use-package csv-mode
+    :ensure t)
+#+end_src
+* LSP and company
+#+begin_src emacs-lisp
   ;; Auto-complete backend (Language Server Protocol)
   (use-package lsp-mode
     :ensure t
@@ -1031,110 +1004,41 @@
     (csharp-mode . lsp))
 
   (use-package lsp-ivy
-    :ensure t
-    :commands lsp-ivy-workspace-symbol)
+      :ensure t
+      :commands lsp-ivy-workspace-symbol)
 
-  (use-package csv-mode
-    :ensure t)
-#+end_src
-* Programming languages
-:PROPERTIES:
-:ID:       ba0c1d92-34aa-45c0-8a82-b48e15ca1dc9
-:END:
-#+begin_src emacs-lisp
-  ;; Latex
-  (defun my/insert-latex-delims (arg)
-    (interactive "P")
-    (if arg
-        (insert "\\[\\]")
-      (insert "\\(\\)"))
-    (backward-char)
-    (backward-char))
-
-  ;; Python
-  (use-package anaconda-mode
+  (use-package company
     :ensure t
     :config
-    (add-hook 'python-mode-hook 'anaconda-mode))
-
-  (use-package company-anaconda
-    :ensure t
-    :init (require 'rx)
-    :after (company)
-    :config
-    (add-to-list 'company-backends 'company-anaconda))
-
-  ;; Jupyter notebooks
-  (use-package ein
-    :ensure t)
-
-  ;; Go
-  (use-package ob-go
-    :ensure t)
-
-  (add-hook 'go-mode-hook (lambda () (setq tab-width 4)))
-
-
-  (require 'lsp-mode)
-  (add-hook 'go-mode-hook #'lsp-deferred)
-
-  ;; Set up before-save hooks to format buffer and add/delete imports.
-  ;; Make sure you don't have other gofmt/goimports hooks enabled.
-  (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-format-buffer t t)
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
-  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-
-  ;; Scheme
-  (require 'xscheme)
-
-  (use-package geiser
-    :ensure t)
-
-  (use-package geiser-mit
-    :ensure t)
-
-  ;; C#
-    ;;;; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
-  ;; (defun my/csharp-mode-hook ()
-  ;;   (setq-local lsp-auto-guess-root t)
-  ;;   (lsp))
-
-  (setenv "FrameworkPathOverride" "/lib/mono/4.5")  ; https://elizadev.medium.com/using-unity-editor-with-emacs-9316eb441411
-
-  (use-package csharp-mode
-    :ensure t
-    :mode "\\.cs\\'")
-#+end_src
-* Search completion framework
-:PROPERTIES:
-:ID:       f3d03695-07fe-47c8-861a-d76a5d56eaf4
-:END:
-#+begin_src elisp
-  (use-package counsel  ;; Brings in ivy and swiper as dependencies
-    :ensure t
-    :bind
-    (("M-x" . counsel-M-x)
-     ("C-x b" . counsel-ibuffer)
-     ("C-x C-f" . counsel-find-file))
+    (setq company-idle-delay 0
+          company-show-numbers t
+          company-minimum-prefix-length 2
+          company-selection-wrap-around t)
     :init
-    (ivy-mode 1)
-    :config
-    (setq ivy-use-virtual-buffers t
-          ivy-count-format "%d/%d "))
+    (add-hook 'prog-mode-hook 'company-mode))
 
-  (use-package ivy-rich
-    :ensure t
-    :init (ivy-rich-mode 1))
 
-  (use-package ivy-posframe
+#+end_src
+* magit
+#+begin_src emacs-lisp
+  (use-package magit
     :ensure t)
 #+end_src
-* Security
-** gpg
-:PROPERTIES:
-:ID:       10dfc7f1-5f80-4d68-96e8-abfffbcf76d1
-:END:
+* projectile
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    ;; :diminish projectile-mode
+    ;; :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    (when (file-directory-p "~/code")
+      (setq projectile-project-search-path '("~/code")))
+    (setq projectile-switch-project-action #'projectile-dired))
+#+end_src
+* gpg
 #+begin_src elisp
   (use-package pinentry
     :ensure t
@@ -1147,129 +1051,8 @@
     :config
     (setf epa-pinentry-mode 'loopback))
 #+end_src
-* RSS
-** elfeed
-:PROPERTIES:
-:ID:       7af47ed9-c4bd-4240-8766-6ae1958f96dd
-:END:
-#+begin_src elisp
-  (use-package elfeed
-    :ensure t
-    :bind (:map elfeed-search-mode-map
-                ("R" . elfeed-mark-all-as-read)
-                ("U" . elfeed-mark-all-as-unread)))
-
-  ;; See: https://github.com/heikkil/emacs-literal-config/blob/master/emacs.org#news-feed-reader
-  (defun elfeed-mark-all-as-read ()
-    "Mark currently shown items read"
-    (interactive)
-    (mark-whole-buffer)
-    (elfeed-search-untag-all-unread))
-
-  (defun elfeed-mark-all-as-unread ()
-    "Mark currently shown items unread"
-    (interactive)
-    (mark-whole-buffer)
-    (elfeed-search-tag-all-unread))
-
-  (defun my/elfeed-filter (filter tag)
-    "Template for filtering various feed categories.
-
-     FILTER is the filter string to apply, and TAG is a short name of
-     the displayed category.
-
-     The cursor is moved to the beginning of the first feed line."
-    (setq elfeed-search-filter filter)
-    (elfeed-search-update :force)
-    (goto-char (point-min))
-    (message (concat "elfeed: show " tag)))
-
-  (defun elfeed-read-ccc ()
-    (interactive)
-    (my/elfeed-filter "@3-month-ago +unread +ccc " "Consciousness, Computation, Cognition"))
-
-  (setq elfeed-feeds
-        '(
-          ;; AI/ML
-          ("http://distill.pub/rss.xml" aiml academic)
-
-          ;; ALife
-          ("http://www.reddit.com/r/alife.rss" alife)
-
-          ;; Neuro
-          ("htts://academic.oup.com/rss/site_5412/OpenAccess.xml" ccc neuro academic)
-
-          ;; Prog
-          ("http://protesilaos.com/codelog.xml" emacs prog)
-          ("http://sachachua.com/blog/category/weekly/feed/" emacs prog)
-
-          ;; Philosophy
-          ("http://philosophyofbrains.com/feed" ccc phil)
-
-          ;; Science
-          ("http://writings.stephenwolfram.com/feed/" science blog)
-          ("http://www.scottaaronson.com/blog/?feed=rss2" science blog)
-
-          ;; Sports
-          ("http://squared2020.com/rss" sports)
-          ))
-#+end_src
-* SRS
-** anki
-:PROPERTIES:
-:ID:       2ec5ce60-ab56-452c-bb64-9193cee7fe3a
-:END:
-Sources:
-- [[https://yiufung.net/post/anki-org/][blog]]
-- [[https://github.com/yiufung/dot-emacs/blob/master/init.el][yiufung init.el]]
-#+begin_src elisp
-  (use-package anki-editor
-    :ensure t
-    :bind (:map org-mode-map
-                ("<f12>" . anki-editor-cloze-region-dont-incr)
-                ("<f11>" . anki-editor-cloze-region-auto-incr)
-                ("<f10>" . anki-editor-reset-cloze-number)
-                ("<f9>"  . anki-editor-push-tree))
-    :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
-    :config (setq anki-editor-create-decks t
-                  anki-editor-org-tags-as-anki-tags t
-                  anki-editor-ignored-org-tags '("anki")))
-
-  (defun anki-editor-cloze-region-auto-incr (&optional arg)
-    "Cloze region without hint and increase card number."
-    (interactive)
-    (anki-editor-cloze-region my-anki-editor-cloze-number "")
-    (setq my-anki-editor-cloze-number (1+ my-anki-editor-cloze-number))
-    (forward-sexp))
-
-  (defun anki-editor-cloze-region-dont-incr (&optional arg)
-    "Cloze region without hint using the previous card number."
-    (interactive)
-    (anki-editor-cloze-region (1- my-anki-editor-cloze-number) "")
-    (forward-sexp))
-
-  (defun anki-editor-reset-cloze-number (&optional arg)
-    "Reset cloze number to ARG or 1"
-    (interactive)
-    (setq my-anki-editor-cloze-number (or arg 1)))
-
-  (defun anki-editor-push-tree ()
-    "Push all notes under a tree."
-    (interactive)
-    (anki-editor-push-notes '(4))
-    (anki-editor-reset-cloze-number))
-
-  ;; Initialize
-  (anki-editor-reset-cloze-number)
-
-  ;; Org-capture templates
-  (setq org-my-anki-file "~/org/anki.org")
-#+end_src
 * Email
 ** mu4e
-:PROPERTIES:
-:ID:       cd914cce-c422-420c-b803-baab4252a70c
-:END:
 #+begin_src elisp
   (require 'mu4e)
 
@@ -1328,15 +1111,59 @@ Sources:
 #+end_src
 
 ** org-mime
-:PROPERTIES:
-:ID:       c06860f3-3e3e-4766-8b38-4a53ba88f6c6
-:END:
 - For creating HTML formatted mail
 - Uses org html export options (can also override)
   - We can write custom CSS (i.e. code block background, etc.)
 #+begin_src elisp
   (use-package org-mime
     :ensure t)
+#+end_src
+* anki-editor
+Sources:
+- [[https://yiufung.net/post/anki-org/][blog]]
+- [[https://github.com/yiufung/dot-emacs/blob/master/init.el][yiufung init.el]]
+#+begin_src elisp
+  (use-package anki-editor
+    :ensure t
+    :bind (:map org-mode-map
+                ("<f12>" . anki-editor-cloze-region-dont-incr)
+                ("<f11>" . anki-editor-cloze-region-auto-incr)
+                ("<f10>" . anki-editor-reset-cloze-number)
+                ("<f9>"  . anki-editor-push-tree))
+    :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
+    :config (setq anki-editor-create-decks t
+                  anki-editor-org-tags-as-anki-tags t
+                  anki-editor-ignored-org-tags '("anki")))
+
+  (defun anki-editor-cloze-region-auto-incr (&optional arg)
+    "Cloze region without hint and increase card number."
+    (interactive)
+    (anki-editor-cloze-region my-anki-editor-cloze-number "")
+    (setq my-anki-editor-cloze-number (1+ my-anki-editor-cloze-number))
+    (forward-sexp))
+
+  (defun anki-editor-cloze-region-dont-incr (&optional arg)
+    "Cloze region without hint using the previous card number."
+    (interactive)
+    (anki-editor-cloze-region (1- my-anki-editor-cloze-number) "")
+    (forward-sexp))
+
+  (defun anki-editor-reset-cloze-number (&optional arg)
+    "Reset cloze number to ARG or 1"
+    (interactive)
+    (setq my-anki-editor-cloze-number (or arg 1)))
+
+  (defun anki-editor-push-tree ()
+    "Push all notes under a tree."
+    (interactive)
+    (anki-editor-push-notes '(4))
+    (anki-editor-reset-cloze-number))
+
+  ;; Initialize
+  (anki-editor-reset-cloze-number)
+
+  ;; Org-capture templates
+  (setq org-my-anki-file "~/org/anki.org")
 #+end_src
 * IRC
 :PROPERTIES:
