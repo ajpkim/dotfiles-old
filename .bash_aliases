@@ -1,7 +1,6 @@
 ## cd aliases
 alias besopke='cd ~/repos/BespokeSynth/ignore/build/Source/BespokeSynth_artefacts/Release && ./BespokeSynth'
 
-
 ## ls aliases
 alias ls='ls --color=auto'
 alias ll='ls -alF'
@@ -46,7 +45,8 @@ alias jp='jupyter-notebook'
 ## Displays
 alias off-monitors='. ~/scripts/turn-off-monitors.sh'
 alias on-monitors='. ~/scripts/turn-on-monitors.sh'
-alias lg-mon='xrandr --output HDMI1 --mode 3840x2160  --right-of eDP1 --set audio off'
+alias lg-mon-hdmi1='xrandr --output HDMI1 --mode 3840x2160  --right-of eDP1 --set audio off'
+alias lg-mon-dp1-1='xrandr --output DP1-1 --mode 3840x2160  --right-of eDP1 --set audio off'
 alias hdmi1-nodpi='xrandr --output eDP1 --auto --output HDMI1 --auto --scale 2x2 --right-of eDP1  --set audio off'
 
 ## Scripts

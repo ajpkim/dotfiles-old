@@ -153,7 +153,8 @@
             modus-themes-vivendi-color-overrides nil)))
 
   (set-face-attribute 'org-scheduled-previously nil :foreground "#bb3385")
-  (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
+  ;; (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
+  (set-face-attribute 'org-scheduled-today nil :foreground "#fff")
   (set-face-attribute 'org-scheduled nil :foreground "#c4c3d0")
   (set-face-attribute 'org-agenda-clocking nil :foreground "#44ddff" :background "#000")
 
@@ -213,6 +214,8 @@
                   (lambda () (interactive) (my/file-shortcut "~/org/code.org")))
   (global-set-key (kbd "C-c f C")
                   (lambda () (interactive) (my/file-shortcut "~/org/career.org")))
+  (global-set-key (kbd "C-c f e")
+                  (lambda () (interactive) (my/file-shortcut "~/org/events.org")))
   (global-set-key (kbd "C-c f i")
                   (lambda () (interactive) (my/file-shortcut "~/org/inbox.org")))
   (global-set-key (kbd "C-c f l")
@@ -399,6 +402,11 @@
   (global-set-key (kbd "C-c h m") 'my/hidden-mode-line-mode)
   (global-set-key (kbd "C-c z") 'my/focus-mode)
 #+end_src
+* Calendar
+#+begin_src emacs-lisp
+
+#+end_src
+
 * Orgmode
 ** Base
 :PROPERTIES:
@@ -459,8 +467,7 @@
     "Change a task to 'ACTIVE' when TASK-STATE is 'TODO'."
     (if (string= task-state "TODO")
         "ACTIVE"
-        task-state))
-
+      task-state))
 
   ;; Agenda
   (setq org-agenda-span 5
@@ -475,85 +482,91 @@
         ;; org-agenda-start-with-log-mode t ;; '(clock)
         )
 
+  (set-face-attribute 'org-agenda-calendar-event nil :foreground "#d6b0ff")
+
   (setq org-agenda-custom-commands
         '(
-          ("h" "High priority"
-           ((tags-todo "+PRIORITY=\"A\""
-                       ((org-agenda-overriding-header "High Priority\n")
-                        (org-agenda-sorting-strategy '(tag-up todo-state-up priority-down))
-                        (org-agenda-hide-tags-regexp "*")
-                        ))))
-          ("u" "Unscheduled"
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("E" "Events and Deadlines" agenda ""
+           ((org-agenda-overriding-header "Week Events and Deadlines\n")
+            (org-agenda-span 30)
+            (org-agenda-start-on-weekday 1)
+            (org-agenda-time-grid nil)
+            (org-agenda-repeating-timestamp-show-all nil)
+
+            (org-agenda-entry-types '(:timestamp :sexp :deadline))))
+
+          ("d" "Today's Agenda"
+           ;; ((agenda
+           ((agenda "Today's Tasks" ((org-agenda-span 1)))
+            ;; limits the agenda display to a single day
+
+            (tags "CATEGORY=\"mysite\"")
+            (tags "CATEGORY=\"money\"")))
+
+          ;; ((org-agenda-compact-blocks t))) ;; options set here apply to the entire block
+          ;; ...other commands here
+
+          ("W" "Weekly Review"
            ((todo ""
                   ((org-agenda-files '("~/org/inbox.org"))
-                   (org-agenda-overriding-header "Unscheduled TODOs\n")
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                   (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
-                   ))))
-          ("c" "Computing Config"
-           ((tags-todo "comp|emacs"
-                       ((org-agenda-overriding-header "Computing Config\n")
-                        (org-agenda-sorting-strategy '(tag-up todo-state-up priority-down))
-                        ))))
+                   (org-agenda-overriding-header "Unprocessed TODOs\n")
 
-          ;; Tag based views
-          ("ta" "AK Tasks"
-           ((tags "ak"
-                  ((org-agenda-overriding-header "AK Tasks\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
+                   (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
+                   (org-agenda-prefix-format "")
+                   ))
+            ;; (agenda "" ((org-agenda-span 7))); review upcoming deadlines and appointments
+            (todo "ACTIVE"
+                  ((org-agenda-overriding-header "Review Active Tasks\n")
+                   (org-agenda-sorting-strategy '(priority-down))))
+            (tags-todo "+TODO=\"PROJECT\"+LEVEL=1"  ;; review top level projects
+                       ((org-agenda-overriding-header "Review Projects\n")
+                        (org-agenda-prefix-format "")))
+            ))
+
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("u" "Unprocessed"
+           ((todo ""
+                  ((org-agenda-files '("~/org/inbox.org"))
+                   (org-agenda-overriding-header "Unprocessed TODOs\n")
+                   ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                   (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
                    (org-agenda-prefix-format "")
                    ))))
-          ("tc" "Computing"
-           ((tags "comp"
-                  ((org-agenda-overriding-header "Computing Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ("tb" "ajpkim.com"
-           ((tags "blog"
+          ;; Category based views
+          ("cc" "Computing"
+           ((tags-todo "CATEGORY=\"computing\"+TODO=\"TODO\""
+                       ((org-agenda-overriding-header "Computing Inbox\n")
+                        (org-agenda-sorting-strategy '(todo-state-up priority-down))
+                        (org-agenda-prefix-format "")
+                        ))))
+          ("cb" "ajpkim.com"
+           ((tags "CATEGORY=\"mysite\""
                   ((org-agenda-overriding-header "ajpkim.com Inbox\n")
                    (org-agenda-sorting-strategy '(todo-state-up))
                    (org-agenda-prefix-format "")
                    ))))
-          ("te" "Emacs"
-           ((tags "emacs"
-                  ((org-agenda-overriding-header "Emacs Inbox\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ("ti" "Ideas"
-           ((tags "idea"
+          ("ci" "Ideas"
+           ((tags "CATEGORY=\"ideas\""
                   ((org-agenda-overriding-header "Ideas\n")
                    (org-agenda-sorting-strategy '(todo-state-up))
                    (org-agenda-prefix-format "")
                    ))))
-          ("tm" "Money"
-           ((tags "money"
+          ("cm" "Money"
+           ((tags "CATEGORY=\"money\""
                   ((org-agenda-overriding-header "Money Matters\n")
                    (org-agenda-sorting-strategy '(todo-state-up))
                    (org-agenda-prefix-format "")
                    ))))
-          ("tp" "Programming"
-           ((tags "prog"
+          ("cp" "Programming"
+           ((tags "CATEGORY=\"prog\""
                   ((org-agenda-overriding-header "Programming Inbox\n")
                    (org-agenda-sorting-strategy '(todo-state-up))
                    (org-agenda-prefix-format "")
                    ))))
-          ("tr" "Reading"
-           ((tags "read"
-                  ((org-agenda-overriding-header "Reading\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ("ts" "Study"
-           ((tags "study"
-                  ((org-agenda-overriding-header "Studying\n")
-                   (org-agenda-sorting-strategy '(todo-state-up))
-                   (org-agenda-prefix-format "")
-                   ))))
-          ("tw" "Writing"
-           ((tags "write"
-                  ((org-agenda-overriding-header "Writing Inbox\n")
+          ("cs" "Shelf"
+           ((tags "CATEGORY=\"shelf\""
+                  ((org-agenda-overriding-header "Shelf Stuff\n")
                    (org-agenda-sorting-strategy '(todo-state-up))
                    (org-agenda-prefix-format "")
                    ))))
@@ -633,28 +646,6 @@
 :ID:       50c19694-a173-4f8e-a562-a4ae3b35874c
 :END:
 #+begin_src emacs-lisp
-  ;; Tags
-  (setq org-fast-tag-selection-single-key 'expert
-        org-tag-alist
-        '(
-          (:startgroup . nil)
-          ("read" . ?r) ("view" . ?v) ("listen" . ?l)
-          (:endgroup . nil)
-          (:startgroup . nil)
-          ("write" . ?w) ("prog" . ?p) ("note" . ?n)
-          (:endgroup . nil)
-          ("ak" . ?a)
-          ("blog" . ?b)
-          ("comp" . ?c)
-          ("design" . ?d)
-          ("emacs" . ?e)
-          ("idea" . ?i)
-          ("ff" . ?f)  ;; family & friends
-          ("money" .?m)
-          ("quick" . ?q)
-          ("study" . ?s)
-          ))
-
   ;; Capture
   (setq org-capture-templates
         '(
@@ -672,15 +663,21 @@
            entry
            (file+headline org-my-anki-file "New Cards")
            "* %U  %^g\n:PROPERTIES:\n:CREATED: %U\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
-
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
           ("c" "Task" entry (file "~/org/inbox.org")
            "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
           ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
            "%?"
            :tree-type 'daily)
+          ("e" "Event (non-recurring)" entry (file+headline "~/org/events.org" "Non-recurring")
+           "* %?  %^g\n%^t"
+           :prepend t)
+          ("E" "Event (recurring)" entry (file+headline "~/org/events.org" "Recurring")
+           "* %?  %^g\n%^t"
+           :prepend t)
           ("f" "Current File Link" entry (file "~/org/inbox.org")
-           "* TODO %? %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           "* TODO %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
            :prepend t)
           ("l" "Links" entry (file "~/org/links.org")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
@@ -690,6 +687,9 @@
            :prepend t)
           ("w" "Writing Inbox" entry (file "~/org/notes/inbox.org")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           :prepend t)
+          ("W" "Current tree to writing inbox" entry (file "~/org/notes/inbox.org")
+           "* %u %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
            :prepend t)
           ))
 
@@ -835,16 +835,28 @@
     (org-roam-setup))
 
   (setq org-roam-capture-templates
-        '(("m" "main" plain "%?"
+        '(("a" "AK" plain "%?"
+           :if-new (file+head "ak/${slug}.org" "#+title: ${title}\n#+created: %U\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("d" "doc" plain "%?"
+           :if-new (file+head "doc/${slug}.org" "#+title: ${title}\n#+created: %U\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("l" "leaf" plain "%?"
+           :if-new (file+head "leaf/${slug}.org" "#+title: ${title}\n#+created: %U\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("m" "main" plain "%?"
            :if-new (file+head "main/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)
           ("r" "ref" plain "%?"
-           :if-new (file+head "reference/${slug}.org" "#+title: ${title}\n#+created: %U\n")
+           :if-new (file+head "ref/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)
-          ("s" "src" plain "%?"
-           :if-new (file+head "source/${slug}.org" "#+title: ${title}\n#+created: %U\n")
+          ("s" "study" plain "%?"
+           :if-new (file+head "study/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)))
 
@@ -854,12 +866,11 @@
 
   (defun my/org-roam-node-from-cite (citation)
     (interactive (list (citar-select-ref)))
-    (let ((title (citar-format--entry "${author} :: ${title}"
+    (let ((title (citar-format--entry "${author} - ${title}"
                                       citation)))
-      (insert title)
       (org-roam-capture- :templates
-                         '(("s" "sournce" plain "%?" :if-new
-                            (file+head "source/${citekey}.org"
+                         '(("s" "source" plain "%?" :if-new
+                            (file+head "ref/${citekey}.org"
                                        ":PROPERTIES:
   :ROAM_REFS: [cite:@${citekey}]
   :END:
@@ -871,6 +882,17 @@
                          :props '(:finalize find-file))))
 
   (global-set-key (kbd "C-c n s") 'my/org-roam-node-from-cite)
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (use-package org-roam-ui
+    :ensure t
+    :after org-roam
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Citation tools
   (use-package citeproc
@@ -883,14 +905,14 @@
            :map minibuffer-local-map
            ("M-b" . citar-insert-preset))
     :custom
-    (citar-bibliography '("~/org/notes/sources.bib")))
+    (citar-bibliography '("~/org/notes/refs.bib")))
 
   (require 'oc-basic)
   (require 'oc-csl)
   (require 'oc-basic)
   (require 'oc-biblatex)
   (setq org-cite-export-processors '((t csl))  ;; can add a 3rd arg for a specific style file
-        org-cite-global-bibliography '("~/org/notes/sources.bib"))
+        org-cite-global-bibliography '("~/org/notes/refs.bib"))
   (set-face-attribute 'org-cite nil :foreground "#00cc99")
   (set-face-attribute 'org-cite-key nil :foreground "#00cc99")
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1104,6 +1126,9 @@
   (use-package ivy-rich
     :ensure t
     :init (ivy-rich-mode 1))
+
+  (use-package ivy-posframe
+    :ensure t)
 #+end_src
 * Security
 ** gpg
