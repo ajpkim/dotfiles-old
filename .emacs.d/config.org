@@ -2,6 +2,41 @@
 #+STARTUP: overview
 #+SETUPFILE: ~/org/assets/org-export/org-html-default.org
 
+* WIP
+- Custom org sort
+- This initial snippet taken from: https://emacs.stackexchange.com/questions/44756/org-mode-how-to-sort-entries
+#+begin_src emacs-lisp
+  ;; (defun org-page-sort ()
+  ;;   (interactive)
+  ;;   (mark-whole-buffer)
+  ;;   (org-sort-entries
+  ;;    nil ?f
+  ;;    (lambda ()
+  ;;      (let ((heading (nth 4 (org-heading-components))))
+  ;;        (if (string-match "page \\([0-9]+\\)" heading)
+  ;;            (string-to-number (match-string 1 heading))
+  ;;          1)))))
+#+end_src
+
+- Parens matching
+#+begin_src emacs-lisp
+  ;; ;; ---> This is accomplished with smart-paren-mode
+  ;; ;; Function for wrapping selection with correct symbol e.g. [ and ] or { and }
+
+  ;; ;; This actually needs to match opening and closing braces!!!
+  ;; ;; Also, broken for multi character insertion symbols
+  ;; (defun foo (beg end &optional arg)
+  ;;   "Prompt user to enter a string, with input history support."
+  ;;   (interactive "r\nP")
+  ;;   (save-excursion
+  ;;     (let ((x (read-string "Symbol to wrap region with: ")))
+  ;;       (goto-char beg)
+  ;;       (insert x)
+  ;;       (goto-char (+ end 1))
+  ;;       (insert x))))
+
+#+end_src
+
 * Minimal and functional UI
 #+begin_src emacs-lisp
   (setq inhibit-startup-message t
@@ -13,6 +48,7 @@
         x-select-enable-clipboard t
         x-select-enable-primary t)
 
+  (delete-selection-mode 1)
   (blink-cursor-mode 1)
   (tool-bar-mode -1)
   (menu-bar-mode -1)
@@ -22,6 +58,10 @@
   (set-face-attribute 'default nil :height 150)  ;; control default size
 
   ;; Packages for visual clarity
+  (use-package expand-region
+    :ensure t
+    :bind (("C-=" . er/expand-region)
+           ("C--" . er/contract-region)))
   (use-package beacon
     :ensure t
     :init
@@ -80,7 +120,7 @@
     :ensure t
     :init (doom-modeline-mode 1)
     :custom-face
-    (mode-line ((t (:height 0.5))))
+    (mode-line ((t (:height 0.65))))
     (mode-line-inactive ((t (:height 0.95))))
     :custom
     ((doom-modeline-height 15)))
@@ -227,6 +267,8 @@
                   (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
   (global-set-key (kbd "C-c f p")
                   (lambda () (interactive) (my/file-shortcut "~/org/personal.org")))
+  (global-set-key (kbd "C-c f P")
+                  (lambda () (interactive) (my/file-shortcut "~/org/passtur.org")))
   (global-set-key (kbd "C-c f w")
                   (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
   (global-set-key (kbd "C-c f W")
@@ -495,6 +537,9 @@
           ("l" "Links" entry (file "~/org/links.org")
            "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
+          ("P" "Passtur" entry (file+headline "~/org/passtur.org" "Passtur Inbox")
+           "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+           :prepend t)
           ("s" "Shelf" entry (file+headline "~/org/personal.org" "Shelf")
            "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
@@ -508,7 +553,7 @@
 
   ;; TODO
   (setq org-todo-keywords
-        '((sequence  "TODO(t)" "ACTIVE(a)" "LATER(l)" "WAIT(w)" "SOMEDAY(s)" "PROJECT(P)" "|" "PASS(p)" "DONE(d)")))
+        '((sequence "PROJECT(P)" "ACTIVE(a)""TODO(t)" "LATER(l)" "WAIT(w)" "SOMEDAY(s)" "|" "PASS(p)" "DONE(d)")))
 
   ;; #ffff66
   ;; #79a8ff
@@ -558,8 +603,8 @@
 
           ("d" "Today's Agenda"
            ;; ((agenda
-           ((agenda "Today's Tasks" ((org-agenda-span 1)))
-            ;; limits the agenda display to a single day
+           ((agenda "Today's Tasks" ((org-agenda-span 1)))))
+          ;; limits the agenda display to a single day
           ;; ((org-agenda-compact-blocks t))) ;; options set here apply to the entire block
           ;; ...other commands here
 
@@ -579,6 +624,23 @@
                        ((org-agenda-overriding-header "Review Projects\n")
                         (org-agenda-prefix-format "")))
             ))
+
+          ("P" "Passtur"
+           ((tags-todo "CATEGORY=\"passtur\"+TODO=\"PROJECT\""
+                       ((org-agenda-overriding-header "PASSTUR PROJECTs\n")
+                        (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
+                        (org-agenda-prefix-format "")
+                        ))
+            (tags-todo "CATEGORY=\"passtur\"+TODO=\"ACTIVE\""
+                       ((org-agenda-overriding-header "Passtur ACTIVEs\n")
+                        (org-agenda-prefix-format "")
+                        ))
+            (tags-todo "CATEGORY=\"passtur\"+TODO=\"TODO\""
+                       ((org-agenda-overriding-header "PASSTUR TODOs\n")
+                        (org-agenda-prefix-format "")
+                        )))
+           )
+
 
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
           ("u" "Unprocessed"
@@ -626,7 +688,7 @@
                    (org-agenda-sorting-strategy '(todo-state-up))
                    (org-agenda-prefix-format "")
                    ))))
-          ))))
+          ))
 
   ;; Archiving
   (defun my/org-archive-done-tasks-file ()
@@ -704,11 +766,11 @@
            (let ((id (org-entry-get nil "CUSTOM_ID")))
              (unless id
                (thread-last (nth 4 (org-heading-components))
-                 (s-replace-regexp "[^[:alnum:]']" "-")
-                 (s-replace-regexp "-+" "-")
-                 (s-chop-prefix "-")
-                 (s-chop-suffix "-")
-                 (setq id))
+                            (s-replace-regexp "[^[:alnum:]']" "-")
+                            (s-replace-regexp "-+" "-")
+                            (s-chop-prefix "-")
+                            (s-chop-suffix "-")
+                            (setq id))
                (if (not (member id ids))
                    (push id ids)
                  (message-box "Oh no, a repeated id!\n\n\t%s" id)
@@ -921,6 +983,29 @@
   ;; ❇
   ;; ❈
 #+end_src
+* tree-sitter
+#+begin_src emacs-lisp
+  ;; https://vxlabs.com/2022/06/12/typescript-development-with-emacs-tree-sitter-and-lsp-in-2022/
+  (use-package tree-sitter
+    :ensure t
+    :config
+    ;; activate tree-sitter on any buffer containing code for which it has a parser available
+    (global-tree-sitter-mode)
+    ;; you can easily see the difference tree-sitter-hl-mode makes for python, ts or tsx
+    ;; by switching on and off
+    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+  (use-package tree-sitter-langs
+    :ensure t
+    :after tree-sitter)
+#+end_src
+* editorconfig
+#+begin_src emacs-lisp
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
+#+end_src
 * Languages
 ** Python
 #+begin_src emacs-lisp
@@ -937,10 +1022,50 @@
     (add-to-list 'company-backends 'company-anaconda))
 
   (add-hook 'python-mode-hook (lambda () (setq tab-width 4)))
+
   ;; Jupyter notebooks
   (use-package ein
     :ensure t)
 
+#+end_src
+** JavaScript
+#+begin_src emacs-lisp
+#+end_src
+** TypeScript
+#+begin_src emacs-lisp
+  ;; https://vxlabs.com/2022/06/12/typescript-development-with-emacs-tree-sitter-and-lsp-in-2022/
+  (use-package typescript-mode
+    :ensure t
+    :after tree-sitter
+    :config
+    ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
+    ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
+    (define-derived-mode typescriptreact-mode typescript-mode
+      "TypeScript TSX")
+
+    ;; use our derived mode for tsx files
+    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
+    ;; by default, typescript-mode is mapped to the treesitter typescript parser
+    ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
+    (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
+
+  ;; ;; https://github.com/orzechowskid/tsi.el/
+  ;; ;; great tree-sitter-based indentation for typescript/tsx, css, json
+  ;; (use-package tsi
+  ;;   :after tree-sitter
+  ;;   :quelpa (tsi :fetcher github :repo "orzechowskid/tsi.el")
+  ;;   ;; define autoload definitions which when actually invoked will cause package to be loaded
+  ;;   :commands (tsi-typescript-mode tsi-json-mode tsi-css-mode)
+  ;;   :init
+  ;;   (add-hook 'typescript-mode-hook (lambda () (tsi-typescript-mode 1)))
+  ;;   (add-hook 'json-mode-hook (lambda () (tsi-json-mode 1)))
+  ;;   (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
+  ;;   (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
+#+end_src
+** JSON
+#+begin_src emacs-lisp
+  (use-package json-mode
+    :ensure t)
 #+end_src
 ** Lisps
 #+begin_src emacs-lisp
@@ -989,36 +1114,101 @@
   (use-package csv-mode
     :ensure t)
 #+end_src
-* LSP and company
+** Docker
+#+begin_src emacs-lisp
+    (use-package dockerfile-mode
+      :ensure t)
+#+end_src
+** yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :ensure t)
+
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+  ;; Mirror python-mode newline and indent behavior
+  (add-hook 'yaml-mode-hook
+      (lambda ()
+         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+#+end_src
+* emmet
+#+begin_src emacs-lisp
+  (use-package emmet-mode
+    :ensure t)
+#+end_src
+* web-mode
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :mode (("\\.js\\'" . web-mode)
+           ("\\.jsx\\'" . web-mode)
+           ("\\.ts\\'" . web-mode)
+           ("\\.tsx\\'" . web-mode)
+           ("\\.html\\'" . web-mode))
+    :commands web-mode)
+
+  (add-hook 'web-mode-hook 'emmet-mode)
+
+  (setq web-mode-markup-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-css-indent-offset 2)
+
+#+end_src
+* prettier
+#+begin_src emacs-lisp
+  (defun enable-minor-mode (my-pair)
+    "Enable minor mode if filename match the regexp. MY-PAIR is a cons cell (regexp . minor-mode)."
+    (if (buffer-file-name)
+        (if (string-match (car my-pair) buffer-file-name)
+            (funcall (cdr my-pair)))))
+
+  (use-package prettier-js
+    :ensure t)
+
+  (add-hook 'web-mode-hook #'(lambda ()
+                               (enable-minor-mode
+                                '("\\.jsx?\\'" . prettier-js-mode))
+                               (enable-minor-mode
+                                '("\\.tsx?//'" . prettier-js-mode))))
+
+
+#+end_src
+* LSP
 #+begin_src emacs-lisp
   ;; Auto-complete backend (Language Server Protocol)
   (use-package lsp-mode
     :ensure t
-    :commands (lsp lsp-deferred)
-    :bind-keymap
-    ("C-c v" . lsp-command-map)
-    :custom
-    (lsp-keymap-prefix "C-c v")
-    :hook
-    (lsp-mode . lsp-enable-which-key-integration)
-    (csharp-mode . lsp))
+    :hook ((lsp-mode . lsp-enable-which-key-integration)
+           (csharp-mode . lsp))
+    :config (setq lsp-log-io nil
+                  lsp-restart 'auto-restart
+                  lsp-keymap-prefix "C-c v")
+    :commands (lsp-deferred))
+
+
+  (use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode)
 
   (use-package lsp-ivy
       :ensure t
       :commands lsp-ivy-workspace-symbol)
 
+
+#+end_src
+* company
+#+begin_src emacs-lisp
   (use-package company
     :ensure t
     :config
     (setq company-idle-delay 0
           company-show-numbers t
-          company-minimum-prefix-length 2
+          company-minimum-prefix-length 1
           company-selection-wrap-around t)
     :init
     (add-hook 'prog-mode-hook 'company-mode))
-
-
 #+end_src
+
 * magit
 #+begin_src emacs-lisp
   (use-package magit
