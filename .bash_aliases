@@ -48,8 +48,21 @@ alias on-monitors='. ~/scripts/turn-on-monitors.sh'
 # LG monitor specifics
 alias lg-mon-hdmi1='xrandr --output HDMI1 --mode 3840x2160  --right-of eDP1 --set audio off'
 alias lg-mon-dp1-1='xrandr --output DP1-1 --mode 3840x2160  --right-of eDP1 --set audio off'
+alias dad-apt-setup='xrandr --output DP1-1 --mode 3840x2160  --right-of eDP1 --set audio off'
 alias lg-mon-dp1-2='xrandr --output DP1-2 --mode 3840x2160  --right-of eDP1 --set audio off'
 alias hdmi1-nodpi='xrandr --output eDP1 --auto --output HDMI1 --auto --scale 2x2 --right-of eDP1  --set audio off'
+
+alias mon-port-left='xrandr --output DP1 --auto --scale 2x2 --output eDP1 --auto --pos 3840x0'
+alias mon-port-left-vert='xrandr --output eDP1 --auto --pos 3840x0 --output HDMI1 --auto --scale 2x2 --rotate left'
+
+alias mon-port-right='xrandr --output DP1 --auto --scale 2x2 --right-of eDP1'
+alias mon-port-right-vert='xrandr --output DP1 --auto --scale 2x2 --right-of eDP1 --rotate left'
+
+alias office-mon='xrandr --output DP2-2 --mode 3840x2160  --right-of eDP1 --set audio off && xrandr --output HDMI1 --auto --scale 2x2 --right-of DP2-2  --set audio off'
+
+# New for NYC office
+alias lg-mon-dp2-2='xrandr --output DP1-2 --mode 3840x2160  --right-of eDP1 --set audio off'
+alias acer-hdmi1=x'randr --output HDMI1 --auto --scale 2x2 --right-of DP2-2  --set audio off'
 
 ## Scripts
 alias chimes='. ~/scripts/chimes.sh'
@@ -59,3 +72,4 @@ alias stopwatch='. ~/scripts/stopwatch.sh'
 
 ## Self processes
 alias tt=". ~/scripts/track-time.sh"
+alias hs="nmcli device wifi connect iPhone"

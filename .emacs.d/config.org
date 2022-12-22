@@ -3,6 +3,45 @@
 #+SETUPFILE: ~/org/assets/org-export/org-html-default.org
 
 * WIP
+** tide
+#+begin_src emacs-lisp
+  ;; (use-package tide :ensure t)
+  ;; (use-package flycheck :ensure t)
+
+  ;; (defun setup-tide-mode ()
+  ;;   (interactive)
+  ;;   (tide-setup)
+  ;;   (flycheck-mode +1)
+  ;;   (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  ;;   (eldoc-mode +1)
+  ;;   (tide-hl-identifier-mode +1)
+  ;;   ;; company is an optional dependency. You have to
+  ;;   ;; install it separately via package-install
+  ;;   ;; `M-x package-install [ret] company`
+  ;;   (company-mode +1))
+
+  ;; ;; aligns annotation to the right hand side
+  ;; (setq company-tooltip-align-annotations t)
+
+  ;; ;; formats the buffer before saving
+  ;; (add-hook 'before-save-hook 'tide-format-before-save)
+
+  ;; (add-hook 'typescript-mode-hook #'setup-tide-mode)
+#+end_src
+** tsx stuff
+#+begin_src emacs-lisp
+  ;; (require 'web-mode)
+
+  ;; (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  ;; (add-hook 'web-mode-hook
+  ;;           (lambda ()
+  ;;             (when (string-equal "tsx" (file-name-extension buffer-file-name))
+  ;;               (setup-tide-mode))))
+
+  ;; ;; enable typescript - tslint checker
+  ;; (flycheck-add-mode 'typescript-tslint 'web-mode) ;
+#+end_src
+** idk
 - Custom org sort
 - This initial snippet taken from: https://emacs.stackexchange.com/questions/44756/org-mode-how-to-sort-entries
 #+begin_src emacs-lisp
@@ -36,6 +75,7 @@
   ;;       (insert x))))
 
 #+end_src
+**
 
 * Minimal and functional UI
 #+begin_src emacs-lisp
@@ -54,6 +94,7 @@
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
 
+  (setq-default indent-tabs-mode nil)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (set-face-attribute 'default nil :height 150)  ;; control default size
 
@@ -181,6 +222,7 @@
       (setq modus-themes-operandi-color-overrides nil
             modus-themes-vivendi-color-overrides nil)))
 
+  (set-face-attribute 'org-verbatim nil :foreground "#ffb3de")
   (set-face-attribute 'org-scheduled-previously nil :foreground "#bb3385")
   ;; (set-face-attribute 'org-scheduled-today nil :foreground "#d6b0ff")
   (set-face-attribute 'org-scheduled-today nil :foreground "#fff")
@@ -253,26 +295,18 @@
 
   (global-set-key (kbd "C-c f a")
                   (lambda () (interactive) (my/file-shortcut "~/org/anki.org")))
-  (global-set-key (kbd "C-c f c")
-                  (lambda () (interactive) (my/file-shortcut "~/org/code.org")))
-  (global-set-key (kbd "C-c f C")
-                  (lambda () (interactive) (my/file-shortcut "~/org/career.org")))
-  (global-set-key (kbd "C-c f e")
-                  (lambda () (interactive) (my/file-shortcut "~/org/events.org")))
-  (global-set-key (kbd "C-c f i")
-                  (lambda () (interactive) (my/file-shortcut "~/org/inbox.org")))
   (global-set-key (kbd "C-c f l")
                   (lambda () (interactive) (my/file-shortcut "~/org/links.org")))
   (global-set-key (kbd "C-c f n")
                   (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
+  (global-set-key (kbd "C-c f t")
+                  (lambda () (interactive) (my/file-shortcut "~/org/todo.org")))
   (global-set-key (kbd "C-c f p")
-                  (lambda () (interactive) (my/file-shortcut "~/org/personal.org")))
+                  (lambda () (interactive) (my/file-shortcut  "~/org/projects.org")))
   (global-set-key (kbd "C-c f P")
                   (lambda () (interactive) (my/file-shortcut "~/org/passtur.org")))
   (global-set-key (kbd "C-c f w")
                   (lambda () (interactive) (my/file-shortcut "~/org/notes/inbox.org")))
-  (global-set-key (kbd "C-c f W")
-                  (lambda () (interactive) (my/file-shortcut (get-week-file))))
 #+end_src
 * Window splitting tweaks
 #+begin_src emacs-lisp
@@ -519,7 +553,7 @@
            (file+headline org-my-anki-file "New Cards")
            "* %U  %^g\n:PROPERTIES:\n:CREATED: %U\n:ANKI_NOTE_TYPE: Type\n:ANKI_DECK: main\n:ANKI_TAGS:\n:END:\n** Front\n%?\n** Back\n\n")
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-          ("c" "Task" entry (file "~/org/inbox.org")
+          ("c" "Task" entry (file+headline "~/org/todo.org" "Inbox")
            "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
           ("d" "Dream journal" plain (file+olp+datetree "~/org/dreams.org")
@@ -531,7 +565,7 @@
           ("E" "Event (recurring)" entry (file+headline "~/org/events.org" "Recurring")
            "* %?  %^g\n%^t"
            :prepend t)
-          ("f" "Current File Link" entry (file "~/org/inbox.org")
+          ("f" "Current File Link" entry (file+headline "~/org/todo.org" "Inbox")
            "* TODO %a\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
            :prepend t)
           ("l" "Links" entry (file "~/org/links.org")
@@ -540,7 +574,7 @@
           ("P" "Passtur" entry (file+headline "~/org/passtur.org" "Passtur Inbox")
            "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
-          ("s" "Shelf" entry (file+headline "~/org/personal.org" "Shelf")
+          ("s" "Shelf" entry (file+headline "~/org/todo.org" "Shelf")
            "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
            :prepend t)
           ("w" "Writing Inbox" entry (file "~/org/notes/inbox.org")
@@ -603,14 +637,18 @@
 
           ("d" "Today's Agenda"
            ;; ((agenda
-           ((agenda "Today's Tasks" ((org-agenda-span 1)))))
-          ;; limits the agenda display to a single day
-          ;; ((org-agenda-compact-blocks t))) ;; options set here apply to the entire block
-          ;; ...other commands here
+           ((agenda "Today's Tasks"
+                    ((org-agenda-category-filter-preset '("-passtur")))
+                    ((org-agenda-span 1)))))
+          ("w" "Week Agenda"
+           ;; ((agenda
+           ((agenda "Week Tasks"
+                    ((org-agenda-category-filter-preset '("-passtur")))
+                    ((org-agenda-span 5)))))
 
           ("W" "Weekly Review"
            ((todo ""
-                  ((org-agenda-files '("~/org/inbox.org"))
+                  ((org-agenda-files '("~/org/todo.org"))
                    (org-agenda-overriding-header "Unprocessed TODOs\n")
 
                    (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
@@ -645,7 +683,7 @@
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
           ("u" "Unprocessed"
            ((todo ""
-                  ((org-agenda-files '("~/org/inbox.org"))
+                  ((org-agenda-files '("~/org/todo.org"))
                    (org-agenda-overriding-header "Unprocessed TODOs\n")
                    ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                    (org-agenda-sorting-strategy '(timestamp-up tag-up priority-down))
@@ -835,16 +873,16 @@
            :if-new (file+head "ak/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)
-          ("d" "doc" plain "%?"
-           :if-new (file+head "doc/${slug}.org" "#+title: ${title}\n#+created: %U\n")
-           :immediate-finish t
-           :unnarrowed t)
           ("l" "leaf" plain "%?"
            :if-new (file+head "leaf/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)
           ("m" "main" plain "%?"
            :if-new (file+head "main/${slug}.org" "#+title: ${title}\n#+created: %U\n")
+           :immediate-finish t
+           :unnarrowed t)
+          ("p" "pad" plain "%?"
+           :if-new (file+head "pad/${slug}.org" "#+title: ${title}\n#+created: %U\n")
            :immediate-finish t
            :unnarrowed t)
           ("r" "ref" plain "%?"
@@ -983,21 +1021,21 @@
   ;; ❇
   ;; ❈
 #+end_src
-* tree-sitter
+* ??? tree-sitter
 #+begin_src emacs-lisp
   ;; https://vxlabs.com/2022/06/12/typescript-development-with-emacs-tree-sitter-and-lsp-in-2022/
-  (use-package tree-sitter
-    :ensure t
-    :config
-    ;; activate tree-sitter on any buffer containing code for which it has a parser available
-    (global-tree-sitter-mode)
-    ;; you can easily see the difference tree-sitter-hl-mode makes for python, ts or tsx
-    ;; by switching on and off
-    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  ;; (use-package tree-sitter
+  ;;   :ensure t
+  ;;   :config
+  ;;   ;; activate tree-sitter on any buffer containing code for which it has a parser available
+  ;;   (global-tree-sitter-mode)
+  ;;   ;; you can easily see the difference tree-sitter-hl-mode makes for python, ts or tsx
+  ;;   ;; by switching on and off
+  ;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
-  (use-package tree-sitter-langs
-    :ensure t
-    :after tree-sitter)
+  ;; (use-package tree-sitter-langs
+  ;;   :ensure t
+  ;;   :after tree-sitter)
 #+end_src
 * editorconfig
 #+begin_src emacs-lisp
@@ -1033,21 +1071,23 @@
 #+end_src
 ** TypeScript
 #+begin_src emacs-lisp
-  ;; https://vxlabs.com/2022/06/12/typescript-development-with-emacs-tree-sitter-and-lsp-in-2022/
   (use-package typescript-mode
-    :ensure t
-    :after tree-sitter
-    :config
-    ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
-    ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
-    (define-derived-mode typescriptreact-mode typescript-mode
-      "TypeScript TSX")
+    :ensure t)
+  ;; https://vxlabs.com/2022/06/12/typescript-development-with-emacs-tree-sitter-and-lsp-in-2022/
+  ;; (use-package typescript-mode
+  ;;   :ensure t
+  ;;   :after tree-sitter
+  ;;   :config
+  ;;   ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
+  ;;   ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
+  ;;   (define-derived-mode typescriptreact-mode typescript-mode
+  ;;     "TypeScript TSX")
 
-    ;; use our derived mode for tsx files
-    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
-    ;; by default, typescript-mode is mapped to the treesitter typescript parser
-    ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
-    (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
+  ;;   ;; use our derived mode for tsx files
+  ;;   (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
+  ;;   ;; by default, typescript-mode is mapped to the treesitter typescript parser
+  ;;   ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
+  ;;   (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
 
   ;; ;; https://github.com/orzechowskid/tsi.el/
   ;; ;; great tree-sitter-based indentation for typescript/tsx, css, json
@@ -1119,6 +1159,23 @@
     (use-package dockerfile-mode
       :ensure t)
 #+end_src
+** LaTeX
+#+begin_src elisp
+  (use-package auctex
+    :ensure t
+    :defer t
+    :hook (LaTeX-mode . display-line-numbers-mode))
+
+
+    ;; :hook (LaTeX-mode .
+    ;;                   (lambda ()
+    ;;                     (push (list 'output-pdf "Firefox")
+    ;;                           TeX-view-program-selection))))
+
+#+end_src
+
+#+RESULTS:
+
 ** yaml
 #+begin_src emacs-lisp
   (use-package yaml-mode
@@ -1136,42 +1193,44 @@
   (use-package emmet-mode
     :ensure t)
 #+end_src
-* web-mode
+* TODO ? web-mode
 #+begin_src emacs-lisp
-  (use-package web-mode
-    :ensure t
-    :mode (("\\.js\\'" . web-mode)
-           ("\\.jsx\\'" . web-mode)
-           ("\\.ts\\'" . web-mode)
-           ("\\.tsx\\'" . web-mode)
-           ("\\.html\\'" . web-mode))
-    :commands web-mode)
+  ;; (use-package web-mode
+  ;;   :ensure t
+  ;;   :mode (("\\.js\\'" . web-mode)
+  ;;          ("\\.jsx\\'" . web-mode)
+  ;;          ("\\.ts\\'" . web-mode)
+  ;;          ("\\.tsx\\'" . web-mode)
+  ;;          ("\\.html\\'" . web-mode))
+  ;;   :commands web-mode)
 
-  (add-hook 'web-mode-hook 'emmet-mode)
+  ;; (add-hook 'web-mode-hook 'emmet-mode)
 
-  (setq web-mode-markup-indent-offset 2
-        web-mode-code-indent-offset 2
-        web-mode-css-indent-offset 2)
-
+  ;; (setq web-mode-markup-indent-offset 2
+  ;;       web-mode-code-indent-offset 2
+  ;;       web-mode-css-indent-offset 2)
 #+end_src
-* prettier
+* TODO ? prettier
 #+begin_src emacs-lisp
-  (defun enable-minor-mode (my-pair)
-    "Enable minor mode if filename match the regexp. MY-PAIR is a cons cell (regexp . minor-mode)."
-    (if (buffer-file-name)
-        (if (string-match (car my-pair) buffer-file-name)
-            (funcall (cdr my-pair)))))
+  ;; (use-package prettier-js
+  ;;   :ensure t)
 
-  (use-package prettier-js
-    :ensure t)
+  ;; (setq prettier-js-args '(
+  ;;   "--trailing-comma" "all"
+  ;;   "--bracket-spacing" "false"
+  ;; ))
 
-  (add-hook 'web-mode-hook #'(lambda ()
-                               (enable-minor-mode
-                                '("\\.jsx?\\'" . prettier-js-mode))
-                               (enable-minor-mode
-                                '("\\.tsx?//'" . prettier-js-mode))))
+  ;; ;; Not working out of the box on save so using this workaround
+  ;; ;; (add-hook 'typescript-mode 'prettier-js-mode)
+  ;; ;; (add-hook 'javascript-mode 'prettier-js-mode)
 
+  ;; (add-hook 'typescript-mode-hook
+  ;;           (lambda ()
+  ;;              (add-hook 'before-save-hook prettier-js nil 'make-it-local)))
 
+  ;; (add-hook 'javascript-mode-hook
+  ;;           (lambda ()
+  ;;              (add-hook 'before-save-hook prettier-js nil 'make-it-local)))
 #+end_src
 * LSP
 #+begin_src emacs-lisp
@@ -1194,6 +1253,8 @@
       :ensure t
       :commands lsp-ivy-workspace-symbol)
 
+  (use-package lsp-tailwindcss
+    :ensure t)
 
 #+end_src
 * company
@@ -1263,7 +1324,7 @@
           ;; mu4e-context-policy 'pick-first
           mu4e-attachment-dir "~/Downloads"
 
-          user-mail-address "alex@ajpkim.com"
+          ;; user-mail-address "alex@ajpkim.com"
           user-full-name "Alex Kim"
           send-mail-function 'smtpmail-send-it
           smtpmail-default-smtp-server "smtp.fastmail.com"
@@ -1391,6 +1452,10 @@ Sources:
     (add-to-list 'erc-modules 'image))
 
 #+end_src
+* Load ak elisp
+#+begin_src elisp
+   (load "~/code/elisp/week-planviews.el")
+#+end_src
 * Config edit and reload
 :PROPERTIES:
 :ID:       32aac737-eb26-4279-846d-90596941babf
@@ -1406,4 +1471,48 @@ Sources:
 
   (global-set-key (kbd "C-c e") 'config-visit)
   (global-set-key (kbd "C-c r") 'config-reload)
+#+end_src
+* TODO JSX and TSX (Modularize correctly)
+#+begin_src emacs-lisp
+  ;; web-mode
+  (setq-default tab-width 2)
+  (setq indent-tabs-mode nil)
+  (defun my/webmode-hook ()
+          "Webmode hooks."
+          (setq web-mode-enable-comment-annotation t)
+          (setq web-mode-markup-indent-offset 2)
+          (setq web-mode-code-indent-offset 2)
+          (setq web-mode-css-indent-offset 2)
+          (setq web-mode-attr-indent-offset 0)
+          (setq web-mode-enable-auto-indentation t)
+          (setq web-mode-enable-auto-closing t)
+          (setq web-mode-enable-auto-pairing t)
+          (setq web-mode-enable-css-colorization t)
+  )
+  (use-package web-mode
+    :ensure t
+    :mode (("\\.jsx?\\'" . web-mode)
+           ("\\.tsx?\\'" . web-mode)
+           ("\\.html\\'" . web-mode))
+    :commands web-mode
+          :hook (web-mode . my/webmode-hook)
+  )
+
+  (defun enable-minor-mode (my-pair)
+    "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
+    (if (buffer-file-name)
+        (if (string-match (car my-pair) buffer-file-name)
+            (funcall (cdr my-pair)))))
+
+  (use-package prettier-js
+    :ensure t)
+  (add-hook 'web-mode-hook #'(lambda ()
+                               (enable-minor-mode
+                                '("\\.jsx?\\'" . prettier-js-mode))
+                               (enable-minor-mode
+                                '("\\.tsx?\\'" . prettier-js-mode))))
+
+  (eval-after-load 'web-mode
+    '(progn
+       (add-hook 'web-mode-hook #'prettier-js-mode)))
 #+end_src
